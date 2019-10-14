@@ -53,6 +53,11 @@ functions:
       ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
     role: ApproveRole
 
+  DataChecking:
+    name: ${self:service}__data_checking__${self:provider.stage}
+    handler: data-checking.handler
+    role: DataCheckingRole
+
 resources:
   Resources:
     LambdaLoggingPolicy:
@@ -166,6 +171,20 @@ resources:
         ManagedPolicyArns:
           - { Ref: LambdaLoggingPolicy }
           - { Ref: DynamoPolicy }
+
+    DataCheckingRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - { Ref: LambdaLoggingPolicy }
 
     ApplicationsDynamoDBTable:
       Type: 'AWS::DynamoDB::Table'
