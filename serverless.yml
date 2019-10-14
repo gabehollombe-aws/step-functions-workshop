@@ -1,0 +1,194 @@
+service: StepFunctionsWorkshop
+
+plugins:
+  - serverless-cf-vars
+
+custom:
+  applicationsTable: '${self:service}__account_applications__${self:provider.stage}'
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  memorySize: 128
+  stage: dev
+
+functions:
+  SubmitApplication:
+    name: ${self:service}__account_applications__submit__${self:provider.stage}
+    handler: account-applications/submit.handler
+    environment:
+      REGION: ${self:provider.region}
+      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+    role: SubmitRole
+
+  FlagApplication:
+    name: ${self:service}__account_applications__flag__${self:provider.stage}
+    handler: account-applications/flag.handler
+    environment:
+      REGION: ${self:provider.region}
+      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+    role: FlagRole
+
+  FindApplications:
+    name: ${self:service}__account_applications__find__${self:provider.stage}
+    handler: account-applications/find.handler
+    environment:
+      REGION: ${self:provider.region}
+      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+    role: FindRole
+
+  RejectApplication:
+    name: ${self:service}__account_applications__reject__${self:provider.stage}
+    handler: account-applications/reject.handler
+    environment:
+      REGION: ${self:provider.region}
+      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+    role: RejectRole
+
+  ApproveApplication:
+    name: ${self:service}__account_applications__approve__${self:provider.stage}
+    handler: account-applications/approve.handler
+    environment:
+      REGION: ${self:provider.region}
+      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+    role: ApproveRole
+
+resources:
+  Resources:
+    LambdaLoggingPolicy:
+      Type: 'AWS::IAM::ManagedPolicy'
+      Properties:
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource:
+                - 'Fn::Join':
+                  - ':'
+                  -
+                    - 'arn:aws:logs'
+                    - Ref: 'AWS::Region'
+                    - Ref: 'AWS::AccountId'
+                    - 'log-group:/aws/lambda/*:*:*'
+
+    DynamoPolicy:
+      Type: 'AWS::IAM::ManagedPolicy'
+      Properties:
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - "dynamodb:*"
+              Resource:
+                - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
+                - 'Fn::Join':
+                    - '/'
+                    -
+                        - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
+                        - '*'
+
+    SubmitRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - { Ref: LambdaLoggingPolicy }
+          - { Ref: DynamoPolicy }
+
+    FlagRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - { Ref: LambdaLoggingPolicy }
+          - { Ref: DynamoPolicy }
+
+    RejectRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - { Ref: LambdaLoggingPolicy }
+          - { Ref: DynamoPolicy }
+
+    ApproveRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - { Ref: LambdaLoggingPolicy }
+          - { Ref: DynamoPolicy }
+
+    FindRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - { Ref: LambdaLoggingPolicy }
+          - { Ref: DynamoPolicy }
+
+    ApplicationsDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: ${self:custom.applicationsTable}
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+          -
+            AttributeName: state
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+            -
+                IndexName: state
+                KeySchema:
+                    -
+                        AttributeName: state
+                        KeyType: HASH
+                Projection:
+                    ProjectionType: ALL
