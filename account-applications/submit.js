@@ -1,12 +1,14 @@
 'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
+const APPLICATION_PROCESSING_STEP_FUNCTION_ARN = process.env.APPLICATION_PROCESSING_STEP_FUNCTION_ARN
 
 const AWS = require('aws-sdk')
 const uuid = require('uuid/v4')
 AWS.config.update({region: REGION});
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
+const stepfunctions = new AWS.StepFunctions();
 
 const applicationKey = id => `application|${id}`
 
@@ -25,6 +27,13 @@ const submitNewAccountApplication = async (data) => {
         ]
     };
     await dynamo.transactWrite(params).promise()
+
+    params = {
+        "input": JSON.stringify({ application }),
+        "name": `ProcessAccountApplication-${id}`,
+        "stateMachineArn": APPLICATION_PROCESSING_STEP_FUNCTION_ARN
+    }
+    await stepfunctions.startExecution(params).promise()
 
     return application
 } 
