@@ -263,8 +263,28 @@ resources:
                         },
                         "Resource": "#{dataCheckingLambdaArn}",
                         "ResultPath": "$.checks.address",
-                        "Next": "Approve Application"
+                        "Next": "Review Required?"
                     },
+                    "Review Required?": {
+                        "Type": "Choice",
+                        "Choices": [
+                          {
+                            "Variable": "$.checks.name.flagged",
+                            "BooleanEquals": true,
+                            "Next": "Pending Review"
+                          },
+                          {
+                            "Variable": "$.checks.address.flagged",
+                            "BooleanEquals": true,
+                            "Next": "Pending Review"
+                          }
+                        ],
+                        "Default": "Approve Application"
+                    },
+                    "Pending Review": {
+                        "Type": "Pass",
+                        "End": true
+                     },
                     "Approve Application": {
                         "Type": "Pass",
                         "End": true
