@@ -211,3 +211,64 @@ resources:
                         KeyType: HASH
                 Projection:
                     ProjectionType: ALL
+
+    StepFunctionRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        AssumeRolePolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+                -
+                  Effect: Allow
+                  Principal:
+                      Service: 'states.amazonaws.com'
+                  Action: 'sts:AssumeRole'
+        Policies:
+            -
+              PolicyName: lambda
+              PolicyDocument:
+                Statement:
+                  -
+                    Effect: Allow
+                    Action: 'lambda:InvokeFunction'
+                    Resource:
+                        - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
+
+    ProcessApplicationsStateMachine:
+      Type: AWS::StepFunctions::StateMachine
+      Properties:
+        StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
+        RoleArn: !GetAtt StepFunctionRole.Arn
+        DefinitionString:
+          !Sub
+            - |-
+              {
+                "StartAt": "Check Name",
+                "States": {
+                    "Check Name": {
+                        "Type": "Task",
+                        "Parameters": {
+                            "command": "CHECK_NAME",
+                            "data": { "name.$": "$.application.name" }
+                        },
+                        "Resource": "#{dataCheckingLambdaArn}",
+                        "Next": "Check Address"
+                    },
+                    "Check Address": {
+                        "Type": "Task",
+                        "Parameters": {
+                            "command": "CHECK_ADDRESS",
+                            "data": { "address.$": "$.application.address" }
+                        },
+                        "Resource": "#{dataCheckingLambdaArn}",
+                        "Next": "Approve Application"
+                    },
+                    "Approve Application": {
+                        "Type": "Pass",
+                        "End": true
+                    }
+                }
+              }
+            - {
+              dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
+            }
