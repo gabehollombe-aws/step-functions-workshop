@@ -252,6 +252,7 @@ resources:
                             "data": { "name.$": "$.application.name" }
                         },
                         "Resource": "#{dataCheckingLambdaArn}",
+                        "ResultPath": "$.checks.name",
                         "Next": "Check Address"
                     },
                     "Check Address": {
@@ -261,6 +262,7 @@ resources:
                             "data": { "address.$": "$.application.address" }
                         },
                         "Resource": "#{dataCheckingLambdaArn}",
+                        "ResultPath": "$.checks.address",
                         "Next": "Approve Application"
                     },
                     "Approve Application": {
