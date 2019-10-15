@@ -19,6 +19,7 @@ functions:
     environment:
       REGION: ${self:provider.region}
       ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+      APPLICATION_PROCESSING_STEP_FUNCTION_ARN: { Ref: "ProcessApplicationsStateMachine" }
     role: SubmitRole
 
   FlagApplication:
@@ -97,6 +98,21 @@ resources:
                         - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
                         - '*'
 
+    StepFunctionsPolicy:
+      Type: 'AWS::IAM::ManagedPolicy'
+      Properties:
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            -
+              Effect: "Allow"
+              Action:
+                - "states:StartExecution"
+                - "states:SendTaskSuccess"
+                - "states:SendTaskFailure"
+              Resource:
+                - { Ref: ProcessApplicationsStateMachine }
+
     SubmitRole:
       Type: AWS::IAM::Role
       Properties:
@@ -111,6 +127,7 @@ resources:
         ManagedPolicyArns:
           - { Ref: LambdaLoggingPolicy }
           - { Ref: DynamoPolicy }
+          - { Ref: StepFunctionsPolicy }
 
     FlagRole:
       Type: AWS::IAM::Role
