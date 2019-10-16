@@ -2,6 +2,13 @@
 
 const checkName = (data) => {
     const { name } = data
+
+    if (name.includes("UNPROCESSABLE_DATA")) {
+        const simulatedError = new Error(`Simulated error: Name '${name}' is not possible to check.`)
+        simulatedError.name = 'UnprocessableDataException'
+        throw simulatedError
+    }
+
     const flagged = name.includes('evil')
     return { flagged }
 }
