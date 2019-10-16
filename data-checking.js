@@ -3,6 +3,12 @@
 const checkName = async (data) => {
     const { name } = data
 
+    if (name.indexOf("UNPROCESSABLE_DATA") !== -1) {
+        const simulatedError = new Error(`Simulated error: Name '${name}' is not possible to check.`)
+        simulatedError.name = 'UnprocessableDataException'
+        throw simulatedError
+    }
+
     const flagged = (name.indexOf('evil') !== -1)
     return { flagged }
 }
