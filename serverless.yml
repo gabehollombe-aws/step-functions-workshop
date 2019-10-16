@@ -275,6 +275,8 @@ resources:
                     Resource:
                         - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
                         - Fn::GetAtt: [FlagApplicationLambdaFunction, Arn]
+                        - Fn::GetAtt: [ApproveApplicationLambdaFunction, Arn]
+                        - Fn::GetAtt: [RejectApplicationLambdaFunction, Arn]
 
     ProcessApplicationsStateMachine:
       Type: AWS::StepFunctions::StateMachine
@@ -351,17 +353,27 @@ resources:
                             }
                         ]
                     },
-                    "Reject Application": {
-                         "Type": "Pass",
-                         "End": true
-                     },
-                    "Approve Application": {
-                        "Type": "Pass",
+                     "Reject Application": {
+                        "Type": "Task",
+                        "Parameters": {
+                            "id.$": "$.application.id"
+                        },
+                        "Resource": "#{rejectApplicationLambdaArn}",
                         "End": true
-                    }
+                     },
+                     "Approve Application": {
+                        "Type": "Task",
+                        "Parameters": {
+                            "id.$": "$.application.id"
+                        },
+                        "Resource": "#{approveApplicationLambdaArn}",
+                        "End": true
+                     }
                 }
               }
             - {
               dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
               flagApplicationLambdaName: !Ref FlagApplicationLambdaFunction,
+              rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
+              approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
             }
