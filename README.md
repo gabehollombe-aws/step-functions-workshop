@@ -12,6 +12,16 @@ Thanks!
 Gabe Hollombe
 * * *
 
+## TODOs
+
+* Review all screen capture images and mask account number and other sensitive info
+* Refactor common code from the lambda functions into a file that can be imported where needed (e.g. updateApplication)
+* Make Dynamo operations simple Puts instead of wrapped in single operation transactions items. This code is a holdover from an original plan to also insert domain events into Events tables at the same time for use in EventBridge code. This will likely get put into future work I do, but doesn’t belong in this workshop.
+
+
+* * *
+
+
 ## Welcome
 
 In this workshop, you’ll learn how to coordinate workflows involving distributed services using a simple, yet powerful, fully managed service called AWS Step Functions.
@@ -92,513 +102,21 @@ cd workshop-dir
 serverless create --template aws-nodejs
 npm install --save serverless-cf-vars uuid
 rm handler.js
+rm serverless.yml
 ```
 
 
-Next, we’ll create the first version of a set of functions that make up the feature set of our Account Applications service. Rather than creating all of the necessary files by hand, you can copy/paste the following script directly into a Bash shell,
+Next, we’ll create the first version of a set of functions that make up the feature set of our Account Applications service. Rather than having to create several files by hand, you can copy/paste the following script directly into a Bash shell:
 
 ```
 # Create a directory for all our Account Applications Lambda functions
 mkdir account-applications
 pushd account-applications
 
-# approve.js
-#------------------------------------------------------------------------
-cat <<EOT >> approve.js
-'use strict';
-const REGION = process.env.REGION
-const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
-
-const AWS = require('aws-sdk')
-AWS.config.update({region: REGION});
-
-const dynamo = new AWS.DynamoDB.DocumentClient();
-
-
-
-const getApplication = async (id) => {
-    const params = {
-      TableName: ACCOUNTS_TABLE_NAME,
-      Key: { id: id }
-    };
-    
-    const result = await dynamo.get(params).promise()    
-    return result.Item
-}
-
-
-const updateApplication = async (id, attributes) => {
-    const application = await getApplication(id)
-    const updatedApplication = Object.assign(application, attributes)
-    const params = {
-        TransactItems: [
-            {
-                Put: {
-                    TableName: ACCOUNTS_TABLE_NAME,
-                    Item: updatedApplication
-                }
-            }
-        ]
-    };
-    await dynamo.transactWrite(params).promise()
-    return updatedApplication
-}
-
-
-const approveApplication = async (data) => {
-    const { id } = data
-
-    const updatedApplication = await updateApplication(
-        id, 
-        { state: 'APPROVED' }
-    )
-
-    return updatedApplication
-}
-
-module.exports.handler = async(event) => {
-    try {
-        const result = await approveApplication(event)
-        return result
-    } catch (ex) {
-        console.error(ex)
-        console.info('event', JSON.stringify(event))
-        throw ex
-    }
-};
-EOT
-
-# find.js
-#------------------------------------------------------------------------
-cat <<EOT >> find.js
-'use strict';
-const REGION = process.env.REGION
-const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
-
-const AWS = require('aws-sdk')
-AWS.config.update({region: REGION});
-
-const dynamo = new AWS.DynamoDB.DocumentClient();
-
-const findAllByState = async (data) => {
-    const { state, paginationKey=null } = data
-    const params = {
-        TableName: ACCOUNTS_TABLE_NAME,
-        IndexName: 'state',
-        KeyConditionExpression: '#state = :state',
-        ExclusiveStartKey: paginationKey,
-        ExpressionAttributeNames: { '#state': 'state' },
-        ExpressionAttributeValues: { ':state': state }
-    }
-    const result = await dynamo.query(params).promise()
-    return result
-}
-
-module.exports.handler = async(event) => {
-    try {
-        const result = await findAllByState(event)
-        return result
-    } catch (ex) {
-        console.error(ex)
-        console.info('event', JSON.stringify(event))
-    }
-};
-EOT
-
-
-# flag.js
-#------------------------------------------------------------------------
-cat <<EOT >> flag.js
-'use strict';
-const REGION = process.env.REGION
-const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
-
-const AWS = require('aws-sdk')
-AWS.config.update({region: REGION});
-
-const dynamo = new AWS.DynamoDB.DocumentClient();
-
-const getApplication = async (id) => {
-    const params = {
-      TableName: ACCOUNTS_TABLE_NAME,
-      Key: { id: id }
-    };
-
-    const result = await dynamo.get(params).promise()
-    return result.Item
-}
-
-const updateApplication = async (id, attributes) => {
-    const application = await getApplication(id)
-    const updatedApplication = Object.assign(application, attributes)
-    const params = {
-        TransactItems: [
-            {
-                Put: {
-                    TableName: ACCOUNTS_TABLE_NAME,
-                    Item: updatedApplication
-                }
-            }
-        ]
-    };
-    await dynamo.transactWrite(params).promise()
-    return updatedApplication
-}
-
-const flagForReview = async (data) => {
-    const { id, flagType } = data
-
-    if (flagType !== 'REVIEW' && flagType !== 'UNPROCESSABLE_DATA') {
-        throw new Error("flagType must be REVIEW or UNPROCESSABLE_DATA")
-    }
-
-    let newState
-    let reason
-    if (flagType === 'REVIEW') {
-        newState = 'FLAGGED_FOR_REVIEW'
-        reason = data.reason
-    }
-    else {
-        reason = JSON.parse(data.errorInfo.Cause).errorMessage
-        newState = 'FLAGGED_WITH_UNPROCESSABLE_DATA'
-    }
-
-    const updatedApplication = await updateApplication(
-        id,
-        {
-            state: newState,
-            reason,
-        }
-    )
-
-    return updatedApplication
-}
-
-module.exports.handler = async(event) => {
-    try {
-        const result = await flagForReview(event)
-        return result
-    } catch (ex) {
-        console.error(ex)
-        console.info('event', JSON.stringify(event))
-        throw ex
-    }
-};
-EOT
-
-# reject.js
-#------------------------------------------------------------------------
-cat <<EOT >> reject.js
-'use strict';
-const REGION = process.env.REGION
-const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
-
-const AWS = require('aws-sdk')
-AWS.config.update({region: REGION});
-
-const dynamo = new AWS.DynamoDB.DocumentClient();
-
-
-
-const getApplication = async (id) => {
-    const params = {
-      TableName: ACCOUNTS_TABLE_NAME,
-      Key: { id: id }
-    };
-    
-    const result = await dynamo.get(params).promise()    
-    return result.Item
-}
-
-
-const updateApplication = async (id, attributes) => {
-    const application = await getApplication(id)
-    const updatedApplication = Object.assign(application, attributes)
-    const params = {
-        TransactItems: [
-            {
-                Put: {
-                    TableName: ACCOUNTS_TABLE_NAME,
-                    Item: updatedApplication
-                }
-            }
-        ]
-    };
-    await dynamo.transactWrite(params).promise()
-    return updatedApplication
-}
-
-
-const rejectApplication = async (data) => {
-    const { id } = data
-
-    const updatedApplication = await updateApplication(
-        id, 
-        { state: 'REJECTED' }
-    )
-
-    return updatedApplication
-}
-
-module.exports.handler = async(event) => {
-    try {
-        const result = await rejectApplication(event)
-        return result
-    } catch (ex) {
-        console.error(ex)
-        console.info('event', JSON.stringify(event))
-        throw ex
-    }
-};
-EOT
-
-
-# submit.js
-#------------------------------------------------------------------------
-cat <<EOT >> submit.js
-'use strict';
-const REGION = process.env.REGION
-const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
-
-const AWS = require('aws-sdk')
-const uuid = require('uuid/v4')
-AWS.config.update({region: REGION});
-
-const dynamo = new AWS.DynamoDB.DocumentClient();
-
-const applicationKey = id => `application|${id}`
-
-const submitNewAccountApplication = async (data) => {
-    const id = uuid()
-    const { name, address } = data
-    const application = { id: applicationKey(id), name, address, state: 'SUBMITTED' }
-    let params = {
-        TransactItems: [
-            {
-                Put: {
-                    TableName: ACCOUNTS_TABLE_NAME,
-                    Item: application
-                }
-            }
-        ]
-    };
-    await dynamo.transactWrite(params).promise()
-
-    return application
-} 
-
-module.exports.handler = async(event) => {
-    try {
-        const result = await submitNewAccountApplication(event)
-        return result
-    } catch (ex) {
-        console.error(ex)
-        console.info('event', JSON.stringify(event))
-        throw ex
-    }
-};
-EOT
-
-
-# serverless.yml
-#------------------------------------------------------------------------
-cat <<EOT >> serverless.yml
-service: StepFunctionsWorkshop
-
-plugins:
-  - serverless-cf-vars
-
-custom:
-  applicationsTable: '${self:service}__account_applications__${self:provider.stage}'
-
-provider:
-  name: aws
-  runtime: nodejs10.x
-  memorySize: 128
-  stage: dev
-
-functions:
-  SubmitApplication:
-    name: ${self:service}__account_applications__submit__${self:provider.stage}
-    handler: account-applications/submit.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: SubmitRole
-
-  FlagApplication:
-    name: ${self:service}__account_applications__flag__${self:provider.stage}
-    handler: account-applications/flag.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: FlagRole
-
-  FindApplications:
-    name: ${self:service}__account_applications__find__${self:provider.stage}
-    handler: account-applications/find.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: FindRole
-
-  RejectApplication:
-    name: ${self:service}__account_applications__reject__${self:provider.stage}
-    handler: account-applications/reject.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: RejectRole
-
-  ApproveApplication:
-    name: ${self:service}__account_applications__approve__${self:provider.stage}
-    handler: account-applications/approve.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: ApproveRole
-
-resources:
-  Resources:
-    LambdaLoggingPolicy:
-      Type: 'AWS::IAM::ManagedPolicy'
-      Properties:
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
-              Resource:
-                - 'Fn::Join':
-                  - ':'
-                  -
-                    - 'arn:aws:logs'
-                    - Ref: 'AWS::Region'
-                    - Ref: 'AWS::AccountId'
-                    - 'log-group:/aws/lambda/*:*:*'
-
-    DynamoPolicy:
-      Type: 'AWS::IAM::ManagedPolicy'
-      Properties:
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: "Allow"
-              Action:
-                - "dynamodb:*"
-              Resource:
-                - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                - 'Fn::Join':
-                    - '/'
-                    -
-                        - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                        - '*'
-
-    SubmitRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    FlagRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    RejectRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    ApproveRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    FindRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    ApplicationsDynamoDBTable:
-      Type: 'AWS::DynamoDB::Table'
-      Properties:
-        TableName: ${self:custom.applicationsTable}
-        AttributeDefinitions:
-          -
-            AttributeName: id
-            AttributeType: S
-          -
-            AttributeName: state
-            AttributeType: S
-        KeySchema:
-          -
-            AttributeName: id
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-        GlobalSecondaryIndexes:
-            -
-                IndexName: state
-                KeySchema:
-                    -
-                        AttributeName: state
-                        KeyType: HASH
-                Projection:
-                    ProjectionType: ALL
-EOT
-
+curl https://codeload.github.com/gist/ddb15971ff35243577fa4816f33a3176/zip/a0007c0551effcc04ee0bcc40b5220312076d2ae -o files.zip
+unzip -j files.zip
+mv serverless.yml ..
+rm files.zip
 
 popd
 ```
@@ -609,6 +127,15 @@ TODO: insert explanation about serverless.yml and the resources we’re creating
 Finally, perform our first deployment of our new service:
 
 Run: `sls deploy`
+
+### What we changed
+
+* Installed the Serverless Framework command line utility
+* Created a `workshop-dir` directory to hold all of our files for this workshop
+* Initialized a new Node.js based Serverless project
+* Created several files inside `workshop-dir/account-applications` to implement the first version of our Account Applications service API
+* Updated the default `serverless.yml` with one that creates an AWS Lambda function for each function defined in `account-applications`, creates a DynamoDB table to store state for this service, and sets up specific permissions and roles for each function
+
 
 Now we have a fully-deployed Lambda function that can handle all of the steps involved to move an application from SUBMITTED, to FLAGGED, to APPROVED or REJECTED. 
 
@@ -635,7 +162,7 @@ Using the Serverless framework CLI, we can invoke any of the service’s functio
 Copy the ID of the new application, shown in the output from the above command. We’ll use it in the next step.
 
 
-1. Flag an application for review (replace REPLACE_WITH_ID below with the ID of the application you just created in step 1). Run:
+1. Flag an application for review (replace REPLACE_WITH_ID below with the ID of the application you just created in step 1). Run with replacement:
 
 ```
 `sls invoke -f FlagApplication \
@@ -655,11 +182,11 @@ Copy the ID of the new application, shown in the output from the above command. 
 We could also run the above function with other states like ‘SUBMITTED’ or ‘APPROVED’ or ‘REJECTED’.
 
 
-1. Approve the application (replace REPLACE_WITH_ID below with the ID of the application ID you copied in step 1). Run:
+1. Approve the application (replace REPLACE_WITH_ID below with the ID of the application ID you copied in step 1). Run with replacement:
 
 ```
 `sls invoke -f ApproveApplication \
---data='{ "id": "REPLCE_WITH_ID" }'`
+--data='{ "id": "REPLACE_WITH_ID" }'`
 ```
 
 
