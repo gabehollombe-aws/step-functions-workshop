@@ -287,49 +287,63 @@ resources:
           !Sub
             - |-
               {
-                "StartAt": "Check Name",
+                "StartAt": "Check Applicant Data",
                 "States": {
-                    "Check Name": {
-                        "Type": "Task",
-                        "Parameters": {
-                            "command": "CHECK_NAME",
-                            "data": { "name.$": "$.application.name" }
-                        },
-                        "Resource": "#{dataCheckingLambdaArn}",
-                        "ResultPath": "$.checks.name",
-                        "Retry": [ {
-                            "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                        } ],
-                        "Catch": [ {
-                          "ErrorEquals": ["UnprocessableDataException"],
-                          "ResultPath": "$.error-info",
-                          "Next": "Flag Application As Unprocessable"
-                        } ],
-                        "Next": "Check Address"
-                    },
-                    "Check Address": {
-                        "Type": "Task",
-                        "Parameters": {
-                            "command": "CHECK_ADDRESS",
-                            "data": { "address.$": "$.application.address" }
-                        },
-                        "Resource": "#{dataCheckingLambdaArn}",
-                        "ResultPath": "$.checks.address",
-                        "Retry": [ {
-                            "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                        } ],
-                        "Next": "Review Required?"
+                    "Check Applicant Data": {
+                      "Type": "Parallel",
+                      "Branches": [{
+                              "StartAt": "Check Name",
+                              "States": {
+                                  "Check Name": {
+                                      "Type": "Task",
+                                      "Parameters": {
+                                          "command": "CHECK_NAME",
+                                          "data": { "name.$": "$.application.name" }
+                                      },
+                                      "Resource": "#{dataCheckingLambdaArn}",
+                                      "Retry": [ {
+                                          "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException" ]
+                                      } ],
+                                      "End": true
+                                  }
+                              }
+                          },
+                          {
+                              "StartAt": "Check Address",
+                              "States": {
+                                  "Check Address": {
+                                      "Type": "Task",
+                                      "Parameters": {
+                                          "command": "CHECK_ADDRESS",
+                                          "data": { "address.$": "$.application.address" }
+                                      },
+                                      "Resource": "#{dataCheckingLambdaArn}",
+                                      "Retry": [ {
+                                          "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
+                                      } ],
+                                      "End": true
+                                  }
+                              }
+                          }
+                      ],
+                      "Catch": [ {
+                        "ErrorEquals": ["UnprocessableDataException"],
+                        "ResultPath": "$.error-info",
+                        "Next": "Flag Application As Unprocessable"
+                      } ],
+                      "ResultPath": "$.checks",
+                      "Next": "Review Required?"
                     },
                     "Review Required?": {
                         "Type": "Choice",
                         "Choices": [
                           {
-                            "Variable": "$.checks.name.flagged",
+                            "Variable": "$.checks[0].flagged",
                             "BooleanEquals": true,
                             "Next": "Pending Review"
                           },
                           {
-                            "Variable": "$.checks.address.flagged",
+                            "Variable": "$.checks[1].flagged",
                             "BooleanEquals": true,
                             "Next": "Pending Review"
                           }
@@ -367,7 +381,7 @@ resources:
                             }
                         ]
                     },
-                     "Reject Application": {
+                    "Reject Application": {
                         "Type": "Task",
                         "Parameters": {
                             "id.$": "$.application.id"
@@ -377,8 +391,8 @@ resources:
                             "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
                         } ],
                         "End": true
-                     },
-                     "Approve Application": {
+                    },
+                    "Approve Application": {
                         "Type": "Task",
                         "Parameters": {
                             "id.$": "$.application.id"
@@ -388,7 +402,7 @@ resources:
                             "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
                         } ],
                         "End": true
-                     },
+                    },
                     "Flag Application As Unprocessable": {
                       "Type": "Task",
                       "Resource": "arn:aws:states:::lambda:invoke",
