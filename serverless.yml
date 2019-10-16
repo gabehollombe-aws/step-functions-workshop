@@ -30,6 +30,14 @@ functions:
       ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
     role: FlagRole
 
+  ReviewApplication:
+    name: ${self:service}__account_applications__review__${self:provider.stage}
+    handler: account-applications/review.handler
+    environment:
+      REGION: ${self:provider.region}
+      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+    role: ReviewRole
+
   FindApplications:
     name: ${self:service}__account_applications__find__${self:provider.stage}
     handler: account-applications/find.handler
@@ -144,6 +152,22 @@ resources:
           - { Ref: LambdaLoggingPolicy }
           - { Ref: DynamoPolicy }
 
+    ReviewRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - { Ref: LambdaLoggingPolicy }
+          - { Ref: DynamoPolicy }
+          - { Ref: StepFunctionsPolicy }
+
     RejectRole:
       Type: AWS::IAM::Role
       Properties:
@@ -250,6 +274,7 @@ resources:
                     Action: 'lambda:InvokeFunction'
                     Resource:
                         - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
+                        - Fn::GetAtt: [FlagApplicationLambdaFunction, Arn]
 
     ProcessApplicationsStateMachine:
       Type: AWS::StepFunctions::StateMachine
@@ -299,8 +324,36 @@ resources:
                         "Default": "Approve Application"
                     },
                     "Pending Review": {
-                        "Type": "Pass",
-                        "End": true
+                      "Type": "Task",
+                      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+                      "Parameters": {
+                          "FunctionName": "#{flagApplicationLambdaName}",
+                          "Payload": {
+                              "id.$": "$.application.id",
+                              "flagType": "REVIEW",
+                              "taskToken.$": "$$.Task.Token"
+                          }
+                      },
+                      "ResultPath": "$.review",
+                      "Next": "Review Approved?"
+                    },
+                    "Review Approved?": {
+                        "Type": "Choice",
+                        "Choices": [{
+                                "Variable": "$.review.decision",
+                                "StringEquals": "APPROVE",
+                                "Next": "Approve Application"
+                            },
+                            {
+                                "Variable": "$.review.decision",
+                                "StringEquals": "REJECT",
+                                "Next": "Reject Application"
+                            }
+                        ]
+                    },
+                    "Reject Application": {
+                         "Type": "Pass",
+                         "End": true
                      },
                     "Approve Application": {
                         "Type": "Pass",
@@ -310,4 +363,5 @@ resources:
               }
             - {
               dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
+              flagApplicationLambdaName: !Ref FlagApplicationLambdaFunction,
             }

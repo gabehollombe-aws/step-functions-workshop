@@ -10,7 +10,7 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
 const AccountApplications = require('./AccountApplications')(ACCOUNTS_TABLE_NAME, dynamo)
 
 const flagForReview = async (data) => {
-    const { id, flagType } = data
+    const { id, flagType, taskToken } = data
 
     if (flagType !== 'REVIEW' && flagType !== 'UNPROCESSABLE_DATA') {
         throw new Error("flagType must be REVIEW or UNPROCESSABLE_DATA")
@@ -32,6 +32,7 @@ const flagForReview = async (data) => {
         {
             state: newState,
             reason,
+            taskToken
         }
     )
     return updatedApplication
