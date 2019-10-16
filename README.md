@@ -619,31 +619,49 @@ Let’s take a moment to manually interact with each of these functions to under
 
 The Account Application service is implemented as a collection of AWS Lambda functions. This first version of our service gives us a basic set of capabilities: we can submit new applications, view a list of applications for each state, flag an application for review, and approve or reject applications.  One thing that’s important to note here is that while this service includes the ability to allow us to flag an application, we have not yet encoded any logic to determine *when* a submitted application might get flagged. We’re just setting up the basic capabilities that we’ll orchestrate together along with other services later to implement our full example account application processing workflow.
 
+### Try it out
+
 Using the Serverless framework CLI, we can invoke any of the service’s functions with the following parameters depending on what we’d like to do. Try running each of these commands in turn to understand what we can do with applications right now.
 
 
-1. Submit a new application
+1. Submit a new application. Run:
 
-`sls invoke -f SubmitApplication --log --data='{ "name": "Spock", "address": "123 Enterprise Street" }'`
+```
+`sls invoke -f SubmitApplication \
+--data='{ "name": "Spock", "address": "123 Enterprise Street" }'`
+```
+
 
 Copy the ID of the new application, shown in the output from the above command. We’ll use it in the next step.
 
 
-1. Flag an application for review (replace REPLACE_WITH_ID below with the ID of the application you just created in step 1):
+1. Flag an application for review (replace REPLACE_WITH_ID below with the ID of the application you just created in step 1). Run:
 
-`sls invoke -f FlagApplication --log --data='{ "id": "REPLACE_WITH_ID", "flagType": "REVIEW" }'`
+```
+`sls invoke -f FlagApplication \
+--data='{ "id": "REPLACE_WITH_ID", "flagType": "REVIEW" }'`
+```
 
 
-1. List all of the applications that are currently flagged for review:
 
-`sls invoke -f FindApplications --log --data='{ "state": "FLAGGED_FOR_REVIEW" }'`
+1. List all of the applications that are currently flagged for review. Run:
+
+```
+`sls invoke -f FindApplications \
+--data='{ "state": "FLAGGED_FOR_REVIEW" }'`
+```
+
 
 We could also run the above function with other states like ‘SUBMITTED’ or ‘APPROVED’ or ‘REJECTED’.
 
 
-1. Approve the application (replace REPLACE_WITH_ID below with the ID of the application ID you copied in step 1):
+1. Approve the application (replace REPLACE_WITH_ID below with the ID of the application ID you copied in step 1). Run:
 
-`sls invoke -f ApproveApplication --log --data='{ "id": "REPLCE_WITH_ID" }'`
+```
+`sls invoke -f ApproveApplication \
+--data='{ "id": "REPLCE_WITH_ID" }'`
+```
+
 
 
 We just manually took an application through the steps of being submitted, then flagged for review, then approved. But, the workflow we  want to implement requires the Account Applications service to collaborate with a Data Checking service, checking an applicant’s name and address against some business rules to decide if an application needs to be reviewed by a human. 
@@ -663,11 +681,8 @@ Also, for the sake of keeping our code simple, we’ll implement our name and ad
 
 ### Make these changes
 
-1. Implement our data checking needs in a new `data-checking.js` file. From `workshop-dir` run:
-2. # data-checking.js
-    #------------------------------------------------------------------------
-    cat <<EOT >> data-checking.js
-    'use strict';
+1. Implement our data checking needs by creating `data-checking.js` inside the root of `workshop-dir` with the following content:
+2. 'use strict';
     
     const checkName = async (data) => {
         const { name } = data
@@ -701,7 +716,6 @@ Also, for the sake of keeping our code simple, we’ll implement our name and ad
             throw ex
         }
     };
-    EOT
 
 1. Replace `serverless.yml` with the following:
 2. service: StepFunctionsWorkshop
@@ -922,8 +936,6 @@ Also, for the sake of keeping our code simple, we’ll implement our name and ad
 
 ### What we changed
 
-
-
 * Created `data-checking.js` to implement our Data Checking service needs
 * Added new configuration to `serverless.yml` to create a new AWS Lambda function from `data-checking.js` along with a new IAM role with permissions for the function to log to Amazon CloudWatch
 
@@ -932,25 +944,28 @@ Also, for the sake of keeping our code simple, we’ll implement our name and ad
 After the deploy finishes, we can interact with our new data-checking lambda to check any name or address string we like. Try each check with valid and invalid inputs.
 
 
-1. Check a valid name
-
-`sls invoke -f DataChecking --log --data='{"command": "CHECK_NAME", "data": { "name": "Spock" } }'`
-
-
-1. Check an invalid name
-
-`sls invoke -f DataChecking --log --data='{"command": "CHECK_NAME", "data": { "name": "evil Spock" } }'`
+1. Check a valid name. Run:
+2. `sls invoke -f DataChecking \
+    --data='{"command": "CHECK_NAME", "data": { "name": "Spock" } }'`
 
 
-1. Check a valid address
 
-`sls invoke -f DataChecking --log --data='{"command": "CHECK_ADDRESS", "data": { "address": "123 Street" } }'`
+1. Check an invalid name. Run:
+2. `sls invoke -f DataChecking \
+    --data='{"command": "CHECK_NAME", "data": { "name": "evil Spock" } }'`
 
 
-1. Check an invalid address
-    
 
-`sls invoke -f DataChecking --log --data='{"command": "CHECK_ADDRESS", "data": { "address": "DoesntMatchAddressPattern" } }'`
+1. Check a valid address. Run:
+2. `sls invoke -f DataChecking \
+    --data='{"command": "CHECK_ADDRESS", "data": { "address": "123 Street" } }'`
+
+
+
+1. Check an invalid address. Run:
+2. `sls invoke -f DataChecking \
+    --data='{"command": "CHECK_ADDRESS", "data": { "address": "DoesntMatchAddressPattern" } }'`
+
 
 As you can see, the Data Checking service just returns a simple JSON style response with one variable, `flagged` returning true if the value being checked requires further scrutiny by a human.
 
@@ -2523,8 +2538,11 @@ Now that we’ve integrated our Account Applications service with our processing
 
 ### try it out
 
-1. Run `sls invoke -f SubmitApplication --log --data='{ "name": "Spock", "address": "AnInvalidAddress" }'`
-2. Go back to the step functions web console’s detail view for our state machine and look for a new execution at the top of the list. It should have a timestamp close to right now and it will contain a name that starts with ‘ProcessAccountApplication’. If you click in to view the details of this execution, you should see it also take the Pending Review path, as we expect (because we submitted an invalid address), and you should also be able to see an `id` attribute on the application input passed in, and through, the state machine’s steps.
+1. Run:
+2.  `sls invoke -f SubmitApplication \
+     --data='{ "name": "Spock", "address": "AnInvalidAddress" }'`
+
+1. Go back to the step functions web console’s detail view for our state machine and look for a new execution at the top of the list. It should have a timestamp close to right now and it will contain a name that starts with ‘ProcessAccountApplication’. If you click in to view the details of this execution, you should see it also take the Pending Review path, as we expect (because we submitted an invalid address), and you should also be able to see an `id` attribute on the application input passed in, and through, the state machine’s steps.
 
 Now that we know we're passing an application ID to the step function successfully, we're ready to have our Pending Review state notify our Account Applications service whenever it wants to flag an application and pause its workflow processing the application until a human makes a decision about it.
 
@@ -3102,16 +3120,16 @@ Let’s test this:
 
 
 1. Submit an invalid application so it gets flagged. Run:
-2. 1.  sls invoke -f SubmitApplication \
-    2. --log \
-    3. --data='{ "name": "Spock", "address": "123EnterpriseStreet" }'
-    
+
+```
+sls invoke -f SubmitApplication \
+--data='{ "name": "Spock", "address": "123EnterpriseStreet" }'
+```
 
 1. Check to see that our application is flagged for review. Run:
 
 ```
 sls invoke -f FindApplications 
-\--log 
 \--data='{ "state": "FLAGGED_FOR_REVIEW" }'
 ```
 
@@ -3121,7 +3139,6 @@ sls invoke -f FindApplications
 2. Click in to the running execution and you’ll see in the visualization section that the Pending Review state is in-progress. This is the state machine indicating that it’s now paused and waiting for a callback before it will resume execution.
 3. To trigger this callback that it’s waiting for, act as a human reviewer and approve the review (we haven't built a web interface for this, so we'll just invoke another function in the Account Applications service. Take care to paste the ID you copied in Step 3 above into this command when you run it, replacing REPLACE_WITH_APPLICATION_ID. Run with replacement:
 4. sls invoke -f ReviewApplication \
-    --log \
     --data='{ "id": "REPLACE_WITH_APPLICATION_ID", "decision": "APPROVE" }'
 5. Go back to the execution details page in the Step Functions web console (you shouldn’t need to refresh it), and notice that the execution resumed and, because we approved the review, the state machine transitioned into the Approve Application state after examining the input provided to it by our callback.  You can click on the the ‘Review Approved?‘ step to see our review decision passed into the step’s input (via the SendTaskSuccess callback that `account-applications/review.js` called).
 
@@ -4448,7 +4465,6 @@ Let’s test out our new error handling capabilities:
 
 ```
 sls invoke -f SubmitApplication \
---log \
 --data='{ "name": "UNPROCESSABLE_DATA", "address": "123 Street" }'
 ```
 
@@ -4456,7 +4472,6 @@ sls invoke -f SubmitApplication \
 2. Notice that our state machine now shows that it encountered, and handled, an error by transitioning to our new Flag Application As Unprocessable state.
 3. If you like, you can see that our application record was flagged correctly by running this command:
 4. sls invoke -f FindApplications \
-    --log \
     --data='{ "state": "FLAGGED_WITH_UNPROCESSABLE_DATA" }'
 
 [Image: image.png]
@@ -4921,7 +4936,6 @@ Now you can try a few types of application submissions to see how they each exec
 
 ```
 sls invoke -f SubmitApplication \
---log \
 --data='{ "name": "Spock", "address": "123 Enterprise Street" }'
 ```
 
@@ -4933,7 +4947,6 @@ sls invoke -f SubmitApplication \
 
 ```
 sls invoke -f SubmitApplication \
---log \
 --data='{ "name": "Gabe", "address": "ABadAddress" }'
 ```
 
@@ -4944,7 +4957,6 @@ sls invoke -f SubmitApplication \
 
 ```
 sls invoke -f SubmitApplication \
---log \
 --data='{ "name": "UNPROCESSABLE_DATA", "address": "123 Street" }'
 ```
 
@@ -4958,7 +4970,6 @@ Congratulations! If you’ve taken the time to work through all of the steps in 
 
 
 TODO - write more conclusion steps here. Include cleanup instructions with `sls remove`
-
 
 
 
