@@ -297,6 +297,9 @@ resources:
                         },
                         "Resource": "#{dataCheckingLambdaArn}",
                         "ResultPath": "$.checks.name",
+                        "Retry": [ {
+                            "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
+                        } ],
                         "Next": "Check Address"
                     },
                     "Check Address": {
@@ -307,6 +310,9 @@ resources:
                         },
                         "Resource": "#{dataCheckingLambdaArn}",
                         "ResultPath": "$.checks.address",
+                        "Retry": [ {
+                            "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
+                        } ],
                         "Next": "Review Required?"
                     },
                     "Review Required?": {
@@ -337,6 +343,9 @@ resources:
                           }
                       },
                       "ResultPath": "$.review",
+                      "Retry": [ {
+                          "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
+                      } ],
                       "Next": "Review Approved?"
                     },
                     "Review Approved?": {
@@ -359,6 +368,9 @@ resources:
                             "id.$": "$.application.id"
                         },
                         "Resource": "#{rejectApplicationLambdaArn}",
+                        "Retry": [ {
+                            "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
+                        } ],
                         "End": true
                      },
                      "Approve Application": {
@@ -367,6 +379,9 @@ resources:
                             "id.$": "$.application.id"
                         },
                         "Resource": "#{approveApplicationLambdaArn}",
+                        "Retry": [ {
+                            "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
+                        } ],
                         "End": true
                      }
                 }
