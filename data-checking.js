@@ -1,6 +1,6 @@
 'use strict';
 
-const checkName = async (data) => {
+const checkName = (data) => {
     const { name } = data
 
     if (name.indexOf("UNPROCESSABLE_DATA") !== -1) {
@@ -9,11 +9,11 @@ const checkName = async (data) => {
         throw simulatedError
     }
 
-    const flagged = (name.indexOf('evil') !== -1)
+    const flagged = name.includes('evil')
     return { flagged }
 }
 
-const checkAddress = async (data) => {
+const checkAddress = (data) => {
     const { address } = data
 
     const flagged = (address.match(/[0-9]+ \w+/g) === null)
@@ -26,11 +26,11 @@ const commandHandlers = {
     'CHECK_ADDRESS': checkAddress,
 }
 
-module.exports.handler = async(event) => {
+module.exports.handler = (event) => {
     try {
         const { command, data } = event
 
-        const result = await commandHandlers[command](data)
+        const result = commandHandlers[command](data)
         return result
     } catch (ex) {
         console.error(ex)
