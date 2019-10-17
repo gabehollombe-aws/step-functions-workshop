@@ -8,32 +8,7 @@ AWS.config.update({region: REGION});
 const dynamo = new AWS.DynamoDB.DocumentClient();
 const stepfunctions = new AWS.StepFunctions();
 
-const getApplication = async (id) => {
-    const params = {
-      TableName: ACCOUNTS_TABLE_NAME,
-      Key: { id: id }
-    };
-    
-    const result = await dynamo.get(params).promise()    
-    return result.Item
-}
-
-const updateApplication = async (id, attributes) => {
-    const application = await getApplication(id)
-    const updatedApplication = Object.assign(application, attributes)
-    const params = {
-        TransactItems: [
-            {
-                Put: {
-                    TableName: ACCOUNTS_TABLE_NAME,
-                    Item: updatedApplication
-                }
-            }
-        ]
-    };
-    await dynamo.transactWrite(params).promise()
-    return updatedApplication
-}
+const AccountApplications = require('./AccountApplications')(ACCOUNTS_TABLE_NAME, dynamo)
 
 const updateApplicationWithDecision = (id, decision) => {
     if (decision !== 'APPROVE' && decision !== 'REJECT') {
@@ -41,8 +16,8 @@ const updateApplicationWithDecision = (id, decision) => {
     }
 
     switch(decision) {
-        case 'APPROVE': return updateApplication(id, { state: 'REVIEW_APPROVED' })
-        case 'REJECT': return updateApplication(id, { state: 'REVIEW_REJECTED' })
+        case 'APPROVE': return AccountApplications.update(id, { state: 'REVIEW_APPROVED' })
+        case 'REJECT': return AccountApplications.update(id, { state: 'REVIEW_REJECTED' })
     }
 }
 
@@ -56,6 +31,7 @@ const updateWorkflowWithReviewDecision = async (data) => {
         taskToken: updatedApplication.taskToken
     };
     await stepfunctions.sendTaskSuccess(params).promise()
+
     return updatedApplication
 }
 
