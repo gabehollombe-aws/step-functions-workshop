@@ -67,6 +67,15 @@ class AccountApplications {
         const result = await this.dynamo.query(params).promise()
         return result
     }
+
+    async delete(id) {
+        const params = {
+          TableName: this.tableName,
+          Key: { id: id }
+        };
+        const result = await this.dynamo.delete(params).promise()
+        return result.Item
+    }
 }
 
 module.exports = exports = (tableName, dynamoDocClient) => ( new AccountApplications(tableName, dynamoDocClient) )

@@ -13,26 +13,32 @@ const AccountApplications = require('./AccountApplications')(ACCOUNTS_TABLE_NAME
 
 const submitNewAccountApplication = async (data) => {
     const { name, address } = data
-
     const application = await AccountApplications.create({ name, address, state: 'SUBMITTED' })
+    return application
+} 
 
+const startStateMachineExecution = (application) => {
     const params = {
         "input": JSON.stringify({ application }),
         "name": `ApplicationID-${application.id}`,
         "stateMachineArn": APPLICATION_PROCESSING_STEP_FUNCTION_ARN
     }
-    await stepfunctions.startExecution(params).promise()
-
-    return application
-} 
+    stepfunctions.startExecution(params).promise()
+}
 
 module.exports.handler = async(event) => {
+    let application
     try {
-        const result = await submitNewAccountApplication(event)
-        return result
+        application = await submitNewAccountApplication(event)
+        await startStateMachineExecution(application)
+        return application
     } catch (ex) {
         console.error(ex)
         console.info('event', JSON.stringify(event))
+
+        if (application !== undefined) {
+            await AccountApplications.delete(application.id)
+        }
         throw ex
     }
-};
+}
