@@ -11,17 +11,11 @@ class AccountApplications {
         const id = uuid()
         const application = Object.assign(attributes, { id: applicationKey(id) })
         let params = {
-            TransactItems: [
-                {
-                    Put: {
-                        TableName: this.tableName,
-                        Item: application
-                    }
-                }
-            ]
+            TableName: this.tableName,
+            Item: application
         };
         await this.dynamo
-            .transactWrite(params)
+            .put(params)
             .promise()
 
         return application
@@ -41,16 +35,10 @@ class AccountApplications {
         const application = await this.get(id)
         const updatedApplication = Object.assign(application, attributes)
         const params = {
-            TransactItems: [
-                {
-                    Put: {
-                        TableName: this.tableName,
-                        Item: updatedApplication
-                    }
-                }
-            ]
+            TableName: this.tableName,
+            Item: updatedApplication
         };
-        await this.dynamo.transactWrite(params).promise()
+        await this.dynamo.put(params).promise()
         return updatedApplication
     } 
 
