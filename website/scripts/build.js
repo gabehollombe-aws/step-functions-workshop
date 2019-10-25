@@ -17,7 +17,25 @@ const showFileAtSha = (sha, path) => {
 }
 
 const templatize = (str, match) => {
+    const CLIPBOARD_BUTTON_TAG_TEMPLATE = '<button class="clipboard" data-clipboard-target="#__TARGET_ID__">this text</button> ' // trailing space important
+    const CLIPBOARD_PRE_TAG_TEMPLATE = '{{% safehtml %}}<pre id="__TARGET_ID__" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">__FILE_CONTENT__</pre>{{% /safehtml %}}'
 
+    const fileContent = showFileAtSha(match.groups.sha, match.groups.file)
+    const id = "id" + uuid().replace(/-/g,"")
+
+    const buttonHtml = CLIPBOARD_BUTTON_TAG_TEMPLATE.replace('__TARGET_ID__', id)
+    const preHtml = CLIPBOARD_PRE_TAG_TEMPLATE.replace('__TARGET_ID__', id).replace('__FILE_CONTENT__', fileContent + "\n")
+
+    const startOfMatch = match.index
+    const endOfMatch = startOfMatch + match[0].length
+    const compiledTemplate = str.slice(0, startOfMatch) + buttonHtml + match.groups.rest + preHtml + str.substr(endOfMatch + 1)
+    return compiledTemplate
+}
+
+const nextMatch = (str) => {
+    const buttonRegex = /___CLIPBOARD_BUTTON (?<sha>.+):(?<file>\w+\.\w+)(?<rest>.*)/gm
+    const buttonMatches = Array.from(str.matchAll(buttonRegex))
+    return buttonMatches[0]
 }
 
 const main = () => {
@@ -26,31 +44,35 @@ const main = () => {
     templatePath="../source_content/source_index.md"
     compiledPath="../content/_index.md"
 
-    CLIPBOARD_BUTTON_TAG_TEMPLATE = '<button class="clipboard" data-clipboard-target="#__TARGET_ID__">this text</button> ' // trailing space important
-    CLIPBOARD_PRE_TAG_TEMPLATE = '{{% safehtml %}}<pre id="__TARGET_ID__" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">__FILE_CONTENT__</pre>{{% /safehtml %}}'
 
     // console.log(showFileAtSha(sha, "serverless.yml"))
     // console.log(getUnifiedDiff(sha))
 
-    const template = readFileSync(templatePath).toString()
+    let templateBufferStr = readFileSync(templatePath).toString()
+    let match = nextMatch(templateBufferStr)
+    while (match) {
+        console.log('Match', match)
+        templateBufferStr = templatize(templateBufferStr, match)
+        match = nextMatch(templateBufferStr)
+    }
 
-    const buttonRegex = /___CLIPBOARD_BUTTON (?<sha>.+):(?<file>\w+\.\w+)(?<rest>.*)/gm
-    const buttonMatches = Array.from(template.matchAll(buttonRegex))
+    // const buttonRegex = /___CLIPBOARD_BUTTON (?<sha>.+):(?<file>\w+\.\w+)(?<rest>.*)/gm
+    // const buttonMatches = Array.from(template.matchAll(buttonRegex))
 
-    const match = buttonMatches[0]
-    const fileContent = showFileAtSha(match.groups.sha, match.groups.file)
-    const id = "id" + uuid().replace(/-/g,"")
-    const buttonHtml = CLIPBOARD_BUTTON_TAG_TEMPLATE.replace('__TARGET_ID__', id)
-    const preHtml = CLIPBOARD_PRE_TAG_TEMPLATE.replace('__TARGET_ID__', id).replace('__FILE_CONTENT__', fileContent + "\n")
+    // const match = buttonMatches[0]
+    // const fileContent = showFileAtSha(match.groups.sha, match.groups.file)
+    // const id = "id" + uuid().replace(/-/g,"")
+    // const buttonHtml = CLIPBOARD_BUTTON_TAG_TEMPLATE.replace('__TARGET_ID__', id)
+    // const preHtml = CLIPBOARD_PRE_TAG_TEMPLATE.replace('__TARGET_ID__', id).replace('__FILE_CONTENT__', fileContent + "\n")
 
-    const startOfMatch = match.index
-    const endOfMatch = startOfMatch + match[0].length
-    // const compiledTemplate = template.slice(0, startOfMatch) + buttonHtml + preHtml + template.substr(endOfMatch + 1)
-    const compiledTemplate = template.slice(0, startOfMatch) + buttonHtml + match.groups.rest + preHtml + template.substr(endOfMatch + 1)
+    // const startOfMatch = match.index
+    // const endOfMatch = startOfMatch + match[0].length
+    // // const compiledTemplate = template.slice(0, startOfMatch) + buttonHtml + preHtml + template.substr(endOfMatch + 1)
+    // const compiledTemplate = template.slice(0, startOfMatch) + buttonHtml + match.groups.rest + preHtml + template.substr(endOfMatch + 1)
 
-    console.log(compiledTemplate)
+    console.log(templateBufferStr)
 
-    writeFileSync(compiledPath, compiledTemplate)    
+    writeFileSync(compiledPath, templateBufferStr)    
 
 
 
