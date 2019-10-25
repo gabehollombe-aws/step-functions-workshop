@@ -8,7 +8,6 @@ weight: 1
 
 ## IMPORTANT NOTE: This workshop is a work in progress and not yet intended for public consumption.
 
-Step A. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 03eee8d58ad56817b84197e45c12f2ce83ae8d52:serverless.yml (click the gray text to copy to clipboard)
 
 * * *
 
@@ -368,11 +367,7 @@ Step 1. Create `workshop-dir/data-checking.js` and paste in the following conten
     };
     ```
 
-
-Step A. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 03eee8d58ad56817b84197e45c12f2ce83ae8d52:serverless.yml (click the gray text...)
-
-
-Step 2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#serverless1">this new content</button> (click the gray text to the left to copy the new content to your clipboard).
+Step 2. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 03eee8d58ad56817b84197e45c12f2ce83ae8d52:serverless.yml|
 
 <div class="notices note">
     <p>
@@ -401,221 +396,6 @@ Step 2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-t
     </pre>
 </div>
 
-<pre style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;" id="serverless1">
-service: StepFunctionsWorkshop
-
-plugins:
-  - serverless-cf-vars
-
-custom:
-  applicationsTable: '${self:service}__account_applications__${self:provider.stage}'
-
-provider:
-  name: aws
-  runtime: nodejs10.x
-  memorySize: 128
-  stage: dev
-
-functions:
-  SubmitApplication:
-    name: ${self:service}__account_applications__submit__${self:provider.stage}
-    handler: account-applications/submit.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: SubmitRole
-
-  FlagApplication:
-    name: ${self:service}__account_applications__flag__${self:provider.stage}
-    handler: account-applications/flag.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: FlagRole
-
-  FindApplications:
-    name: ${self:service}__account_applications__find__${self:provider.stage}
-    handler: account-applications/find.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: FindRole
-
-  RejectApplication:
-    name: ${self:service}__account_applications__reject__${self:provider.stage}
-    handler: account-applications/reject.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: RejectRole
-
-  ApproveApplication:
-    name: ${self:service}__account_applications__approve__${self:provider.stage}
-    handler: account-applications/approve.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: ApproveRole
-
-  DataChecking:
-    name: ${self:service}__data_checking__${self:provider.stage}
-    handler: data-checking.handler
-    role: DataCheckingRole
-
-resources:
-  Resources:
-    LambdaLoggingPolicy:
-      Type: 'AWS::IAM::ManagedPolicy'
-      Properties:
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
-              Resource:
-                - 'Fn::Join':
-                  - ':'
-                  -
-                    - 'arn:aws:logs'
-                    - Ref: 'AWS::Region'
-                    - Ref: 'AWS::AccountId'
-                    - 'log-group:/aws/lambda/*:*:*'
-
-    DynamoPolicy:
-      Type: 'AWS::IAM::ManagedPolicy'
-      Properties:
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: "Allow"
-              Action:
-                - "dynamodb:*"
-              Resource:
-                - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                - 'Fn::Join':
-                    - '/'
-                    -
-                        - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                        - '*'
-
-    SubmitRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    FlagRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    RejectRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    ApproveRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    FindRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    DataCheckingRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-
-    ApplicationsDynamoDBTable:
-      Type: 'AWS::DynamoDB::Table'
-      Properties:
-        TableName: ${self:custom.applicationsTable}
-        AttributeDefinitions:
-          -
-            AttributeName: id
-            AttributeType: S
-          -
-            AttributeName: state
-            AttributeType: S
-        KeySchema:
-          -
-            AttributeName: id
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-        GlobalSecondaryIndexes:
-            -
-                IndexName: state
-                KeySchema:
-                    -
-                        AttributeName: state
-                        KeyType: HASH
-                Projection:
-                    ProjectionType: ALL
-</pre>
 
 Step 3. From the terminal, run:
 
@@ -851,11 +631,11 @@ However, rather than continue to work in the web console and make these fixes by
 
 Before we migrate our step function definition over to our `serverless.yml` file, we should delete the function we’ve been interacting with in the Step Functions web console so that we don’t get confused when a similar state machine is deployed as part of our Serverless stack deployment.
 
-1. In the left sidebar of the Step Functions web console, click ‘State machines’
+Step 1. In the left sidebar of the Step Functions web console, click ‘State machines’
 
-2. Select the step function we defined manually earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
+Step 2. Select the step function we defined manually earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
-1. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#serverless2">this new content</button> (click the gray text to the left to copy the new content to your clipboard).
+Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with ___CLIPBOARD_BUTTON c9b0e65eca70946d4da2fceaca4b26bfc6641a76:serverless.yml|
 
     <div class="notices note">
             <p>
@@ -926,284 +706,7 @@ Before we migrate our step function definition over to our `serverless.yml` file
             </pre>
     </div>
 
-    <pre style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;" id="serverless2">
-    service: StepFunctionsWorkshop
-    
-    plugins:
-      - serverless-cf-vars
-    
-    custom:
-      applicationsTable: '${self:service}__account_applications__${self:provider.stage}'
-    
-    provider:
-      name: aws
-      runtime: nodejs10.x
-      memorySize: 128
-      stage: dev
-    
-    functions:
-      SubmitApplication:
-        name: ${self:service}__account_applications__submit__${self:provider.stage}
-        handler: account-applications/submit.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: SubmitRole
-    
-      FlagApplication:
-        name: ${self:service}__account_applications__flag__${self:provider.stage}
-        handler: account-applications/flag.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FlagRole
-    
-      FindApplications:
-        name: ${self:service}__account_applications__find__${self:provider.stage}
-        handler: account-applications/find.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FindRole
-    
-      RejectApplication:
-        name: ${self:service}__account_applications__reject__${self:provider.stage}
-        handler: account-applications/reject.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: RejectRole
-    
-      ApproveApplication:
-        name: ${self:service}__account_applications__approve__${self:provider.stage}
-        handler: account-applications/approve.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: ApproveRole
-    
-      DataChecking:
-        name: ${self:service}__data_checking__${self:provider.stage}
-        handler: data-checking.handler
-        role: DataCheckingRole
-    
-    resources:
-      Resources:
-        LambdaLoggingPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource:
-                    - 'Fn::Join':
-                      - ':'
-                      -
-                        - 'arn:aws:logs'
-                        - Ref: 'AWS::Region'
-                        - Ref: 'AWS::AccountId'
-                        - 'log-group:/aws/lambda/*:*:*'
-    
-        DynamoPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - "dynamodb:*"
-                  Resource:
-                    - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                    - 'Fn::Join':
-                        - '/'
-                        -
-                            - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                            - '*'
-    
-        SubmitRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        FlagRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        RejectRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        ApproveRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        FindRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        DataCheckingRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-    
-        ApplicationsDynamoDBTable:
-          Type: 'AWS::DynamoDB::Table'
-          Properties:
-            TableName: ${self:custom.applicationsTable}
-            AttributeDefinitions:
-              -
-                AttributeName: id
-                AttributeType: S
-              -
-                AttributeName: state
-                AttributeType: S
-            KeySchema:
-              -
-                AttributeName: id
-                KeyType: HASH
-            BillingMode: PAY_PER_REQUEST
-            GlobalSecondaryIndexes:
-                -
-                    IndexName: state
-                    KeySchema:
-                        -
-                            AttributeName: state
-                            KeyType: HASH
-                    Projection:
-                        ProjectionType: ALL
-    
-        StepFunctionRole:
-          Type: 'AWS::IAM::Role'
-          Properties:
-            AssumeRolePolicyDocument:
-                Version: '2012-10-17'
-                Statement:
-                    -
-                      Effect: Allow
-                      Principal:
-                          Service: 'states.amazonaws.com'
-                      Action: 'sts:AssumeRole'
-            Policies:
-                -
-                  PolicyName: lambda
-                  PolicyDocument:
-                    Statement:
-                      -
-                        Effect: Allow
-                        Action: 'lambda:InvokeFunction'
-                        Resource:
-                            - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-    
-        ProcessApplicationsStateMachine:
-          Type: AWS::StepFunctions::StateMachine
-          Properties:
-            StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
-            RoleArn: !GetAtt StepFunctionRole.Arn
-            DefinitionString:
-              !Sub
-                - |-
-                  {
-                    "StartAt": "Check Name",
-                    "States": {
-                        "Check Name": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_NAME",
-                                "data": { "name.$": "$.application.name" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "Next": "Check Address"
-                        },
-                        "Check Address": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_ADDRESS",
-                                "data": { "address.$": "$.application.address" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "Next": "Approve Application"
-                        },
-                        "Approve Application": {
-                            "Type": "Pass",
-                            "End": true
-                        }
-                    }
-                  }
-                - {
-                  dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-                }
-    </pre>
-
-1. Run:
+Step 4. Run:
     ```bash
     sls deploy
     ```
@@ -1293,7 +796,7 @@ So, to fix our current issue, we need to add a `ResultPath` statement, instructi
 Below is a new version of our serverless.yml file that contains updated Check Name and Check Address states, using the ResultPath property to merge their outputs into helpfully-named keys that we can be used later on.
 
 
-1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#serverless3">this new content</button> (click the gray text to the left to copy the new content to your clipboard).
+Step 1. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 4114d55fdb744943184a1b480c94da7d77cfc80d:serverless.yml|
 
     <div class="notices note">
         <p>
@@ -1324,286 +827,7 @@ Below is a new version of our serverless.yml file that contains updated Check Na
         </pre>
     </div>
 
-    <pre style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;" id="serverless3">
-    service: StepFunctionsWorkshop
-    
-    plugins:
-      - serverless-cf-vars
-    
-    custom:
-      applicationsTable: '${self:service}__account_applications__${self:provider.stage}'
-    
-    provider:
-      name: aws
-      runtime: nodejs10.x
-      memorySize: 128
-      stage: dev
-    
-    functions:
-      SubmitApplication:
-        name: ${self:service}__account_applications__submit__${self:provider.stage}
-        handler: account-applications/submit.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: SubmitRole
-    
-      FlagApplication:
-        name: ${self:service}__account_applications__flag__${self:provider.stage}
-        handler: account-applications/flag.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FlagRole
-    
-      FindApplications:
-        name: ${self:service}__account_applications__find__${self:provider.stage}
-        handler: account-applications/find.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FindRole
-    
-      RejectApplication:
-        name: ${self:service}__account_applications__reject__${self:provider.stage}
-        handler: account-applications/reject.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: RejectRole
-    
-      ApproveApplication:
-        name: ${self:service}__account_applications__approve__${self:provider.stage}
-        handler: account-applications/approve.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: ApproveRole
-    
-      DataChecking:
-        name: ${self:service}__data_checking__${self:provider.stage}
-        handler: data-checking.handler
-        role: DataCheckingRole
-    
-    resources:
-      Resources:
-        LambdaLoggingPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource:
-                    - 'Fn::Join':
-                      - ':'
-                      -
-                        - 'arn:aws:logs'
-                        - Ref: 'AWS::Region'
-                        - Ref: 'AWS::AccountId'
-                        - 'log-group:/aws/lambda/*:*:*'
-    
-        DynamoPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - "dynamodb:*"
-                  Resource:
-                    - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                    - 'Fn::Join':
-                        - '/'
-                        -
-                            - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                            - '*'
-    
-        SubmitRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        FlagRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        RejectRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        ApproveRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        FindRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        DataCheckingRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-    
-        ApplicationsDynamoDBTable:
-          Type: 'AWS::DynamoDB::Table'
-          Properties:
-            TableName: ${self:custom.applicationsTable}
-            AttributeDefinitions:
-              -
-                AttributeName: id
-                AttributeType: S
-              -
-                AttributeName: state
-                AttributeType: S
-            KeySchema:
-              -
-                AttributeName: id
-                KeyType: HASH
-            BillingMode: PAY_PER_REQUEST
-            GlobalSecondaryIndexes:
-                -
-                    IndexName: state
-                    KeySchema:
-                        -
-                            AttributeName: state
-                            KeyType: HASH
-                    Projection:
-                        ProjectionType: ALL
-    
-        StepFunctionRole:
-          Type: 'AWS::IAM::Role'
-          Properties:
-            AssumeRolePolicyDocument:
-                Version: '2012-10-17'
-                Statement:
-                    -
-                      Effect: Allow
-                      Principal:
-                          Service: 'states.amazonaws.com'
-                      Action: 'sts:AssumeRole'
-            Policies:
-                -
-                  PolicyName: lambda
-                  PolicyDocument:
-                    Statement:
-                      -
-                        Effect: Allow
-                        Action: 'lambda:InvokeFunction'
-                        Resource:
-                            - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-    
-        ProcessApplicationsStateMachine:
-          Type: AWS::StepFunctions::StateMachine
-          Properties:
-            StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
-            RoleArn: !GetAtt StepFunctionRole.Arn
-            DefinitionString:
-              !Sub
-                - |-
-                  {
-                    "StartAt": "Check Name",
-                    "States": {
-                        "Check Name": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_NAME",
-                                "data": { "name.$": "$.application.name" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "ResultPath": "$.checks.name",
-                            "Next": "Check Address"
-                        },
-                        "Check Address": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_ADDRESS",
-                                "data": { "address.$": "$.application.address" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "ResultPath": "$.checks.address",
-                            "Next": "Approve Application"
-                        },
-                        "Approve Application": {
-                            "Type": "Pass",
-                            "End": true
-                        }
-                    }
-                  }
-                - {
-                  dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-                }
-    </pre>
-
-2. Run:
+Step 2. Run:
 
     ```bash
     sls deploy
@@ -1647,7 +871,7 @@ Here is what our updated flow will look like after we're done with this step:
 
 ### Make these changes
 
-1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#serverless4">this new content</button> (click the gray text to the left to copy the new content to your clipboard).
+Step 1. Replace `serverless.yml` with ___CLIPBOARD_BUTTON def5ea473552142257ef1b5a047ba98dd01749c2:serverless.yml|
 
     <div class="notices note">
         <p>
@@ -1696,306 +920,8 @@ Here is what our updated flow will look like after we're done with this step:
         </pre>
     </div>
 
-    <pre style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;" id="serverless4">
-    service: StepFunctionsWorkshop
-    
-    plugins:
-      - serverless-cf-vars
-    
-    custom:
-      applicationsTable: '${self:service}__account_applications__${self:provider.stage}'
-    
-    provider:
-      name: aws
-      runtime: nodejs10.x
-      memorySize: 128
-      stage: dev
-    
-    functions:
-      SubmitApplication:
-        name: ${self:service}__account_applications__submit__${self:provider.stage}
-        handler: account-applications/submit.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: SubmitRole
-    
-      FlagApplication:
-        name: ${self:service}__account_applications__flag__${self:provider.stage}
-        handler: account-applications/flag.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FlagRole
-    
-      FindApplications:
-        name: ${self:service}__account_applications__find__${self:provider.stage}
-        handler: account-applications/find.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FindRole
-    
-      RejectApplication:
-        name: ${self:service}__account_applications__reject__${self:provider.stage}
-        handler: account-applications/reject.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: RejectRole
-    
-      ApproveApplication:
-        name: ${self:service}__account_applications__approve__${self:provider.stage}
-        handler: account-applications/approve.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: ApproveRole
-    
-      DataChecking:
-        name: ${self:service}__data_checking__${self:provider.stage}
-        handler: data-checking.handler
-        role: DataCheckingRole
-    
-    resources:
-      Resources:
-        LambdaLoggingPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource:
-                    - 'Fn::Join':
-                      - ':'
-                      -
-                        - 'arn:aws:logs'
-                        - Ref: 'AWS::Region'
-                        - Ref: 'AWS::AccountId'
-                        - 'log-group:/aws/lambda/*:*:*'
-    
-        DynamoPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - "dynamodb:*"
-                  Resource:
-                    - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                    - 'Fn::Join':
-                        - '/'
-                        -
-                            - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                            - '*'
-    
-        SubmitRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        FlagRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        RejectRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        ApproveRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        FindRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        DataCheckingRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-    
-        ApplicationsDynamoDBTable:
-          Type: 'AWS::DynamoDB::Table'
-          Properties:
-            TableName: ${self:custom.applicationsTable}
-            AttributeDefinitions:
-              -
-                AttributeName: id
-                AttributeType: S
-              -
-                AttributeName: state
-                AttributeType: S
-            KeySchema:
-              -
-                AttributeName: id
-                KeyType: HASH
-            BillingMode: PAY_PER_REQUEST
-            GlobalSecondaryIndexes:
-                -
-                    IndexName: state
-                    KeySchema:
-                        -
-                            AttributeName: state
-                            KeyType: HASH
-                    Projection:
-                        ProjectionType: ALL
-    
-        StepFunctionRole:
-          Type: 'AWS::IAM::Role'
-          Properties:
-            AssumeRolePolicyDocument:
-                Version: '2012-10-17'
-                Statement:
-                    -
-                      Effect: Allow
-                      Principal:
-                          Service: 'states.amazonaws.com'
-                      Action: 'sts:AssumeRole'
-            Policies:
-                -
-                  PolicyName: lambda
-                  PolicyDocument:
-                    Statement:
-                      -
-                        Effect: Allow
-                        Action: 'lambda:InvokeFunction'
-                        Resource:
-                            - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-    
-        ProcessApplicationsStateMachine:
-          Type: AWS::StepFunctions::StateMachine
-          Properties:
-            StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
-            RoleArn: !GetAtt StepFunctionRole.Arn
-            DefinitionString:
-              !Sub
-                - |-
-                  {
-                    "StartAt": "Check Name",
-                    "States": {
-                        "Check Name": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_NAME",
-                                "data": { "name.$": "$.application.name" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "ResultPath": "$.checks.name",
-                            "Next": "Check Address"
-                        },
-                        "Check Address": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_ADDRESS",
-                                "data": { "address.$": "$.application.address" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "ResultPath": "$.checks.address",
-                            "Next": "Review Required?"
-                        },
-                        "Review Required?": {
-                            "Type": "Choice",
-                            "Choices": [
-                              {
-                                "Variable": "$.checks.name.flagged",
-                                "BooleanEquals": true,
-                                "Next": "Pending Review"
-                              },
-                              {
-                                "Variable": "$.checks.address.flagged",
-                                "BooleanEquals": true,
-                                "Next": "Pending Review"
-                              }
-                            ],
-                            "Default": "Approve Application"
-                        },
-                        "Pending Review": {
-                            "Type": "Pass",
-                            "End": true
-                         },
-                        "Approve Application": {
-                            "Type": "Pass",
-                            "End": true
-                        }
-                    }
-                  }
-                - {
-                  dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-                }
-    </pre>
 
-2. Run:
+Step 2. Run:
 
     ```bash
     sls deploy
@@ -2060,447 +986,78 @@ To do this, we will integrate our Account Applications service with our applicat
 
 ### Make these changes
 
-1. Replace `account-applications/submit.js` with <button class="clipboard" data-clipboard-target="#submit1">this new content</button> (click the gray text to the left to copy the new content to your clipboard).
+Step 1. Replace `account-applications/submit.js` with ___CLIPBOARD_BUTTON 55e4f1b3cf75014bbad84ac40e00a17e32969798:account-applications/submit.js|
 
-    <div class="notices note">
-        <p>
-            Specifically, here are the relevant additions you will have added after pasting the new <code>account-applications/submit.js</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
-        </p>
+<div class="notices note">
+    <p>
+        Specifically, here are the relevant additions you will have added after pasting the new <code>account-applications/submit.js</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
+    </p>
 
-        <pre>
-        const APPLICATION_PROCESSING_STEP_FUNCTION_ARN = process.env.APPLICATION_PROCESSING_STEP_FUNCTION_ARN
-
-        const stepfunctions = new AWS.StepFunctions();
-
-        const startStateMachineExecution = (application) => {
-            const params = {
-                "input": JSON.stringify({ application }),
-                "name": `ApplicationID-${application.id}`,
-                "stateMachineArn": APPLICATION_PROCESSING_STEP_FUNCTION_ARN
-            }
-            stepfunctions.startExecution(params).promise()
-        }
-
-        module.exports.handler = async(event) => {
-            let application
-            try {
-                application = await submitNewAccountApplication(event)
-                await startStateMachineExecution(application)
-                return application
-            }
-
-            // ...
-        }
-        </pre>
-    </div>
-
-    <pre style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;" id="submit1">
-    'use strict';
-    const REGION = process.env.REGION
-    const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
+    <pre>
     const APPLICATION_PROCESSING_STEP_FUNCTION_ARN = process.env.APPLICATION_PROCESSING_STEP_FUNCTION_ARN
-    
-    const AWS = require('aws-sdk')
-    const uuid = require('uuid/v4')
-    AWS.config.update({region: REGION});
-    
-    const dynamo = new AWS.DynamoDB.DocumentClient();
+
     const stepfunctions = new AWS.StepFunctions();
-    
-    const applicationKey = id => `application|${id}`
-    
-    const submitNewAccountApplication = async (data) => {
-        const id = uuid()
-        const { name, address } = data
-        const application = { id: applicationKey(id), name, address, state: 'SUBMITTED' }
-        let params = {
-            TransactItems: [
-                {
-                    Put: {
-                        TableName: ACCOUNTS_TABLE_NAME,
-                        Item: application
-                    }
-                }
-            ]
-        };
-        await dynamo.transactWrite(params).promise()
-    
-        params = {
+
+    const startStateMachineExecution = (application) => {
+        const params = {
             "input": JSON.stringify({ application }),
-            "name": `ProcessAccountApplication-${id}`,
+            "name": `ApplicationID-${application.id}`,
             "stateMachineArn": APPLICATION_PROCESSING_STEP_FUNCTION_ARN
         }
-        await stepfunctions.startExecution(params).promise()
-    
-        return application
-    } 
-    
+        stepfunctions.startExecution(params).promise()
+    }
+
     module.exports.handler = async(event) => {
+        let application
         try {
-            const result = await submitNewAccountApplication(event)
-            return result
-        } catch (ex) {
-            console.error(ex)
-            console.info('event', JSON.stringify(event))
-            throw ex
+            application = await submitNewAccountApplication(event)
+            await startStateMachineExecution(application)
+            return application
         }
-    };
+
+        // ...
+    }
     </pre>
+</div>
 
-2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#serverless5">this new content</button> (click the gray text to the left to copy the new content to your clipboard).
+Step 2. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 55e4f1b3cf75014bbad84ac40e00a17e32969798:serverless.yml|
 
-    <div class="notices note">
-        <p>
-            Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
-        </p>
+<div class="notices note">
+    <p>
+        Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
+    </p>
 
-        <pre>
-        functions:
-            SubmitApplication:
-                # ...
-                environment:
-                    # ...
-                    APPLICATION_PROCESSING_STEP_FUNCTION_ARN: { Ref: "ProcessApplicationsStateMachine" }
-
-        StepFunctionsPolicy:
-            Type: 'AWS::IAM::ManagedPolicy'
-            Properties:
-                PolicyDocument:
-                Version: '2012-10-17'
-                Statement:
-                    -
-                    Effect: "Allow"
-                    Action:
-                        - "states:StartExecution"
-                        - "states:SendTaskSuccess"
-                        - "states:SendTaskFailure"
-                    Resource:
-                        - { Ref: ProcessApplicationsStateMachine }
-
-        SubmitRole:
-            # ...
-                ManagedPolicyArns:
-                # ...
-                - { Ref: StepFunctionsPolicy }
-
-        </pre>
-    </div>
-
-    <pre style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;" id="serverless5">
-    service: StepFunctionsWorkshop
-    
-    plugins:
-      - serverless-cf-vars
-    
-    custom:
-      applicationsTable: '${self:service}__account_applications__${self:provider.stage}'
-    
-    provider:
-      name: aws
-      runtime: nodejs10.x
-      memorySize: 128
-      stage: dev
-    
+    <pre>
     functions:
-      SubmitApplication:
-        name: ${self:service}__account_applications__submit__${self:provider.stage}
-        handler: account-applications/submit.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-          APPLICATION_PROCESSING_STEP_FUNCTION_ARN: { Ref: "ProcessApplicationsStateMachine" }
-        role: SubmitRole
-    
-      FlagApplication:
-        name: ${self:service}__account_applications__flag__${self:provider.stage}
-        handler: account-applications/flag.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FlagRole
-    
-      FindApplications:
-        name: ${self:service}__account_applications__find__${self:provider.stage}
-        handler: account-applications/find.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FindRole
-    
-      RejectApplication:
-        name: ${self:service}__account_applications__reject__${self:provider.stage}
-        handler: account-applications/reject.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: RejectRole
-    
-      ApproveApplication:
-        name: ${self:service}__account_applications__approve__${self:provider.stage}
-        handler: account-applications/approve.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: ApproveRole
-    
-      DataChecking:
-        name: ${self:service}__data_checking__${self:provider.stage}
-        handler: data-checking.handler
-        role: DataCheckingRole
-    
-    resources:
-      Resources:
-        LambdaLoggingPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
+        SubmitApplication:
+            # ...
+            environment:
+                # ...
+                APPLICATION_PROCESSING_STEP_FUNCTION_ARN: { Ref: "ProcessApplicationsStateMachine" }
+
+    StepFunctionsPolicy:
+        Type: 'AWS::IAM::ManagedPolicy'
+        Properties:
             PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource:
-                    - 'Fn::Join':
-                      - ':'
-                      -
-                        - 'arn:aws:logs'
-                        - Ref: 'AWS::Region'
-                        - Ref: 'AWS::AccountId'
-                        - 'log-group:/aws/lambda/*:*:*'
-    
-        DynamoPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - "dynamodb:*"
-                  Resource:
-                    - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                    - 'Fn::Join':
-                        - '/'
-                        -
-                            - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                            - '*'
-    
-        StepFunctionsPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
+            Version: '2012-10-17'
+            Statement:
                 -
-                  Effect: "Allow"
-                  Action:
+                Effect: "Allow"
+                Action:
                     - "states:StartExecution"
                     - "states:SendTaskSuccess"
                     - "states:SendTaskFailure"
-                  Resource:
+                Resource:
                     - { Ref: ProcessApplicationsStateMachine }
-    
-        SubmitRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
+
+    SubmitRole:
+        # ...
             ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-              - { Ref: StepFunctionsPolicy }
-    
-        FlagRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        RejectRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        ApproveRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        FindRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        DataCheckingRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-    
-        ApplicationsDynamoDBTable:
-          Type: 'AWS::DynamoDB::Table'
-          Properties:
-            TableName: ${self:custom.applicationsTable}
-            AttributeDefinitions:
-              -
-                AttributeName: id
-                AttributeType: S
-              -
-                AttributeName: state
-                AttributeType: S
-            KeySchema:
-              -
-                AttributeName: id
-                KeyType: HASH
-            BillingMode: PAY_PER_REQUEST
-            GlobalSecondaryIndexes:
-                -
-                    IndexName: state
-                    KeySchema:
-                        -
-                            AttributeName: state
-                            KeyType: HASH
-                    Projection:
-                        ProjectionType: ALL
-    
-        StepFunctionRole:
-          Type: 'AWS::IAM::Role'
-          Properties:
-            AssumeRolePolicyDocument:
-                Version: '2012-10-17'
-                Statement:
-                    -
-                      Effect: Allow
-                      Principal:
-                          Service: 'states.amazonaws.com'
-                      Action: 'sts:AssumeRole'
-            Policies:
-                -
-                  PolicyName: lambda
-                  PolicyDocument:
-                    Statement:
-                      -
-                        Effect: Allow
-                        Action: 'lambda:InvokeFunction'
-                        Resource:
-                            - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-    
-        ProcessApplicationsStateMachine:
-          Type: AWS::StepFunctions::StateMachine
-          Properties:
-            StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
-            RoleArn: !GetAtt StepFunctionRole.Arn
-            DefinitionString:
-              !Sub
-                - |-
-                  {
-                    "StartAt": "Check Name",
-                    "States": {
-                        "Check Name": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_NAME",
-                                "data": { "name.$": "$.application.name" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "ResultPath": "$.checks.name",
-                            "Next": "Check Address"
-                        },
-                        "Check Address": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_ADDRESS",
-                                "data": { "address.$": "$.application.address" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "ResultPath": "$.checks.address",
-                            "Next": "Review Required?"
-                        },
-                        "Review Required?": {
-                            "Type": "Choice",
-                            "Choices": [
-                              {
-                                "Variable": "$.checks.name.flagged",
-                                "BooleanEquals": true,
-                                "Next": "Pending Review"
-                              },
-                              {
-                                "Variable": "$.checks.address.flagged",
-                                "BooleanEquals": true,
-                                "Next": "Pending Review"
-                              }
-                            ],
-                            "Default": "Approve Application"
-                        },
-                        "Pending Review": {
-                            "Type": "Pass",
-                            "End": true
-                         },
-                        "Approve Application": {
-                            "Type": "Pass",
-                            "End": true
-                        }
-                    }
-                  }
-                - {
-                  dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-                }
+            # ...
+            - { Ref: StepFunctionsPolicy }
+
     </pre>
+</div>
 
 3. Run:
 
@@ -2559,650 +1116,127 @@ We’ll need to make a few updates to our workflow in order for this to work.
 
 ### Make these changes
 
-1. Replace `account-applications/flag.js` with <button class="clipboard" data-clipboard-target="#flag1">this new content</button> (click the gray text to the left to copy the new content to your clipboard).
+Step 1. Replace `account-applications/flag.js` with ___CLIPBOARD_BUTTON 278b0babefb143aafbbf1bb5c773a62fcd3f374f:account-applications/flag.js|
 
-    <div class="notices note">
-        <p>
-            Specifically, here are the relevant additions you will have added after pasting the new <code>account-applications/flag.js</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
-        </p>
+<div class="notices note">
+    <p>
+        Specifically, here are the relevant additions you will have added after pasting the new <code>account-applications/flag.js</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
+    </p>
 
-        <pre>
-        const flagForReview = async (data) => {
-            const { id, flagType, taskToken } = data
-            // ...
-        }
-
-        const updatedApplication = await AccountApplications.update(
-            // ...
-            {
-                // ...
-                taskToken
-            }
-        )
-        </pre>
-    </div>
-
-    <pre style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;" id="flag1">
-    'use strict';
-    const REGION = process.env.REGION
-    const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
-    
-    const AWS = require('aws-sdk')
-    AWS.config.update({region: REGION});
-    
-    const dynamo = new AWS.DynamoDB.DocumentClient();
-    
-    const getApplication = async (id) => {
-        const params = {
-          TableName: ACCOUNTS_TABLE_NAME,
-          Key: { id: id }
-        };
-    
-        const result = await dynamo.get(params).promise()
-        return result.Item
-    }
-    
-    const updateApplication = async (id, attributes) => {
-        const application = await getApplication(id)
-        const updatedApplication = Object.assign(application, attributes)
-        const params = {
-            TransactItems: [
-                {
-                    Put: {
-                        TableName: ACCOUNTS_TABLE_NAME,
-                        Item: updatedApplication
-                    }
-                }
-            ]
-        };
-        await dynamo.transactWrite(params).promise()
-        return updatedApplication
-    }
-    
+    <pre>
     const flagForReview = async (data) => {
         const { id, flagType, taskToken } = data
-    
-        if (flagType !== 'REVIEW' && flagType !== 'UNPROCESSABLE_DATA') {
-            throw new Error("flagType must be REVIEW or UNPROCESSABLE_DATA")
-        }
-    
-        let newState
-        let reason
-        if (flagType === 'REVIEW') {
-            newState = 'FLAGGED_FOR_REVIEW'
-            reason = data.reason
-        }
-        else {
-            reason = JSON.parse(data.errorInfo.Cause).errorMessage
-            newState = 'FLAGGED_WITH_UNPROCESSABLE_DATA'
-        }
-    
-        const updatedApplication = await updateApplication(
-            id,
-            {
-                state: newState,
-                reason,
-                taskToken
-            }
-        )
-    
-        return updatedApplication
+        // ...
     }
-    
-    module.exports.handler = async(event) => {
-        try {
-            const result = await flagForReview(event)
-            return result
-        } catch (ex) {
-            console.error(ex)
-            console.info('event', JSON.stringify(event))
-            throw ex
+
+    const updatedApplication = await AccountApplications.update(
+        // ...
+        {
+            // ...
+            taskToken
         }
-    };
+    )
     </pre>
+</div>
 
-2. Create `account-applications/review.js` with <button class="clipboard" data-clipboard-target="#review1">this content</button> (click the gray text to the left to copy the new content to your clipboard).
+Step 2. Create `account-applications/review.js` with ___CLIPBOARD_BUTTON 278b0babefb143aafbbf1bb5c773a62fcd3f374f:account-applications/review.js|
 
-    <pre style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;" id="review1">    
-    'use strict';
-    const REGION = process.env.REGION
-    const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
-    
-    const AWS = require('aws-sdk')
-    AWS.config.update({region: REGION});
-    
-    const dynamo = new AWS.DynamoDB.DocumentClient();
-    const stepfunctions = new AWS.StepFunctions();
-    
-    const getApplication = async (id) => {
-        const params = {
-          TableName: ACCOUNTS_TABLE_NAME,
-          Key: { id: id }
-        };
-        
-        const result = await dynamo.get(params).promise()    
-        return result.Item
-    }
-    
-    const updateApplication = async (id, attributes) => {
-        const application = await getApplication(id)
-        const updatedApplication = Object.assign(application, attributes)
-        const params = {
-            TransactItems: [
-                {
-                    Put: {
-                        TableName: ACCOUNTS_TABLE_NAME,
-                        Item: updatedApplication
-                    }
-                }
-            ]
-        };
-        await dynamo.transactWrite(params).promise()
-        return updatedApplication
-    }
-    
-    const updateApplicationWithDecision = (id, decision) => {
-        if (decision !== 'APPROVE' && decision !== 'REJECT') {
-            throw new Error("Required `decision` parameter must be 'APPROVE' or 'REJECT'")
-        }
-    
-        switch(decision) {
-            case 'APPROVE': return updateApplication(id, { state: 'REVIEW_APPROVED' })
-            case 'REJECT': return updateApplication(id, { state: 'REVIEW_REJECTED' })
-        }
-    }
-    
-    const updateWorkflowWithReviewDecision = async (data) => {
-        const { id, decision } = data
-    
-        const updatedApplication = await updateApplicationWithDecision(id, decision)
-    
-        let params = {
-            output: JSON.stringify({ decision }),
-            taskToken: updatedApplication.taskToken
-        };
-        await stepfunctions.sendTaskSuccess(params).promise()
-        return updatedApplication
-    }
-    
-    module.exports.handler = async(event) => {
-        try {
-            const result = await updateWorkflowWithReviewDecision(event)
-            return result
-        } catch (ex) {
-            console.error(ex)
-            console.info('event', JSON.stringify(event))
-            throw ex
-        }
-    };
-    </pre>
+Step 3. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 278b0babefb143aafbbf1bb5c773a62fcd3f374f:serverless.yml|
 
-3. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#serverless6">this new content</button> (click the gray text to the left to copy the new content to your clipboard).
+<div class="notices note">
+    <p>
+        Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
+    </p>
 
-    <div class="notices note">
-        <p>
-            Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
-        </p>
-
-        <pre>
-        ReviewApplication:
-            name: ${self:service}__account_applications__review__${self:provider.stage}
-            handler: account-applications/review.handler
-            environment:
-                REGION: ${self:provider.region}
-                ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-            role: ReviewRole
-
-        ReviewRole:
-            Type: AWS::IAM::Role
-            Properties:
-                AssumeRolePolicyDocument:
-                Version: '2012-10-17'
-                Statement:
-                    - Effect: Allow
-                    Principal:
-                        Service:
-                        - lambda.amazonaws.com
-                    Action: sts:AssumeRole
-                ManagedPolicyArns:
-                - { Ref: LambdaLoggingPolicy }
-                - { Ref: DynamoPolicy }
-                - { Ref: StepFunctionsPolicy }
-
-        StepFunctionRole:
-            #...
-            Policies:
-                -
-                PolicyName: lambda
-                PolicyDocument:
-                    Statement:
-                    -
-                        Effect: Allow
-                        Action: 'lambda:InvokeFunction'
-                        Resource:
-                            - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-                            - Fn::GetAtt: [FlagApplicationLambdaFunction, Arn]
-
-
-        ProcessApplicationsStateMachine:
-            #...
-            DefinitionString:
-            !Sub
-                - |-
-                {
-                    [...]
-
-                    "Pending Review": {
-                        "Type": "Task",
-                        "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
-                        "Parameters": {
-                            "FunctionName": "#{flagApplicationLambdaName}",
-                            "Payload": {
-                                "id.$": "$.application.id",
-                                "flagType": "REVIEW",
-                                "taskToken.$": "$$.Task.Token"
-                            }
-                        },
-                        "ResultPath": "$.review",
-                        "Next": "Review Approved?"
-                    },
-                    "Review Approved?": {
-                        "Type": "Choice",
-                        "Choices": [{
-                                "Variable": "$.review.decision",
-                                "StringEquals": "APPROVE",
-                                "Next": "Approve Application"
-                            },
-                            {
-                                "Variable": "$.review.decision",
-                                "StringEquals": "REJECT",
-                                "Next": "Reject Application"
-                            }
-                        ]
-                    },
-                    "Reject Application": {
-                        "Type": "Pass",
-                        "End": true
-                    },                
-                }
-            - {
-                dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-                flagApplicationLambdaName: !Ref FlagApplicationLambdaFunction,
-            }
-        </pre>
-    </div>
-
-    <pre style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;" id="serverless6">
-    service: StepFunctionsWorkshop
-    
-    plugins:
-      - serverless-cf-vars
-    
-    custom:
-      applicationsTable: '${self:service}__account_applications__${self:provider.stage}'
-    
-    provider:
-      name: aws
-      runtime: nodejs10.x
-      memorySize: 128
-      stage: dev
-    
-    functions:
-      SubmitApplication:
-        name: ${self:service}__account_applications__submit__${self:provider.stage}
-        handler: account-applications/submit.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-          APPLICATION_PROCESSING_STEP_FUNCTION_ARN: { Ref: "ProcessApplicationsStateMachine" }
-        role: SubmitRole
-    
-      FlagApplication:
-        name: ${self:service}__account_applications__flag__${self:provider.stage}
-        handler: account-applications/flag.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FlagRole
-    
-      ReviewApplication:
+    <pre>
+    ReviewApplication:
         name: ${self:service}__account_applications__review__${self:provider.stage}
         handler: account-applications/review.handler
         environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+            REGION: ${self:provider.region}
+            ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
         role: ReviewRole
-    
-      FindApplications:
-        name: ${self:service}__account_applications__find__${self:provider.stage}
-        handler: account-applications/find.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FindRole
-    
-      RejectApplication:
-        name: ${self:service}__account_applications__reject__${self:provider.stage}
-        handler: account-applications/reject.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: RejectRole
-    
-      ApproveApplication:
-        name: ${self:service}__account_applications__approve__${self:provider.stage}
-        handler: account-applications/approve.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: ApproveRole
-    
-      DataChecking:
-        name: ${self:service}__data_checking__${self:provider.stage}
-        handler: data-checking.handler
-        role: DataCheckingRole
-    
-    resources:
-      Resources:
-        LambdaLoggingPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource:
-                    - 'Fn::Join':
-                      - ':'
-                      -
-                        - 'arn:aws:logs'
-                        - Ref: 'AWS::Region'
-                        - Ref: 'AWS::AccountId'
-                        - 'log-group:/aws/lambda/*:*:*'
-    
-        DynamoPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - "dynamodb:*"
-                  Resource:
-                    - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                    - 'Fn::Join':
-                        - '/'
-                        -
-                            - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                            - '*'
-    
-        StepFunctionsPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                -
-                  Effect: "Allow"
-                  Action:
-                    - "states:StartExecution"
-                    - "states:SendTaskSuccess"
-                    - "states:SendTaskFailure"
-                  Resource:
-                    - { Ref: ProcessApplicationsStateMachine }
-    
-        SubmitRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-              - { Ref: StepFunctionsPolicy }
-    
-        FlagRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        ReviewRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-              - { Ref: StepFunctionsPolicy }
-    
-        RejectRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        ApproveRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        FindRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        DataCheckingRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-    
-        ApplicationsDynamoDBTable:
-          Type: 'AWS::DynamoDB::Table'
-          Properties:
-            TableName: ${self:custom.applicationsTable}
-            AttributeDefinitions:
-              -
-                AttributeName: id
-                AttributeType: S
-              -
-                AttributeName: state
-                AttributeType: S
-            KeySchema:
-              -
-                AttributeName: id
-                KeyType: HASH
-            BillingMode: PAY_PER_REQUEST
-            GlobalSecondaryIndexes:
-                -
-                    IndexName: state
-                    KeySchema:
-                        -
-                            AttributeName: state
-                            KeyType: HASH
-                    Projection:
-                        ProjectionType: ALL
-    
-        StepFunctionRole:
-          Type: 'AWS::IAM::Role'
-          Properties:
-            AssumeRolePolicyDocument:
-                Version: '2012-10-17'
-                Statement:
-                    -
-                      Effect: Allow
-                      Principal:
-                          Service: 'states.amazonaws.com'
-                      Action: 'sts:AssumeRole'
-            Policies:
-                -
-                  PolicyName: lambda
-                  PolicyDocument:
-                    Statement:
-                      -
-                        Effect: Allow
-                        Action: 'lambda:InvokeFunction'
-                        Resource:
-                            - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-                            - Fn::GetAtt: [FlagApplicationLambdaFunction, Arn]
-    
-        ProcessApplicationsStateMachine:
-          Type: AWS::StepFunctions::StateMachine
-          Properties:
-            StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
-            RoleArn: !GetAtt StepFunctionRole.Arn
-            DefinitionString:
-              !Sub
-                - |-
-                  {
-                    "StartAt": "Check Name",
-                    "States": {
-                        "Check Name": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_NAME",
-                                "data": { "name.$": "$.application.name" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "ResultPath": "$.checks.name",
-                            "Next": "Check Address"
-                        },
-                        "Check Address": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_ADDRESS",
-                                "data": { "address.$": "$.application.address" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "ResultPath": "$.checks.address",
-                            "Next": "Review Required?"
-                        },
-                        "Review Required?": {
-                            "Type": "Choice",
-                            "Choices": [
-                              {
-                                "Variable": "$.checks.name.flagged",
-                                "BooleanEquals": true,
-                                "Next": "Pending Review"
-                              },
-                              {
-                                "Variable": "$.checks.address.flagged",
-                                "BooleanEquals": true,
-                                "Next": "Pending Review"
-                              }
-                            ],
-                            "Default": "Approve Application"
-                        },
-                        "Pending Review": {
-                          "Type": "Task",
-                          "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
-                          "Parameters": {
-                              "FunctionName": "#{flagApplicationLambdaName}",
-                              "Payload": {
-                                  "id.$": "$.application.id",
-                                  "flagType": "REVIEW",
-                                  "taskToken.$": "$$.Task.Token"
-                              }
-                          },
-                          "ResultPath": "$.review",
-                          "Next": "Review Approved?"
-                        },
-                        "Review Approved?": {
-                            "Type": "Choice",
-                            "Choices": [{
-                                    "Variable": "$.review.decision",
-                                    "StringEquals": "APPROVE",
-                                    "Next": "Approve Application"
-                                },
-                                {
-                                    "Variable": "$.review.decision",
-                                    "StringEquals": "REJECT",
-                                    "Next": "Reject Application"
-                                }
-                            ]
-                        },
-                        "Reject Application": {
-                             "Type": "Pass",
-                             "End": true
-                         },
-                        "Approve Application": {
-                            "Type": "Pass",
-                            "End": true
-                        }
-                    }
-                  }
-                - {
-                  dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-                  flagApplicationLambdaName: !Ref FlagApplicationLambdaFunction,
-                }
-    </pre>
 
-4. Run:
+    ReviewRole:
+        Type: AWS::IAM::Role
+        Properties:
+            AssumeRolePolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+                - Effect: Allow
+                Principal:
+                    Service:
+                    - lambda.amazonaws.com
+                Action: sts:AssumeRole
+            ManagedPolicyArns:
+            - { Ref: LambdaLoggingPolicy }
+            - { Ref: DynamoPolicy }
+            - { Ref: StepFunctionsPolicy }
+
+    StepFunctionRole:
+        #...
+        Policies:
+            -
+            PolicyName: lambda
+            PolicyDocument:
+                Statement:
+                -
+                    Effect: Allow
+                    Action: 'lambda:InvokeFunction'
+                    Resource:
+                        - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
+                        - Fn::GetAtt: [FlagApplicationLambdaFunction, Arn]
+
+
+    ProcessApplicationsStateMachine:
+        #...
+        DefinitionString:
+        !Sub
+            - |-
+            {
+                [...]
+
+                "Pending Review": {
+                    "Type": "Task",
+                    "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+                    "Parameters": {
+                        "FunctionName": "#{flagApplicationLambdaName}",
+                        "Payload": {
+                            "id.$": "$.application.id",
+                            "flagType": "REVIEW",
+                            "taskToken.$": "$$.Task.Token"
+                        }
+                    },
+                    "ResultPath": "$.review",
+                    "Next": "Review Approved?"
+                },
+                "Review Approved?": {
+                    "Type": "Choice",
+                    "Choices": [{
+                            "Variable": "$.review.decision",
+                            "StringEquals": "APPROVE",
+                            "Next": "Approve Application"
+                        },
+                        {
+                            "Variable": "$.review.decision",
+                            "StringEquals": "REJECT",
+                            "Next": "Reject Application"
+                        }
+                    ]
+                },
+                "Reject Application": {
+                    "Type": "Pass",
+                    "End": true
+                },                
+            }
+        - {
+            dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
+            flagApplicationLambdaName: !Ref FlagApplicationLambdaFunction,
+        }
+    </pre>
+</div>
+
+Step 4. Run:
 
     ```bash
     sls deploy
@@ -3262,433 +1296,51 @@ Until now, we’ve left the Approve Application state empty, using the Pass stat
 
 ### Make these changes
 
-1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#serverless7">this new content</button> (click the gray text to the left to copy the new content to your clipboard).
+Step 1. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 77603cdb8730955713c45470065e8c1b619fff93:serverless.yml|
 
-    <div class="notices note">
-        <p>
-            Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
-        </p>
+<div class="notices note">
+    <p>
+        Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
+    </p>
 
-        <pre>
-        StepFunctionRole:
-            #...
-            Policies:
-                -
-                PolicyName: lambda
-                PolicyDocument:
-                    Statement:
-                    -
-                        Effect: Allow
-                        Action: 'lambda:InvokeFunction'
-                        Resource:
-                            - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-                            - Fn::GetAtt: [FlagApplicationLambdaFunction, Arn]
-                            - Fn::GetAtt: [ApproveApplicationLambdaFunction, Arn]
-                            - Fn::GetAtt: [RejectApplicationLambdaFunction, Arn]
-
-        ProcessApplicationsStateMachine:
-            #...
-            "Reject Application": {
-                "Type": "Task",
-                "Parameters": {
-                    "id.$": "$.application.id"
-                },
-                "Resource": "#{rejectApplicationLambdaArn}",
-                "End": true
-            },
-            "Approve Application": {
-                "Type": "Task",
-                "Parameters": {
-                    "id.$": "$.application.id"
-                },
-                "Resource": "#{approveApplicationLambdaArn}",
-                "End": true
-            }
-            #...
-        </pre>
-    </div> 
-
-    <pre style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;" id="serverless7">
-    service: StepFunctionsWorkshop
-    
-    plugins:
-      - serverless-cf-vars
-    
-    custom:
-      applicationsTable: '${self:service}__account_applications__${self:provider.stage}'
-    
-    provider:
-      name: aws
-      runtime: nodejs10.x
-      memorySize: 128
-      stage: dev
-    
-    functions:
-      SubmitApplication:
-        name: ${self:service}__account_applications__submit__${self:provider.stage}
-        handler: account-applications/submit.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-          APPLICATION_PROCESSING_STEP_FUNCTION_ARN: { Ref: "ProcessApplicationsStateMachine" }
-        role: SubmitRole
-    
-      FlagApplication:
-        name: ${self:service}__account_applications__flag__${self:provider.stage}
-        handler: account-applications/flag.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FlagRole
-    
-      ReviewApplication:
-        name: ${self:service}__account_applications__review__${self:provider.stage}
-        handler: account-applications/review.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: ReviewRole
-    
-      FindApplications:
-        name: ${self:service}__account_applications__find__${self:provider.stage}
-        handler: account-applications/find.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FindRole
-    
-      RejectApplication:
-        name: ${self:service}__account_applications__reject__${self:provider.stage}
-        handler: account-applications/reject.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: RejectRole
-    
-      ApproveApplication:
-        name: ${self:service}__account_applications__approve__${self:provider.stage}
-        handler: account-applications/approve.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: ApproveRole
-    
-      DataChecking:
-        name: ${self:service}__data_checking__${self:provider.stage}
-        handler: data-checking.handler
-        role: DataCheckingRole
-    
-    resources:
-      Resources:
-        LambdaLoggingPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
+    <pre>
+    StepFunctionRole:
+        #...
+        Policies:
+            -
+            PolicyName: lambda
             PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource:
-                    - 'Fn::Join':
-                      - ':'
-                      -
-                        - 'arn:aws:logs'
-                        - Ref: 'AWS::Region'
-                        - Ref: 'AWS::AccountId'
-                        - 'log-group:/aws/lambda/*:*:*'
-    
-        DynamoPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - "dynamodb:*"
-                  Resource:
-                    - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                    - 'Fn::Join':
-                        - '/'
-                        -
-                            - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                            - '*'
-    
-        StepFunctionsPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                -
-                  Effect: "Allow"
-                  Action:
-                    - "states:StartExecution"
-                    - "states:SendTaskSuccess"
-                    - "states:SendTaskFailure"
-                  Resource:
-                    - { Ref: ProcessApplicationsStateMachine }
-    
-        SubmitRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-              - { Ref: StepFunctionsPolicy }
-    
-        FlagRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        ReviewRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-              - { Ref: StepFunctionsPolicy }
-    
-        RejectRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        ApproveRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        FindRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        DataCheckingRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-    
-        ApplicationsDynamoDBTable:
-          Type: 'AWS::DynamoDB::Table'
-          Properties:
-            TableName: ${self:custom.applicationsTable}
-            AttributeDefinitions:
-              -
-                AttributeName: id
-                AttributeType: S
-              -
-                AttributeName: state
-                AttributeType: S
-            KeySchema:
-              -
-                AttributeName: id
-                KeyType: HASH
-            BillingMode: PAY_PER_REQUEST
-            GlobalSecondaryIndexes:
-                -
-                    IndexName: state
-                    KeySchema:
-                        -
-                            AttributeName: state
-                            KeyType: HASH
-                    Projection:
-                        ProjectionType: ALL
-    
-        StepFunctionRole:
-          Type: 'AWS::IAM::Role'
-          Properties:
-            AssumeRolePolicyDocument:
-                Version: '2012-10-17'
                 Statement:
-                    -
-                      Effect: Allow
-                      Principal:
-                          Service: 'states.amazonaws.com'
-                      Action: 'sts:AssumeRole'
-            Policies:
                 -
-                  PolicyName: lambda
-                  PolicyDocument:
-                    Statement:
-                      -
-                        Effect: Allow
-                        Action: 'lambda:InvokeFunction'
-                        Resource:
-                            - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-                            - Fn::GetAtt: [FlagApplicationLambdaFunction, Arn]
-                            - Fn::GetAtt: [ApproveApplicationLambdaFunction, Arn]
-                            - Fn::GetAtt: [RejectApplicationLambdaFunction, Arn]
-    
-        ProcessApplicationsStateMachine:
-          Type: AWS::StepFunctions::StateMachine
-          Properties:
-            StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
-            RoleArn: !GetAtt StepFunctionRole.Arn
-            DefinitionString:
-              !Sub
-                - |-
-                  {
-                    "StartAt": "Check Name",
-                    "States": {
-                        "Check Name": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_NAME",
-                                "data": { "name.$": "$.application.name" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "ResultPath": "$.checks.name",
-                            "Next": "Check Address"
-                        },
-                        "Check Address": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_ADDRESS",
-                                "data": { "address.$": "$.application.address" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "ResultPath": "$.checks.address",
-                            "Next": "Review Required?"
-                        },
-                        "Review Required?": {
-                            "Type": "Choice",
-                            "Choices": [
-                              {
-                                "Variable": "$.checks.name.flagged",
-                                "BooleanEquals": true,
-                                "Next": "Pending Review"
-                              },
-                              {
-                                "Variable": "$.checks.address.flagged",
-                                "BooleanEquals": true,
-                                "Next": "Pending Review"
-                              }
-                            ],
-                            "Default": "Approve Application"
-                        },
-                        "Pending Review": {
-                          "Type": "Task",
-                          "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
-                          "Parameters": {
-                              "FunctionName": "#{flagApplicationLambdaName}",
-                              "Payload": {
-                                  "id.$": "$.application.id",
-                                  "flagType": "REVIEW",
-                                  "taskToken.$": "$$.Task.Token"
-                              }
-                          },
-                          "ResultPath": "$.review",
-                          "Next": "Review Approved?"
-                        },
-                        "Review Approved?": {
-                            "Type": "Choice",
-                            "Choices": [{
-                                    "Variable": "$.review.decision",
-                                    "StringEquals": "APPROVE",
-                                    "Next": "Approve Application"
-                                },
-                                {
-                                    "Variable": "$.review.decision",
-                                    "StringEquals": "REJECT",
-                                    "Next": "Reject Application"
-                                }
-                            ]
-                        },
-                         "Reject Application": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "id.$": "$.application.id"
-                            },
-                            "Resource": "#{rejectApplicationLambdaArn}",
-                            "End": true
-                         },
-                         "Approve Application": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "id.$": "$.application.id"
-                            },
-                            "Resource": "#{approveApplicationLambdaArn}",
-                            "End": true
-                         }
-                    }
-                  }
-                - {
-                  dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-                  flagApplicationLambdaName: !Ref FlagApplicationLambdaFunction,
-                  rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
-                  approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
-                }
+                    Effect: Allow
+                    Action: 'lambda:InvokeFunction'
+                    Resource:
+                        - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
+                        - Fn::GetAtt: [FlagApplicationLambdaFunction, Arn]
+                        - Fn::GetAtt: [ApproveApplicationLambdaFunction, Arn]
+                        - Fn::GetAtt: [RejectApplicationLambdaFunction, Arn]
+
+    ProcessApplicationsStateMachine:
+        #...
+        "Reject Application": {
+            "Type": "Task",
+            "Parameters": {
+                "id.$": "$.application.id"
+            },
+            "Resource": "#{rejectApplicationLambdaArn}",
+            "End": true
+        },
+        "Approve Application": {
+            "Type": "Task",
+            "Parameters": {
+                "id.$": "$.application.id"
+            },
+            "Resource": "#{approveApplicationLambdaArn}",
+            "End": true
+        }
+        #...
     </pre>
+</div> 
 
 2. Run:
     ```bash
@@ -3731,445 +1383,48 @@ The [developer guide identifies the types of transient Lambda service errors tha
 
 ### Make these changes
 
-1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#serverless8">this new content</button> (click the gray text to the left to copy the new content to your clipboard).
+Step 1. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 43adfda72ed4228c5818e3b7b2c334dea6cdb340:serverless.yml
 
-    <div class="notices note">
-        <p>
-            Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
-        </p>
+<div class="notices note">
+    <p>
+        Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
+    </p>
 
-        <pre>
-        ProcessApplicationsStateMachine:
+    <pre>
+    ProcessApplicationsStateMachine:
+        #...
+
+        "Check Name": {
             #...
-
-            "Check Name": {
-                #...
-                "Retry": [ {
-                    "ErrorEquals": [ 
-                        "Lambda.ServiceException", 
-                        "Lambda.AWSLambdaException", 
-                        "Lambda.SdkClientException", 
-                        "Lambda.TooManyRequestsException"
-                    ]
-                } ]
-                #...
-            },
-
-            "Check Address": {
-                #...
-                "Retry": [ {
-                    "ErrorEquals": [ 
-                        "Lambda.ServiceException", 
-                        "Lambda.AWSLambdaException", 
-                        "Lambda.SdkClientException", 
-                        "Lambda.TooManyRequestsException"
-                    ]
-                } ]
-                #...
-            },
-
+            "Retry": [ {
+                "ErrorEquals": [ 
+                    "Lambda.ServiceException", 
+                    "Lambda.AWSLambdaException", 
+                    "Lambda.SdkClientException", 
+                    "Lambda.TooManyRequestsException"
+                ]
+            } ]
             #...
-        </pre>
-    </div> 
+        },
 
-    <pre style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;" id="serverless8">
-    service: StepFunctionsWorkshop
-    
-    plugins:
-      - serverless-cf-vars
-    
-    custom:
-      applicationsTable: '${self:service}__account_applications__${self:provider.stage}'
-    
-    provider:
-      name: aws
-      runtime: nodejs10.x
-      memorySize: 128
-      stage: dev
-    
-    functions:
-      SubmitApplication:
-        name: ${self:service}__account_applications__submit__${self:provider.stage}
-        handler: account-applications/submit.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-          APPLICATION_PROCESSING_STEP_FUNCTION_ARN: { Ref: "ProcessApplicationsStateMachine" }
-        role: SubmitRole
-    
-      FlagApplication:
-        name: ${self:service}__account_applications__flag__${self:provider.stage}
-        handler: account-applications/flag.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FlagRole
-    
-      ReviewApplication:
-        name: ${self:service}__account_applications__review__${self:provider.stage}
-        handler: account-applications/review.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: ReviewRole
-    
-      FindApplications:
-        name: ${self:service}__account_applications__find__${self:provider.stage}
-        handler: account-applications/find.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FindRole
-    
-      RejectApplication:
-        name: ${self:service}__account_applications__reject__${self:provider.stage}
-        handler: account-applications/reject.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: RejectRole
-    
-      ApproveApplication:
-        name: ${self:service}__account_applications__approve__${self:provider.stage}
-        handler: account-applications/approve.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: ApproveRole
-    
-      DataChecking:
-        name: ${self:service}__data_checking__${self:provider.stage}
-        handler: data-checking.handler
-        role: DataCheckingRole
-    
-    resources:
-      Resources:
-        LambdaLoggingPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource:
-                    - 'Fn::Join':
-                      - ':'
-                      -
-                        - 'arn:aws:logs'
-                        - Ref: 'AWS::Region'
-                        - Ref: 'AWS::AccountId'
-                        - 'log-group:/aws/lambda/*:*:*'
-    
-        DynamoPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - "dynamodb:*"
-                  Resource:
-                    - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                    - 'Fn::Join':
-                        - '/'
-                        -
-                            - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                            - '*'
-    
-        StepFunctionsPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                -
-                  Effect: "Allow"
-                  Action:
-                    - "states:StartExecution"
-                    - "states:SendTaskSuccess"
-                    - "states:SendTaskFailure"
-                  Resource:
-                    - { Ref: ProcessApplicationsStateMachine }
-    
-        SubmitRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-              - { Ref: StepFunctionsPolicy }
-    
-        FlagRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        ReviewRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-              - { Ref: StepFunctionsPolicy }
-    
-        RejectRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        ApproveRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        FindRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        DataCheckingRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-    
-        ApplicationsDynamoDBTable:
-          Type: 'AWS::DynamoDB::Table'
-          Properties:
-            TableName: ${self:custom.applicationsTable}
-            AttributeDefinitions:
-              -
-                AttributeName: id
-                AttributeType: S
-              -
-                AttributeName: state
-                AttributeType: S
-            KeySchema:
-              -
-                AttributeName: id
-                KeyType: HASH
-            BillingMode: PAY_PER_REQUEST
-            GlobalSecondaryIndexes:
-                -
-                    IndexName: state
-                    KeySchema:
-                        -
-                            AttributeName: state
-                            KeyType: HASH
-                    Projection:
-                        ProjectionType: ALL
-    
-        StepFunctionRole:
-          Type: 'AWS::IAM::Role'
-          Properties:
-            AssumeRolePolicyDocument:
-                Version: '2012-10-17'
-                Statement:
-                    -
-                      Effect: Allow
-                      Principal:
-                          Service: 'states.amazonaws.com'
-                      Action: 'sts:AssumeRole'
-            Policies:
-                -
-                  PolicyName: lambda
-                  PolicyDocument:
-                    Statement:
-                      -
-                        Effect: Allow
-                        Action: 'lambda:InvokeFunction'
-                        Resource:
-                            - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-                            - Fn::GetAtt: [FlagApplicationLambdaFunction, Arn]
-                            - Fn::GetAtt: [ApproveApplicationLambdaFunction, Arn]
-                            - Fn::GetAtt: [RejectApplicationLambdaFunction, Arn]
-    
-        ProcessApplicationsStateMachine:
-          Type: AWS::StepFunctions::StateMachine
-          Properties:
-            StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
-            RoleArn: !GetAtt StepFunctionRole.Arn
-            DefinitionString:
-              !Sub
-                - |-
-                  {
-                    "StartAt": "Check Name",
-                    "States": {
-                        "Check Name": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_NAME",
-                                "data": { "name.$": "$.application.name" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "ResultPath": "$.checks.name",
-                            "Retry": [ {
-                                "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                            } ],
-                            "Next": "Check Address"
-                        },
-                        "Check Address": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_ADDRESS",
-                                "data": { "address.$": "$.application.address" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "ResultPath": "$.checks.address",
-                            "Retry": [ {
-                                "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                            } ],
-                            "Next": "Review Required?"
-                        },
-                        "Review Required?": {
-                            "Type": "Choice",
-                            "Choices": [
-                              {
-                                "Variable": "$.checks.name.flagged",
-                                "BooleanEquals": true,
-                                "Next": "Pending Review"
-                              },
-                              {
-                                "Variable": "$.checks.address.flagged",
-                                "BooleanEquals": true,
-                                "Next": "Pending Review"
-                              }
-                            ],
-                            "Default": "Approve Application"
-                        },
-                        "Pending Review": {
-                          "Type": "Task",
-                          "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
-                          "Parameters": {
-                              "FunctionName": "#{flagApplicationLambdaName}",
-                              "Payload": {
-                                  "id.$": "$.application.id",
-                                  "flagType": "REVIEW",
-                                  "taskToken.$": "$$.Task.Token"
-                              }
-                          },
-                          "ResultPath": "$.review",
-                          "Retry": [ {
-                              "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                          } ],
-                          "Next": "Review Approved?"
-                        },
-                        "Review Approved?": {
-                            "Type": "Choice",
-                            "Choices": [{
-                                    "Variable": "$.review.decision",
-                                    "StringEquals": "APPROVE",
-                                    "Next": "Approve Application"
-                                },
-                                {
-                                    "Variable": "$.review.decision",
-                                    "StringEquals": "REJECT",
-                                    "Next": "Reject Application"
-                                }
-                            ]
-                        },
-                         "Reject Application": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "id.$": "$.application.id"
-                            },
-                            "Resource": "#{rejectApplicationLambdaArn}",
-                            "Retry": [ {
-                                "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                            } ],
-                            "End": true
-                         },
-                         "Approve Application": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "id.$": "$.application.id"
-                            },
-                            "Resource": "#{approveApplicationLambdaArn}",
-                            "Retry": [ {
-                                "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                            } ],
-                            "End": true
-                         }
-                    }
-                  }
-                - {
-                  dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-                  flagApplicationLambdaName: !Ref FlagApplicationLambdaFunction,
-                  rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
-                  approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
-                }
+        "Check Address": {
+            #...
+            "Retry": [ {
+                "ErrorEquals": [ 
+                    "Lambda.ServiceException", 
+                    "Lambda.AWSLambdaException", 
+                    "Lambda.SdkClientException", 
+                    "Lambda.TooManyRequestsException"
+                ]
+            } ]
+            #...
+        },
+
+        #...
     </pre>
+</div> 
 
-2. Run:
+Step 2. Run:
 
     ```
     sls deploy
@@ -4196,543 +1451,81 @@ To show this in action, we’ll update our Data Checking Lambda, telling it to t
 
 ### Make these changes
 
-1. Replace `data-checking.js` with <button class="clipboard" data-clipboard-target="#datachecking1">this new content</button> (click the gray text to the left to copy the new content to your clipboard).
+Step 1. Replace `data-checking.js` with ___CLIPBOARD_BUTTON afebf4c40193cc6a39c685ac9a15b27f9438a52b:data-checking.js|
 
-    <div class="notices note">
-        <p>
-            Specifically, here are the relevant additions you will have added after pasting the new <code>data-checking.js</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
-        </p>
+<div class="notices note">
+    <p>
+        Specifically, here are the relevant additions you will have added after pasting the new <code>data-checking.js</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
+    </p>
 
-        <pre>
-        // ...
+    <pre>
+    // ...
 
-        const checkName = (data) => {
-            const { name } = data
-
-            if (name.includes("UNPROCESSABLE_DATA")) {
-                const simulatedError = new Error(`Simulated error: Name '${name}' is not possible to check.`)
-                simulatedError.name = 'UnprocessableDataException'
-                throw simulatedError
-            }
-
-            const flagged = name.includes('evil')
-            return { flagged }
-        }
-
-        // ...
-        </pre>
-    </div> 
-
-    <pre style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;" id="datachecking1">
-    'use strict';
-    
-    const checkName = async (data) => {
+    const checkName = (data) => {
         const { name } = data
-    
-        if (name.indexOf("UNPROCESSABLE_DATA") !== -1) {
+
+        if (name.includes("UNPROCESSABLE_DATA")) {
             const simulatedError = new Error(`Simulated error: Name '${name}' is not possible to check.`)
             simulatedError.name = 'UnprocessableDataException'
             throw simulatedError
         }
-    
-        const flagged = (name.indexOf('evil') !== -1)
+
+        const flagged = name.includes('evil')
         return { flagged }
     }
-    
-    const checkAddress = async (data) => {
-        const { address } = data
-    
-        const flagged = (address.match(/[0-9]+ \w+/g) === null)
-        return { flagged }
-    }
-    
-    
-    const commandHandlers = {
-        'CHECK_NAME': checkName,
-        'CHECK_ADDRESS': checkAddress,
-    }
-    
-    module.exports.handler = async(event) => {
-        try {
-            const { command, data } = event
-    
-            const result = await commandHandlers[command](data)
-            return result
-        } catch (ex) {
-            console.error(ex)
-            console.info('event', JSON.stringify(event))
-            throw ex
-        }
-    };
+
+    // ...
     </pre>
+</div> 
 
-2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#serverless9">this new content</button> (click the gray text to the left to copy the new content to your clipboard).
+Step 2. Replace `serverless.yml` with ___CLIPBOARD_BUTTON afebf4c40193cc6a39c685ac9a15b27f9438a52b:serverless.yml|
 
-    <div class="notices note">
-        <p>
-            Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
-        </p>
+<div class="notices note">
+    <p>
+        Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
+    </p>
 
-        <pre>
-        ProcessApplicationsStateMachine:
+    <pre>
+    ProcessApplicationsStateMachine:
+        # ...
+
+        "Check Name": {
             # ...
 
-            "Check Name": {
-                # ...
-
-                "Catch": [ {
-                    "ErrorEquals": ["UnprocessableDataException"],
-                    "ResultPath": "$.error-info",
-                    "Next": "Flag Application As Unprocessable"
-                } ]
-                
-                # ...
-            },
-
+            "Catch": [ {
+                "ErrorEquals": ["UnprocessableDataException"],
+                "ResultPath": "$.error-info",
+                "Next": "Flag Application As Unprocessable"
+            } ]
+            
             # ...
+        },
 
-            "Flag Application As Unprocessable": {
-                "Type": "Task",
-                "Resource": "arn:aws:states:::lambda:invoke",
-                "Parameters": {
-                    "FunctionName": "#{flagApplicationLambdaName}",
-                    "Payload": {
-                        "id.$": "$.application.id",
-                        "flagType": "UNPROCESSABLE_DATA",
-                        "errorInfo.$": "$.error-info"
-                    }
-                },
-                "ResultPath": "$.review",
-                "Retry": [ {
-                    "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                } ],
-                "End": true
-            }
+        # ...
 
-            # ...
-        </pre>
-    </div> 
-    
-    <pre style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;" id="serverless9">
-    service: StepFunctionsWorkshop
-    
-    plugins:
-      - serverless-cf-vars
-    
-    custom:
-      applicationsTable: '${self:service}__account_applications__${self:provider.stage}'
-    
-    provider:
-      name: aws
-      runtime: nodejs10.x
-      memorySize: 128
-      stage: dev
-    
-    functions:
-      SubmitApplication:
-        name: ${self:service}__account_applications__submit__${self:provider.stage}
-        handler: account-applications/submit.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-          APPLICATION_PROCESSING_STEP_FUNCTION_ARN: { Ref: "ProcessApplicationsStateMachine" }
-        role: SubmitRole
-    
-      FlagApplication:
-        name: ${self:service}__account_applications__flag__${self:provider.stage}
-        handler: account-applications/flag.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FlagRole
-    
-      ReviewApplication:
-        name: ${self:service}__account_applications__review__${self:provider.stage}
-        handler: account-applications/review.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: ReviewRole
-    
-      FindApplications:
-        name: ${self:service}__account_applications__find__${self:provider.stage}
-        handler: account-applications/find.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FindRole
-    
-      RejectApplication:
-        name: ${self:service}__account_applications__reject__${self:provider.stage}
-        handler: account-applications/reject.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: RejectRole
-    
-      ApproveApplication:
-        name: ${self:service}__account_applications__approve__${self:provider.stage}
-        handler: account-applications/approve.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: ApproveRole
-    
-      DataChecking:
-        name: ${self:service}__data_checking__${self:provider.stage}
-        handler: data-checking.handler
-        role: DataCheckingRole
-    
-    resources:
-      Resources:
-        LambdaLoggingPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource:
-                    - 'Fn::Join':
-                      - ':'
-                      -
-                        - 'arn:aws:logs'
-                        - Ref: 'AWS::Region'
-                        - Ref: 'AWS::AccountId'
-                        - 'log-group:/aws/lambda/*:*:*'
-    
-        DynamoPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - "dynamodb:*"
-                  Resource:
-                    - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                    - 'Fn::Join':
-                        - '/'
-                        -
-                            - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                            - '*'
-    
-        StepFunctionsPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                -
-                  Effect: "Allow"
-                  Action:
-                    - "states:StartExecution"
-                    - "states:SendTaskSuccess"
-                    - "states:SendTaskFailure"
-                  Resource:
-                    - { Ref: ProcessApplicationsStateMachine }
-    
-        SubmitRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-              - { Ref: StepFunctionsPolicy }
-    
-        FlagRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        ReviewRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-              - { Ref: StepFunctionsPolicy }
-    
-        RejectRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        ApproveRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        FindRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        DataCheckingRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-    
-        ApplicationsDynamoDBTable:
-          Type: 'AWS::DynamoDB::Table'
-          Properties:
-            TableName: ${self:custom.applicationsTable}
-            AttributeDefinitions:
-              -
-                AttributeName: id
-                AttributeType: S
-              -
-                AttributeName: state
-                AttributeType: S
-            KeySchema:
-              -
-                AttributeName: id
-                KeyType: HASH
-            BillingMode: PAY_PER_REQUEST
-            GlobalSecondaryIndexes:
-                -
-                    IndexName: state
-                    KeySchema:
-                        -
-                            AttributeName: state
-                            KeyType: HASH
-                    Projection:
-                        ProjectionType: ALL
-    
-        StepFunctionRole:
-          Type: 'AWS::IAM::Role'
-          Properties:
-            AssumeRolePolicyDocument:
-                Version: '2012-10-17'
-                Statement:
-                    -
-                      Effect: Allow
-                      Principal:
-                          Service: 'states.amazonaws.com'
-                      Action: 'sts:AssumeRole'
-            Policies:
-                -
-                  PolicyName: lambda
-                  PolicyDocument:
-                    Statement:
-                      -
-                        Effect: Allow
-                        Action: 'lambda:InvokeFunction'
-                        Resource:
-                            - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-                            - Fn::GetAtt: [FlagApplicationLambdaFunction, Arn]
-                            - Fn::GetAtt: [ApproveApplicationLambdaFunction, Arn]
-                            - Fn::GetAtt: [RejectApplicationLambdaFunction, Arn]
-    
-        ProcessApplicationsStateMachine:
-          Type: AWS::StepFunctions::StateMachine
-          Properties:
-            StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
-            RoleArn: !GetAtt StepFunctionRole.Arn
-            DefinitionString:
-              !Sub
-                - |-
-                  {
-                    "StartAt": "Check Name",
-                    "States": {
-                        "Check Name": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_NAME",
-                                "data": { "name.$": "$.application.name" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "ResultPath": "$.checks.name",
-                            "Retry": [ {
-                                "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                            } ],
-                            "Catch": [ {
-                              "ErrorEquals": ["UnprocessableDataException"],
-                              "ResultPath": "$.error-info",
-                              "Next": "Flag Application As Unprocessable"
-                            } ],
-                            "Next": "Check Address"
-                        },
-                        "Check Address": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "command": "CHECK_ADDRESS",
-                                "data": { "address.$": "$.application.address" }
-                            },
-                            "Resource": "#{dataCheckingLambdaArn}",
-                            "ResultPath": "$.checks.address",
-                            "Retry": [ {
-                                "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                            } ],
-                            "Next": "Review Required?"
-                        },
-                        "Review Required?": {
-                            "Type": "Choice",
-                            "Choices": [
-                              {
-                                "Variable": "$.checks.name.flagged",
-                                "BooleanEquals": true,
-                                "Next": "Pending Review"
-                              },
-                              {
-                                "Variable": "$.checks.address.flagged",
-                                "BooleanEquals": true,
-                                "Next": "Pending Review"
-                              }
-                            ],
-                            "Default": "Approve Application"
-                        },
-                        "Pending Review": {
-                          "Type": "Task",
-                          "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
-                          "Parameters": {
-                              "FunctionName": "#{flagApplicationLambdaName}",
-                              "Payload": {
-                                  "id.$": "$.application.id",
-                                  "flagType": "REVIEW",
-                                  "taskToken.$": "$$.Task.Token"
-                              }
-                          },
-                          "ResultPath": "$.review",
-                          "Retry": [ {
-                              "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                          } ],
-                          "Next": "Review Approved?"
-                        },
-                        "Review Approved?": {
-                            "Type": "Choice",
-                            "Choices": [{
-                                    "Variable": "$.review.decision",
-                                    "StringEquals": "APPROVE",
-                                    "Next": "Approve Application"
-                                },
-                                {
-                                    "Variable": "$.review.decision",
-                                    "StringEquals": "REJECT",
-                                    "Next": "Reject Application"
-                                }
-                            ]
-                        },
-                         "Reject Application": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "id.$": "$.application.id"
-                            },
-                            "Resource": "#{rejectApplicationLambdaArn}",
-                            "Retry": [ {
-                                "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                            } ],
-                            "End": true
-                         },
-                         "Approve Application": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "id.$": "$.application.id"
-                            },
-                            "Resource": "#{approveApplicationLambdaArn}",
-                            "Retry": [ {
-                                "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                            } ],
-                            "End": true
-                         },
-                        "Flag Application As Unprocessable": {
-                          "Type": "Task",
-                          "Resource": "arn:aws:states:::lambda:invoke",
-                          "Parameters": {
-                              "FunctionName": "#{flagApplicationLambdaName}",
-                              "Payload": {
-                                  "id.$": "$.application.id",
-                                  "flagType": "UNPROCESSABLE_DATA",
-                                  "errorInfo.$": "$.error-info"
-                              }
-                          },
-                          "ResultPath": "$.review",
-                          "Retry": [ {
-                              "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                          } ],
-                          "End": true
-                        }
-                    }
-                  }
-                - {
-                  dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-                  flagApplicationLambdaName: !Ref FlagApplicationLambdaFunction,
-                  rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
-                  approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
+        "Flag Application As Unprocessable": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke",
+            "Parameters": {
+                "FunctionName": "#{flagApplicationLambdaName}",
+                "Payload": {
+                    "id.$": "$.application.id",
+                    "flagType": "UNPROCESSABLE_DATA",
+                    "errorInfo.$": "$.error-info"
                 }
-    </pre>
+            },
+            "ResultPath": "$.review",
+            "Retry": [ {
+                "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
+            } ],
+            "End": true
+        }
 
-3. Run:
+        # ...
+    </pre>
+</div> 
+    
+Step 3. Run:
     ```bash
     sls deploy
     ```
@@ -4780,496 +1573,63 @@ Step Functions has a `Parallel` state type which, unsurprisingly, lets a state m
 
 Let's refactor our state machine to  perform the name and address checks in parallel:
 
-2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#serverless10">this new content</button> (click the gray text to the left to copy the new content to your clipboard).
+Step 1. Replace `serverless.yml` with <button class="clipboard" ___CLIPBOARD_BUTTON 8f6d5e019d11e6805e4124fb30cdd6a03b41a681:serverless.yml
 
-    <div class="notices note">
-        <p>
-            Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
-        </p>
+<div class="notices note">
+    <p>
+        Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
+    </p>
 
-        <pre>
-        ProcessApplicationsStateMachine:
-            "StartAt": "Check Applicant Data",
-            "States": {
-                "Check Applicant Data": {
-                    "Type": "Parallel",
-                    "Branches": [
-                        {
-                            "StartAt": "Check Name",
-                            "States": {
-                                "Check Name": { ... }
-                            },
+    <pre>
+    ProcessApplicationsStateMachine:
+        "StartAt": "Check Applicant Data",
+        "States": {
+            "Check Applicant Data": {
+                "Type": "Parallel",
+                "Branches": [
+                    {
+                        "StartAt": "Check Name",
+                        "States": {
+                            "Check Name": { ... }
                         },
-                        {
-                            "StartAt": "Check Address",
-                            "States": {
-                                "Check Address": { ... }
-                            },
-                        }
-                    ],
-                    "Catch": [ {
-                        "ErrorEquals": ["UnprocessableDataException"],
-                        "ResultPath": "$.error-info",
-                        "Next": "Flag Application As Unprocessable"
-                    } ],
-                    "ResultPath": "$.checks",
-                    "Next": "Review Required?
-                },
-
-                 "Review Required?": {
-                    "Type": "Choice",
-                    "Choices": [
-                        {
-                            "Variable": "$.checks[0].flagged",
-                            # ...
+                    },
+                    {
+                        "StartAt": "Check Address",
+                        "States": {
+                            "Check Address": { ... }
                         },
-                        {
-                            "Variable": "$.checks[1].flagged",
-                            # ...
-                        }
-                    ],
-                    "Default": "Approve Application"
-                },
-
-                # ...
-            }
-        </pre>
-    </div> 
-
-    <pre style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;" id="serverless10">
-    service: StepFunctionsWorkshop
-    
-    plugins:
-      - serverless-cf-vars
-    
-    custom:
-      applicationsTable: '${self:service}__account_applications__${self:provider.stage}'
-    
-    provider:
-      name: aws
-      runtime: nodejs10.x
-      memorySize: 128
-      stage: dev
-    
-    functions:
-      SubmitApplication:
-        name: ${self:service}__account_applications__submit__${self:provider.stage}
-        handler: account-applications/submit.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-          APPLICATION_PROCESSING_STEP_FUNCTION_ARN: { Ref: "ProcessApplicationsStateMachine" }
-        role: SubmitRole
-    
-      FlagApplication:
-        name: ${self:service}__account_applications__flag__${self:provider.stage}
-        handler: account-applications/flag.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FlagRole
-    
-      ReviewApplication:
-        name: ${self:service}__account_applications__review__${self:provider.stage}
-        handler: account-applications/review.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: ReviewRole
-    
-      FindApplications:
-        name: ${self:service}__account_applications__find__${self:provider.stage}
-        handler: account-applications/find.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: FindRole
-    
-      RejectApplication:
-        name: ${self:service}__account_applications__reject__${self:provider.stage}
-        handler: account-applications/reject.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: RejectRole
-    
-      ApproveApplication:
-        name: ${self:service}__account_applications__approve__${self:provider.stage}
-        handler: account-applications/approve.handler
-        environment:
-          REGION: ${self:provider.region}
-          ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-        role: ApproveRole
-    
-      DataChecking:
-        name: ${self:service}__data_checking__${self:provider.stage}
-        handler: data-checking.handler
-        role: DataCheckingRole
-    
-    resources:
-      Resources:
-        LambdaLoggingPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource:
-                    - 'Fn::Join':
-                      - ':'
-                      -
-                        - 'arn:aws:logs'
-                        - Ref: 'AWS::Region'
-                        - Ref: 'AWS::AccountId'
-                        - 'log-group:/aws/lambda/*:*:*'
-    
-        DynamoPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - "dynamodb:*"
-                  Resource:
-                    - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                    - 'Fn::Join':
-                        - '/'
-                        -
-                            - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                            - '*'
-    
-        StepFunctionsPolicy:
-          Type: 'AWS::IAM::ManagedPolicy'
-          Properties:
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                -
-                  Effect: "Allow"
-                  Action:
-                    - "states:StartExecution"
-                    - "states:SendTaskSuccess"
-                    - "states:SendTaskFailure"
-                  Resource:
-                    - { Ref: ProcessApplicationsStateMachine }
-    
-        SubmitRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-              - { Ref: StepFunctionsPolicy }
-    
-        FlagRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        ReviewRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-              - { Ref: StepFunctionsPolicy }
-    
-        RejectRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        ApproveRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        FindRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-              - { Ref: DynamoPolicy }
-    
-        DataCheckingRole:
-          Type: AWS::IAM::Role
-          Properties:
-            AssumeRolePolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                      - lambda.amazonaws.com
-                  Action: sts:AssumeRole
-            ManagedPolicyArns:
-              - { Ref: LambdaLoggingPolicy }
-    
-        ApplicationsDynamoDBTable:
-          Type: 'AWS::DynamoDB::Table'
-          Properties:
-            TableName: ${self:custom.applicationsTable}
-            AttributeDefinitions:
-              -
-                AttributeName: id
-                AttributeType: S
-              -
-                AttributeName: state
-                AttributeType: S
-            KeySchema:
-              -
-                AttributeName: id
-                KeyType: HASH
-            BillingMode: PAY_PER_REQUEST
-            GlobalSecondaryIndexes:
-                -
-                    IndexName: state
-                    KeySchema:
-                        -
-                            AttributeName: state
-                            KeyType: HASH
-                    Projection:
-                        ProjectionType: ALL
-    
-        StepFunctionRole:
-          Type: 'AWS::IAM::Role'
-          Properties:
-            AssumeRolePolicyDocument:
-                Version: '2012-10-17'
-                Statement:
-                    -
-                      Effect: Allow
-                      Principal:
-                          Service: 'states.amazonaws.com'
-                      Action: 'sts:AssumeRole'
-            Policies:
-                -
-                  PolicyName: lambda
-                  PolicyDocument:
-                    Statement:
-                      -
-                        Effect: Allow
-                        Action: 'lambda:InvokeFunction'
-                        Resource:
-                            - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-                            - Fn::GetAtt: [FlagApplicationLambdaFunction, Arn]
-                            - Fn::GetAtt: [ApproveApplicationLambdaFunction, Arn]
-                            - Fn::GetAtt: [RejectApplicationLambdaFunction, Arn]
-    
-        ProcessApplicationsStateMachine:
-          Type: AWS::StepFunctions::StateMachine
-          Properties:
-            StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
-            RoleArn: !GetAtt StepFunctionRole.Arn
-            DefinitionString:
-              !Sub
-                - |-
-                  {
-                    "StartAt": "Check Applicant Data",
-                    "States": {
-                        "Check Applicant Data": {
-                          "Type": "Parallel",
-                          "Branches": [{
-                                  "StartAt": "Check Name",
-                                  "States": {
-                                      "Check Name": {
-                                          "Type": "Task",
-                                          "Parameters": {
-                                              "command": "CHECK_NAME",
-                                              "data": { "name.$": "$.application.name" }
-                                          },
-                                          "Resource": "#{dataCheckingLambdaArn}",
-                                          "Retry": [ {
-                                              "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException" ]
-                                          } ],
-                                          "End": true
-                                      }
-                                  }
-                              },
-                              {
-                                  "StartAt": "Check Address",
-                                  "States": {
-                                      "Check Address": {
-                                          "Type": "Task",
-                                          "Parameters": {
-                                              "command": "CHECK_ADDRESS",
-                                              "data": { "address.$": "$.application.address" }
-                                          },
-                                          "Resource": "#{dataCheckingLambdaArn}",
-                                          "Retry": [ {
-                                              "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                                          } ],
-                                          "End": true
-                                      }
-                                  }
-                              }
-                          ],
-                          "Catch": [ {
-                            "ErrorEquals": ["UnprocessableDataException"],
-                            "ResultPath": "$.error-info",
-                            "Next": "Flag Application As Unprocessable"
-                          } ],
-                          "ResultPath": "$.checks",
-                          "Next": "Review Required?"
-                        },
-                        "Review Required?": {
-                            "Type": "Choice",
-                            "Choices": [
-                              {
-                                "Variable": "$.checks[0].flagged",
-                                "BooleanEquals": true,
-                                "Next": "Pending Review"
-                              },
-                              {
-                                "Variable": "$.checks[1].flagged",
-                                "BooleanEquals": true,
-                                "Next": "Pending Review"
-                              }
-                            ],
-                            "Default": "Approve Application"
-                        },
-                        "Pending Review": {
-                          "Type": "Task",
-                          "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
-                          "Parameters": {
-                              "FunctionName": "#{flagApplicationLambdaName}",
-                              "Payload": {
-                                  "id.$": "$.application.id",
-                                  "flagType": "REVIEW",
-                                  "taskToken.$": "$$.Task.Token"
-                              }
-                          },
-                          "ResultPath": "$.review",
-                          "Retry": [ {
-                              "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                          } ],
-                          "Next": "Review Approved?"
-                        },
-                        "Review Approved?": {
-                            "Type": "Choice",
-                            "Choices": [{
-                                    "Variable": "$.review.decision",
-                                    "StringEquals": "APPROVE",
-                                    "Next": "Approve Application"
-                                },
-                                {
-                                    "Variable": "$.review.decision",
-                                    "StringEquals": "REJECT",
-                                    "Next": "Reject Application"
-                                }
-                            ]
-                        },
-                        "Reject Application": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "id.$": "$.application.id"
-                            },
-                            "Resource": "#{rejectApplicationLambdaArn}",
-                            "Retry": [ {
-                                "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                            } ],
-                            "End": true
-                        },
-                        "Approve Application": {
-                            "Type": "Task",
-                            "Parameters": {
-                                "id.$": "$.application.id"
-                            },
-                            "Resource": "#{approveApplicationLambdaArn}",
-                            "Retry": [ {
-                                "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                            } ],
-                            "End": true
-                        },
-                        "Flag Application As Unprocessable": {
-                          "Type": "Task",
-                          "Resource": "arn:aws:states:::lambda:invoke",
-                          "Parameters": {
-                              "FunctionName": "#{flagApplicationLambdaName}",
-                              "Payload": {
-                                  "id.$": "$.application.id",
-                                  "flagType": "UNPROCESSABLE_DATA",
-                                  "errorInfo.$": "$.error-info"
-                              }
-                          },
-                          "ResultPath": "$.review",
-                          "Retry": [ {
-                              "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
-                          } ],
-                          "End": true
-                        }
                     }
-                  }
-                - {
-                  dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-                  flagApplicationLambdaName: !Ref FlagApplicationLambdaFunction,
-                  rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
-                  approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
-                }
-    </pre>
+                ],
+                "Catch": [ {
+                    "ErrorEquals": ["UnprocessableDataException"],
+                    "ResultPath": "$.error-info",
+                    "Next": "Flag Application As Unprocessable"
+                } ],
+                "ResultPath": "$.checks",
+                "Next": "Review Required?
+            },
 
-3. Run:
+              "Review Required?": {
+                "Type": "Choice",
+                "Choices": [
+                    {
+                        "Variable": "$.checks[0].flagged",
+                        # ...
+                    },
+                    {
+                        "Variable": "$.checks[1].flagged",
+                        # ...
+                    }
+                ],
+                "Default": "Approve Application"
+            },
+
+            # ...
+        }
+    </pre>
+</div> 
+
+Step 2. Run:
 
     ```
     sls deploy

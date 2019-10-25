@@ -17,7 +17,7 @@ const showFileAtSha = (sha, path) => {
 }
 
 const templatize = (str, match) => {
-    const CLIPBOARD_BUTTON_TAG_TEMPLATE = '<button class="clipboard" data-clipboard-target="#__TARGET_ID__">this text</button> ' // trailing space important
+    const CLIPBOARD_BUTTON_TAG_TEMPLATE = '<button class="clipboard" data-clipboard-target="#__TARGET_ID__">this text</button> (click the gray button to copy to clipboard).' // trailing space important
     const CLIPBOARD_PRE_TAG_TEMPLATE = '{{% safehtml %}}<pre id="__TARGET_ID__" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">__FILE_CONTENT__</pre>{{% /safehtml %}}'
 
     const fileContent = showFileAtSha(match.groups.sha, match.groups.file)
@@ -28,17 +28,18 @@ const templatize = (str, match) => {
 
     const startOfMatch = match.index
     const endOfMatch = startOfMatch + match[0].length
-    const compiledTemplate = str.slice(0, startOfMatch) + buttonHtml + match.groups.rest + preHtml + str.substr(endOfMatch + 1)
+    const compiledTemplate = str.slice(0, startOfMatch) + buttonHtml + match.groups.rest + preHtml + "\n" + str.substr(endOfMatch + 1)
     return compiledTemplate
 }
 
 const nextMatch = (str) => {
-    const buttonRegex = /___CLIPBOARD_BUTTON (?<sha>.+):(?<file>\w+\.\w+)(?<rest>.*)/gm
+    const buttonRegex = /___CLIPBOARD_BUTTON (?<sha>.+):(?<file>.+)\|(?<rest>.*)/gm
     const buttonMatches = Array.from(str.matchAll(buttonRegex))
     return buttonMatches[0]
 }
 
 const main = () => {
+    // templatePath="../source_content/test_index.md"
     templatePath="../source_content/source_index.md"
     compiledPath="../content/_index.md"
 
