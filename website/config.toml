@@ -1,4 +1,4 @@
-baseURL = "https://github.com/gabehollombe-aws/step-functions-workshop-content" #TODO: Change this
+#baseURL = "https://github.com/gabehollombe-aws/step-functions-workshop-content" #TODO: Change this
 languageCode = "en-us"
 defaultContentLanguage = "en"
 title = "Introduction to Step Functions - Workshop"
