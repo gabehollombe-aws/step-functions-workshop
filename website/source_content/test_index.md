@@ -1,5 +1,5 @@
 Foo
 
-Step A. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 03eee8d58ad56817b84197e45c12f2ce83ae8d52:serverless.yml (click the gray text...)
+Step 3. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 278b0babefb143aafbbf1bb5c773a62fcd3f374f:serverless.yml|
 
-Bar
+ABCD

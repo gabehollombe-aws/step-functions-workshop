@@ -203,7 +203,7 @@ jQuery(document).ready(function() {
         var code = $(this),
             text = code.text();
 
-        if (text.length > 15 && text.includes(' ')) {
+        if (text.length > 5 && text.includes(' ')) {
             if (!clipInit) {
                 var text, clip = new Clipboard('.copy-to-clipboard', {
                     text: function(trigger) {

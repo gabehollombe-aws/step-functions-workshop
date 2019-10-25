@@ -61,16 +61,16 @@ as an **IAM user** with administrator access to the AWS account:
 [Create a new IAM user to use for the workshop](https://console.aws.amazon.com/iam/home?region=us-east-1#/users$new)
 
 1. Enter the user details:
-![Create User](/images/iam-1-create-user.png)
+![Create User](images/iam-1-create-user.png)
 
 1. Attach the AdministratorAccess IAM Policy:
-![Attach Policy](/images/iam-2-attach-policy.png)
+![Attach Policy](images/iam-2-attach-policy.png)
 
 1. Click to create the new user:
-![Confirm User](/images/iam-3-create-user.png)
+![Confirm User](images/iam-3-create-user.png)
 
 1. Take note of the login URL and save:
-![Login URL](/images/iam-4-save-url.png)
+![Login URL](images/iam-4-save-url.png)
 
 
 #### Create an AWS Cloud9 Workspace
@@ -102,10 +102,10 @@ the Cloud9 domain, otherwise connecting to the workspace might be impacted.
 
 When the environment comes up, customize the layout by closing the **welcome tab**
 and **lower work area**, and opening a new **terminal** tab in the main work area:
-![c9before](/images/c9before.png)
+![c9before](images/c9before.png)
 
 Your workspace should now look like this:
-![c9after](/images/c9after.png)
+![c9after](images/c9after.png)
 
 * * * * *
 
@@ -193,7 +193,7 @@ To start, we’ll create several functions that, when taken collectively, could 
 
 First, install the Serverless CLI tool, initialize a new project, install two dependencies from NPM, and remove the default Lambda function handler created by the new project. 
 
-1. In the terminal command line, run these commands to handle all of the housekeeping of getting our first version of the Account Applications service deployed:
+Step 1. In the terminal command line, run these commands to handle all of the housekeeping of getting our first version of the Account Applications service deployed:
 
     ```bash
     # Install the Serverless Framework CLI
@@ -215,24 +215,34 @@ First, install the Serverless CLI tool, initialize a new project, install two de
     pushd account-applications
 
     # Bootstrap our initial service with a few files we'll extract from a zip archive
-    curl https://codeload.github.com/gist/ddb15971ff35243577fa4816f33a3176/zip/835caf8539746d0ad1e418ac803ecf1f7b701f56 -o files.zip
-    unzip -j files.zip
-    mv serverless.yml ..
-    mv package.json ..
-    rm files.zip
+    git clone https://github.com/gabehollombe-aws/step-functions-workshop.git
+    pushd step-functions-workshop
+    git checkout c186b8f24783bcaf4914c329bc456831ea0fd0f3
+    mv account-applications/* ..
+    mv serverless.yml ../..
+    popd
+    rm -rf step-functions-workshop
+
+    # Back to workshop-dir
     popd
 
     # Install dependencies
+    npm init --yes
     npm install --save serverless-cf-vars uuid
      
     ```
 
-2. Use the Serverless Framework command to deploy our Lambda functions and Dynamo DB table. 
+Step 2. Use the Serverless Framework command to deploy our Lambda functions and Dynamo DB table. 
 
-    From the terminal, run:
-    ```
-    sls deploy
-    ```
+From the terminal, run:
+
+```bash
+sls deploy
+```
+
+{{% notice warn %}}
+By default, the Serverless Framework will deploy resources into the `us-east-1` region. If you want to poke around your AWS Web console to see what's there, be sure you're looking in the right region. If you want to override this default region setting, you can do so by prepending  TODO - finish this
+{{% /notice %}}
 
 {{% notice note %}}
 Take a few moments to look at some of the files we just created in `workshop-dir` to understand what we deployed.
@@ -330,42 +340,42 @@ Also, for the sake of keeping our code simple, we’ll implement our name and ad
 
 Step 1. Create `workshop-dir/data-checking.js` and paste in the following content:
 
-    ```
-    'use strict';
+```
+'use strict';
 
-    const checkName = async (data) => {
-        const { name } = data
+const checkName = async (data) => {
+    const { name } = data
 
-        const flagged = (name.indexOf('evil') !== -1)
-        return { flagged }
+    const flagged = (name.indexOf('evil') !== -1)
+    return { flagged }
+}
+
+const checkAddress = async (data) => {
+    const { address } = data
+
+    const flagged = (address.match(/[0-9]+ \w+/g) === null)
+    return { flagged }
+}
+
+
+const commandHandlers = {
+    'CHECK_NAME': checkName,
+    'CHECK_ADDRESS': checkAddress,
+}
+
+module.exports.handler = async(event) => {
+    try {
+        const { command, data } = event
+
+        const result = await commandHandlers[command](data)
+        return result
+    } catch (ex) {
+        console.error(ex)
+        console.info('event', JSON.stringify(event))
+        throw ex
     }
-
-    const checkAddress = async (data) => {
-        const { address } = data
-
-        const flagged = (address.match(/[0-9]+ \w+/g) === null)
-        return { flagged }
-    }
-
-
-    const commandHandlers = {
-        'CHECK_NAME': checkName,
-        'CHECK_ADDRESS': checkAddress,
-    }
-
-    module.exports.handler = async(event) => {
-        try {
-            const { command, data } = event
-
-            const result = await commandHandlers[command](data)
-            return result
-        } catch (ex) {
-            console.error(ex)
-            console.info('event', JSON.stringify(event))
-            throw ex
-        }
-    };
-    ```
+};
+```
 
 Step 2. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 03eee8d58ad56817b84197e45c12f2ce83ae8d52:serverless.yml|
 
@@ -466,7 +476,7 @@ To start out, let’s just try to model the steps involved to check a name, chec
 
 ![Simplified workflow](images/simplified-workflow-sm.png)
 
-1. Open the AWS Step Functions web console
+1. Open the [AWS Step Functions web console](https://console.aws.amazon.com/states/home?region=us-east-1)
 
 2. If the left sidebar is collapsed, expand it
 
@@ -637,79 +647,80 @@ Step 2. Select the step function we defined manually earlier, click ‘Delete’
 
 Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with ___CLIPBOARD_BUTTON c9b0e65eca70946d4da2fceaca4b26bfc6641a76:serverless.yml|
 
-    <div class="notices note">
-            <p>
-                Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
-            </p>
+<div class="notices note">
+        <p>
+            Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
+        </p>
 
-            <pre>
-            StepFunctionRole:
-                Type: 'AWS::IAM::Role'
-                Properties:
-                    AssumeRolePolicyDocument:
-                        Version: '2012-10-17'
-                        Statement:
-                            -
-                            Effect: Allow
-                            Principal:
-                                Service: 'states.amazonaws.com'
-                            Action: 'sts:AssumeRole'
-                    Policies:
+        <pre>
+        StepFunctionRole:
+            Type: 'AWS::IAM::Role'
+            Properties:
+                AssumeRolePolicyDocument:
+                    Version: '2012-10-17'
+                    Statement:
                         -
-                        PolicyName: lambda
-                        PolicyDocument:
-                            Statement:
-                            -
-                                Effect: Allow
-                                Action: 'lambda:InvokeFunction'
-                                Resource:
-                                    - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
+                        Effect: Allow
+                        Principal:
+                            Service: 'states.amazonaws.com'
+                        Action: 'sts:AssumeRole'
+                Policies:
+                    -
+                    PolicyName: lambda
+                    PolicyDocument:
+                        Statement:
+                        -
+                            Effect: Allow
+                            Action: 'lambda:InvokeFunction'
+                            Resource:
+                                - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
 
-            ProcessApplicationsStateMachine:
-                Type: AWS::StepFunctions::StateMachine
-                Properties:
-                    StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
-                    RoleArn: !GetAtt StepFunctionRole.Arn
-                    DefinitionString:
-                    !Sub
-                        - |-
-                        {
-                            "StartAt": "Check Name",
-                            "States": {
-                                "Check Name": {
-                                    "Type": "Task",
-                                    "Parameters": {
-                                        "command": "CHECK_NAME",
-                                        "data": { "name.$": "$.application.name" }
-                                    },
-                                    "Resource": "#{dataCheckingLambdaArn}",
-                                    "Next": "Check Address"
+        ProcessApplicationsStateMachine:
+            Type: AWS::StepFunctions::StateMachine
+            Properties:
+                StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
+                RoleArn: !GetAtt StepFunctionRole.Arn
+                DefinitionString:
+                !Sub
+                    - |-
+                    {
+                        "StartAt": "Check Name",
+                        "States": {
+                            "Check Name": {
+                                "Type": "Task",
+                                "Parameters": {
+                                    "command": "CHECK_NAME",
+                                    "data": { "name.$": "$.application.name" }
                                 },
-                                "Check Address": {
-                                    "Type": "Task",
-                                    "Parameters": {
-                                        "command": "CHECK_ADDRESS",
-                                        "data": { "address.$": "$.application.address" }
-                                    },
-                                    "Resource": "#{dataCheckingLambdaArn}",
-                                    "Next": "Approve Application"
+                                "Resource": "#{dataCheckingLambdaArn}",
+                                "Next": "Check Address"
+                            },
+                            "Check Address": {
+                                "Type": "Task",
+                                "Parameters": {
+                                    "command": "CHECK_ADDRESS",
+                                    "data": { "address.$": "$.application.address" }
                                 },
-                                "Approve Application": {
-                                    "Type": "Pass",
-                                    "End": true
-                                }
+                                "Resource": "#{dataCheckingLambdaArn}",
+                                "Next": "Approve Application"
+                            },
+                            "Approve Application": {
+                                "Type": "Pass",
+                                "End": true
                             }
                         }
-                        - {
-                        dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-                        }
-            </pre>
-    </div>
+                    }
+                    - {
+                    dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
+                    }
+        </pre>
+</div>
 
 Step 4. Run:
-    ```bash
-    sls deploy
-    ```
+
+```bash
+sls deploy
+```
 
 
 ### Try it out
@@ -757,7 +768,7 @@ Now, we know that our state machine was able to execute our Data Checking lambda
 Let’s unpack this so we can understand why the state was cancelled.  If you look back at our state machine definition for the Check Address state (shown below), you’ll see that it expects to have an `application` object in its input, and it tries to pass `application.address` down into the Data Checking lambda. 
 
 
-```
+```json
 [...],
 "Check Address": {
           "Type": "Task",
@@ -798,40 +809,40 @@ Below is a new version of our serverless.yml file that contains updated Check Na
 
 Step 1. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 4114d55fdb744943184a1b480c94da7d77cfc80d:serverless.yml|
 
-    <div class="notices note">
-        <p>
-            Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
-        </p>
+<div class="notices note">
+    <p>
+        Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
+    </p>
 
-        <pre>
-        {
-            [...]
-            "States": {
-                "Check Name": {
-                    [...]
-
-                    "ResultPath": "$.checks.name",
-
-                    [...]
-                },
-                "Check Address": {
-                    [...]
-
-                    "ResultPath": "$.checks.address",
-
-                    [...]
-                },
+    <pre>
+    {
+        [...]
+        "States": {
+            "Check Name": {
                 [...]
-            }
+
+                "ResultPath": "$.checks.name",
+
+                [...]
+            },
+            "Check Address": {
+                [...]
+
+                "ResultPath": "$.checks.address",
+
+                [...]
+            },
+            [...]
         }
-        </pre>
-    </div>
+    }
+    </pre>
+</div>
 
 Step 2. Run:
 
-    ```bash
-    sls deploy
-    ```
+```bash
+sls deploy
+```
 
 ### Try it out
 
@@ -873,59 +884,59 @@ Here is what our updated flow will look like after we're done with this step:
 
 Step 1. Replace `serverless.yml` with ___CLIPBOARD_BUTTON def5ea473552142257ef1b5a047ba98dd01749c2:serverless.yml|
 
-    <div class="notices note">
-        <p>
-            Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
-        </p>
+<div class="notices note">
+    <p>
+        Specifically, here are the relevant additions you will have added after pasting the new <code>serverless.yml</code>.<br/><br/>But, <strong>please don't make the edits by hand</strong>. The copy/paste here reduces the risk of typos.
+    </p>
 
-        <pre>
-        {
+    <pre>
+    {
+    [...]
+
+    "States": {
         [...]
 
-        "States": {
+        "Check Address": {
             [...]
 
-            "Check Address": {
-                [...]
+            "Next": "Review Required?"
+        },
 
-                "Next": "Review Required?"
-            },
+        "Review Required?": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.checks.name.flagged",
+                    "BooleanEquals": true,
+                    "Next": "Pending Review"
+                },
+                {
+                    "Variable": "$.checks.address.flagged",
+                    "BooleanEquals": true,
+                    "Next": "Pending Review"
+                }
+            ],
+            "Default": "Approve Application"
+        },
 
-            "Review Required?": {
-                "Type": "Choice",
-                "Choices": [
-                    {
-                        "Variable": "$.checks.name.flagged",
-                        "BooleanEquals": true,
-                        "Next": "Pending Review"
-                    },
-                    {
-                        "Variable": "$.checks.address.flagged",
-                        "BooleanEquals": true,
-                        "Next": "Pending Review"
-                    }
-                ],
-                "Default": "Approve Application"
-            },
-
-            "Pending Review": {
-                "Type": "Pass",
-                "End": true
-            },
-            
-            
-            [...]
-            }
-        } 
-        </pre>
-    </div>
+        "Pending Review": {
+            "Type": "Pass",
+            "End": true
+        },
+        
+        
+        [...]
+        }
+    } 
+    </pre>
+</div>
 
 
 Step 2. Run:
 
-    ```bash
-    sls deploy
-    ```
+```bash
+sls deploy
+```
 
 
 
@@ -1059,11 +1070,11 @@ Step 2. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 55e4f1b3cf75014bbad84a
     </pre>
 </div>
 
-3. Run:
+Step 3. Run:
 
-    ```bash
-    sls deploy
-    ```
+```bash
+sls deploy
+```
 
 
 Now that we’ve integrated our Account Applications service with our processing workflow state machine, we’ll trigger all future state machine executions by submitting new applications to the service (by invoking our SubmitApplication function), rather than executing the state machine directly with arbitrary input in the web console. 
@@ -1238,9 +1249,9 @@ Step 3. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 278b0babefb143aafbbf1b
 
 Step 4. Run:
 
-    ```bash
-    sls deploy
-    ```
+```bash
+sls deploy
+```
 
 ### Try it out
 
@@ -1250,15 +1261,15 @@ Let’s test this:
 
 1. Submit an invalid application so it gets flagged. Run:
 
-    ```bash
-    sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "123EnterpriseStreet" }'
-    ```
+```bash
+sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "123EnterpriseStreet" }'
+```
 
 2. Check to see that our application is flagged for review. Run:
 
-    ```bash
-    sls invoke -f FindApplications --data='{ "state": "FLAGGED_FOR_REVIEW" }' 
-    ```
+```bash
+sls invoke -f FindApplications --data='{ "state": "FLAGGED_FOR_REVIEW" }' 
+```
 
 3. Copy the application’s ID from the results, which we’ll use in a step below to provide a review decision for the application.
 
@@ -1342,10 +1353,11 @@ Step 1. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 77603cdb8730955713c454
     </pre>
 </div> 
 
-2. Run:
-    ```bash
-    sls deploy
-    ```
+Step 2. Run:
+
+```bash
+sls deploy
+```
 
 
 
@@ -1383,7 +1395,7 @@ The [developer guide identifies the types of transient Lambda service errors tha
 
 ### Make these changes
 
-Step 1. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 43adfda72ed4228c5818e3b7b2c334dea6cdb340:serverless.yml
+Step 1. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 43adfda72ed4228c5818e3b7b2c334dea6cdb340:serverless.yml|
 
 <div class="notices note">
     <p>
@@ -1426,9 +1438,9 @@ Step 1. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 43adfda72ed4228c5818e3
 
 Step 2. Run:
 
-    ```
-    sls deploy
-    ```
+```bash
+sls deploy
+```
 
 
 {{% notice tip %}}
@@ -1526,9 +1538,10 @@ Step 2. Replace `serverless.yml` with ___CLIPBOARD_BUTTON afebf4c40193cc6a39c685
 </div> 
     
 Step 3. Run:
-    ```bash
-    sls deploy
-    ```
+
+```bash
+sls deploy
+```
 
 ### Try it out
 
@@ -1573,7 +1586,7 @@ Step Functions has a `Parallel` state type which, unsurprisingly, lets a state m
 
 Let's refactor our state machine to  perform the name and address checks in parallel:
 
-Step 1. Replace `serverless.yml` with <button class="clipboard" ___CLIPBOARD_BUTTON 8f6d5e019d11e6805e4124fb30cdd6a03b41a681:serverless.yml
+Step 1. Replace `serverless.yml` with <button class="clipboard" ___CLIPBOARD_BUTTON 8f6d5e019d11e6805e4124fb30cdd6a03b41a681:serverless.yml|
 
 <div class="notices note">
     <p>
@@ -1631,9 +1644,9 @@ Step 1. Replace `serverless.yml` with <button class="clipboard" ___CLIPBOARD_BUT
 
 Step 2. Run:
 
-    ```
-    sls deploy
-    ```
+```bash
+sls deploy
+```
 
 ### Try it out
 
@@ -1674,6 +1687,13 @@ At this point, we have a well structured state machine to manage the workflow of
 **Congratulations**! 
 
 If you’ve taken the time to work through all of the steps in this workshop, you’re now well equipped with the knowledge and experience to begin orchestrating your own service collaborations with AWS Step Functions.
+
+### What we didn't cover
+
+TODO: discuss further learning like:
+- Activities
+- Map and Wait states
+- where to learn more
 
 ### Cleaning up
 

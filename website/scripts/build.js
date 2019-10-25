@@ -22,9 +22,11 @@ const templatize = (str, match) => {
 
     const fileContent = showFileAtSha(match.groups.sha, match.groups.file)
     const id = "id" + uuid().replace(/-/g,"")
-
+    
+    // Amazing, since JS treats '$' as a special character when doing replacements, we need to pass a function to replace to ignore escaping issues
+    // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#Specifying_a_string_as_a_parameter
     const buttonHtml = CLIPBOARD_BUTTON_TAG_TEMPLATE.replace('__TARGET_ID__', id)
-    const preHtml = CLIPBOARD_PRE_TAG_TEMPLATE.replace('__TARGET_ID__', id).replace('__FILE_CONTENT__', fileContent + "\n")
+    const preHtml = CLIPBOARD_PRE_TAG_TEMPLATE.replace('__TARGET_ID__', id).replace('__FILE_CONTENT__', () => (fileContent + "\n"))
 
     const startOfMatch = match.index
     const endOfMatch = startOfMatch + match[0].length
