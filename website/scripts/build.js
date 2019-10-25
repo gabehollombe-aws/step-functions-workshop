@@ -39,14 +39,8 @@ const nextMatch = (str) => {
 }
 
 const main = () => {
-    // templatePath="../source_content/test_index.md"
-    // compiledPath="/tmp/compiled_test.md"
     templatePath="../source_content/source_index.md"
     compiledPath="../content/_index.md"
-
-
-    // console.log(showFileAtSha(sha, "serverless.yml"))
-    // console.log(getUnifiedDiff(sha))
 
     let templateBufferStr = readFileSync(templatePath).toString()
     let match = nextMatch(templateBufferStr)
@@ -56,28 +50,9 @@ const main = () => {
         match = nextMatch(templateBufferStr)
     }
 
-    // const buttonRegex = /___CLIPBOARD_BUTTON (?<sha>.+):(?<file>\w+\.\w+)(?<rest>.*)/gm
-    // const buttonMatches = Array.from(template.matchAll(buttonRegex))
-
-    // const match = buttonMatches[0]
-    // const fileContent = showFileAtSha(match.groups.sha, match.groups.file)
-    // const id = "id" + uuid().replace(/-/g,"")
-    // const buttonHtml = CLIPBOARD_BUTTON_TAG_TEMPLATE.replace('__TARGET_ID__', id)
-    // const preHtml = CLIPBOARD_PRE_TAG_TEMPLATE.replace('__TARGET_ID__', id).replace('__FILE_CONTENT__', fileContent + "\n")
-
-    // const startOfMatch = match.index
-    // const endOfMatch = startOfMatch + match[0].length
-    // // const compiledTemplate = template.slice(0, startOfMatch) + buttonHtml + preHtml + template.substr(endOfMatch + 1)
-    // const compiledTemplate = template.slice(0, startOfMatch) + buttonHtml + match.groups.rest + preHtml + template.substr(endOfMatch + 1)
-
-    console.log(templateBufferStr)
-
     writeFileSync(compiledPath, templateBufferStr)    
 
-
-
-
+    console.log('Done inserting clipboard buttons.')
 }
-
 
 main()
