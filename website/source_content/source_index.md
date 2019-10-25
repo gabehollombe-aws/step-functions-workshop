@@ -338,44 +338,7 @@ Also, for the sake of keeping our code simple, we’ll implement our name and ad
 
 ### Make these changes
 
-Step 1. Create `workshop-dir/data-checking.js` and paste in the following content:
-
-```
-'use strict';
-
-const checkName = async (data) => {
-    const { name } = data
-
-    const flagged = (name.indexOf('evil') !== -1)
-    return { flagged }
-}
-
-const checkAddress = async (data) => {
-    const { address } = data
-
-    const flagged = (address.match(/[0-9]+ \w+/g) === null)
-    return { flagged }
-}
-
-
-const commandHandlers = {
-    'CHECK_NAME': checkName,
-    'CHECK_ADDRESS': checkAddress,
-}
-
-module.exports.handler = async(event) => {
-    try {
-        const { command, data } = event
-
-        const result = await commandHandlers[command](data)
-        return result
-    } catch (ex) {
-        console.error(ex)
-        console.info('event', JSON.stringify(event))
-        throw ex
-    }
-};
-```
+Step 1. Create `workshop-dir/data-checking.js` with ___CLIPBOARD_BUTTON 4b2da0cd48c78a59727400820bef2bdebeb29744:code/data-checking.js|
 
 Step 2. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 03eee8d58ad56817b84197e45c12f2ce83ae8d52:serverless.yml|
 
@@ -1463,7 +1426,7 @@ To show this in action, we’ll update our Data Checking Lambda, telling it to t
 
 ### Make these changes
 
-Step 1. Replace `data-checking.js` with ___CLIPBOARD_BUTTON afebf4c40193cc6a39c685ac9a15b27f9438a52b:data-checking.js|
+Step 1. Replace `data-checking.js` with ___CLIPBOARD_BUTTON 599d75abec2f61a2459bb36eaec4d4e0d7bcbc4d:code/data-checking.js|
 
 <div class="notices note">
     <p>

@@ -17,7 +17,7 @@ const showFileAtSha = (sha, path) => {
 }
 
 const templatize = (str, match) => {
-    const CLIPBOARD_BUTTON_TAG_TEMPLATE = '<button class="clipboard" data-clipboard-target="#__TARGET_ID__">this text</button> (click the gray button to copy to clipboard).' // trailing space important
+    const CLIPBOARD_BUTTON_TAG_TEMPLATE = '<button class="clipboard" data-clipboard-target="#__TARGET_ID__">this content</button> (click the gray button to copy to clipboard).' // trailing space important
     const CLIPBOARD_PRE_TAG_TEMPLATE = '{{% safehtml %}}<pre id="__TARGET_ID__" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">__FILE_CONTENT__</pre>{{% /safehtml %}}'
 
     const fileContent = showFileAtSha(match.groups.sha, match.groups.file)
