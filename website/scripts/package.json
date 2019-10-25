@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nodegit": "^0.26.2"
+    "nodegit": "^0.26.2",
+    "uuid": "^3.3.3"
   }
 }
