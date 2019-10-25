@@ -3,35 +3,32 @@
 const checkName = (data) => {
     const { name } = data
 
-    if (name.includes("UNPROCESSABLE_DATA")) {
-        const simulatedError = new Error(`Simulated error: Name '${name}' is not possible to check.`)
-        simulatedError.name = 'UnprocessableDataException'
-        throw simulatedError
-    }
-
-    const flagged = name.includes('evil')
+    const flagged = (name.indexOf('evil') !== -1)
     return { flagged }
 }
 
 const checkAddress = (data) => {
     const { address } = data
+
     const flagged = (address.match(/(\d+ \w+)|(\w+ \d+)/g) === null)
     return { flagged }
 }
+
 
 const commandHandlers = {
     'CHECK_NAME': checkName,
     'CHECK_ADDRESS': checkAddress,
 }
 
-module.exports.handler = (event) => {
+module.exports.handler = (event, context, callback) => {
     try {
         const { command, data } = event
+
         const result = commandHandlers[command](data)
-        return result
+        callback(null, result)
     } catch (ex) {
         console.error(ex)
         console.info('event', JSON.stringify(event))
-        throw ex
+        callback(ex)
     }
 };
