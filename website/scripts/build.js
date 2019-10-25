@@ -1,5 +1,5 @@
 const { execSync } = require('child_process')
-const { readFileSync } = require('fs')
+const { readFileSync, writeFileSync } = require('fs')
 const uuid = require('uuid/v4')
 
 const getUnifiedDiff = (sha) => {
@@ -16,36 +16,42 @@ const showFileAtSha = (sha, path) => {
     return output.toString()
 }
 
-const getTemplateContents = (path) => {
+const templatize = (str, match) => {
 
 }
 
 const main = () => {
-    sha = "03eee8d58ad56817b84197e45c12f2ce83ae8d52"
+    // templatePath="../source_content/test_index.md"
+    // compiledPath="/tmp/compiled_test.md"
+    templatePath="../source_content/source_index.md"
+    compiledPath="../content/_index.md"
 
-    templatePath="../source_content/test_index.md"
-    compiledPath="/tmp/result.md"
+    CLIPBOARD_BUTTON_TAG_TEMPLATE = '<button class="clipboard" data-clipboard-target="#__TARGET_ID__">this text</button> ' // trailing space important
+    CLIPBOARD_PRE_TAG_TEMPLATE = '{{% safehtml %}}<pre id="__TARGET_ID__" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">__FILE_CONTENT__</pre>{{% /safehtml %}}'
 
-    CLIPBOARD_BUTTON_TAG_TEMPLATE = '<button class="clipboard" data-clipboard-target="__TARGET_ID__">this text</button>'
-    CLIPBOARD_PRE_TAG_TEMPLATE = '<pre id="__TARGET_ID__" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">__FILE_CONTENT__</pre>'
-
-    console.log(showFileAtSha(sha, "serverless.yml"))
-    
-    console.log(getUnifiedDiff(sha))
+    // console.log(showFileAtSha(sha, "serverless.yml"))
+    // console.log(getUnifiedDiff(sha))
 
     const template = readFileSync(templatePath).toString()
 
-    const buttonRegex = /___CLIPBOARD_BUTTON (?<sha>.+):(?<file>\w+\.\w+) .+$/gm
+    const buttonRegex = /___CLIPBOARD_BUTTON (?<sha>.+):(?<file>\w+\.\w+)(?<rest>.*)/gm
     const buttonMatches = Array.from(template.matchAll(buttonRegex))
 
     const match = buttonMatches[0]
     const fileContent = showFileAtSha(match.groups.sha, match.groups.file)
-    const id = uuid()
+    const id = "id" + uuid().replace(/-/g,"")
     const buttonHtml = CLIPBOARD_BUTTON_TAG_TEMPLATE.replace('__TARGET_ID__', id)
-    const preHtml = CLIPBOARD_PRE_TAG_TEMPLATE.replace('__TARGET_ID__', id).replace('__FILE_CONTENT__', fileContent)
+    const preHtml = CLIPBOARD_PRE_TAG_TEMPLATE.replace('__TARGET_ID__', id).replace('__FILE_CONTENT__', fileContent + "\n")
 
-    console.log(buttonHtml)
-    console.log(preHtml)
+    const startOfMatch = match.index
+    const endOfMatch = startOfMatch + match[0].length
+    // const compiledTemplate = template.slice(0, startOfMatch) + buttonHtml + preHtml + template.substr(endOfMatch + 1)
+    const compiledTemplate = template.slice(0, startOfMatch) + buttonHtml + match.groups.rest + preHtml + template.substr(endOfMatch + 1)
+
+    console.log(compiledTemplate)
+
+    writeFileSync(compiledPath, compiledTemplate)    
+
 
 
 
