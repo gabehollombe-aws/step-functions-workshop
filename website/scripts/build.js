@@ -2,8 +2,8 @@ const { execSync } = require('child_process')
 const { readFileSync, writeFileSync } = require('fs')
 const uuid = require('uuid/v4')
 
-const getUnifiedDiff = (sha) => {
-    const output = execSync(`git diff -p ${sha}^ ${sha}`, {
+const getUnifiedDiff = (sha, path) => {
+    const output = execSync(`git diff -p ${sha}^ ${sha} -- ${path}`, {
         cwd: `${__dirname}/../..`
     })
     return output.toString()
@@ -17,9 +17,11 @@ const showFileAtSha = (sha, path) => {
 }
 
 const templatize = (str, match) => {
-    const CLIPBOARD_BUTTON_TAG_TEMPLATE = '<button class="clipboard" data-clipboard-target="#__TARGET_ID__">this content</button> (click the gray button to copy to clipboard).' // trailing space important
-    const CLIPBOARD_PRE_TAG_TEMPLATE = '{{% safehtml %}}<pre id="__TARGET_ID__" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">__FILE_CONTENT__</pre>{{% /safehtml %}}'
+    const CLIPBOARD_BUTTON_TAG_TEMPLATE = '<button class="clipboard" data-clipboard-target="#__TARGET_ID__">this content</button> (click the gray button to copy to clipboard). ' // trailing space important
+    const CLIPBOARD_PRE_TAG_TEMPLATE = '{{< safehtml >}}\n<pre id="__TARGET_ID__" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">__FILE_CONTENT__</pre>\n{{< /safehtml >}}'
+    const DIFF_HTML_TEMPLATE = '{{< expand "Click to view diff" >}} {{< safehtml >}}\n<div id="diff-__TARGET_ID__"></div> <pre xstyle="display: none;" data-diff-for="diff-__TARGET_ID__">__DIFF_CONTENT__</pre>\n{{< /safehtml >}} {{< /expand >}}'
 
+    const diffContent = getUnifiedDiff(match.groups.sha, match.groups.file)
     const fileContent = showFileAtSha(match.groups.sha, match.groups.file)
     const id = "id" + uuid().replace(/-/g,"")
     
@@ -27,10 +29,11 @@ const templatize = (str, match) => {
     // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#Specifying_a_string_as_a_parameter
     const buttonHtml = CLIPBOARD_BUTTON_TAG_TEMPLATE.replace('__TARGET_ID__', id)
     const preHtml = CLIPBOARD_PRE_TAG_TEMPLATE.replace('__TARGET_ID__', id).replace('__FILE_CONTENT__', () => (fileContent + "\n"))
+    const diffHtml = DIFF_HTML_TEMPLATE.replace(/__TARGET_ID__/g, id).replace('__DIFF_CONTENT__', () => (diffContent))
 
     const startOfMatch = match.index
     const endOfMatch = startOfMatch + match[0].length
-    const compiledTemplate = str.slice(0, startOfMatch) + buttonHtml + match.groups.rest + preHtml + "\n" + str.substr(endOfMatch + 1)
+    const compiledTemplate = str.slice(0, startOfMatch) + buttonHtml + match.groups.rest + "\n" + diffHtml + "\n" + preHtml + "\n" + str.substr(endOfMatch + 1)
     return compiledTemplate
 }
 

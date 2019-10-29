@@ -173,6 +173,20 @@ jQuery(document).ready(function() {
         }
     }
 
+
+    // show diffs
+    jQuery(function() {
+        $('[data-diff-for]').each(function(index, el) {
+        const diffHtml = Diff2Html.getPrettyHtml(
+            el.innerHTML,
+            {
+                outputFormat: 'side-by-side',
+            }
+        )
+        document.getElementById(el.dataset.diffFor).innerHTML = diffHtml;
+        })
+    })
+
     // additional clipboarding from buttons
     var clipboardJS = new ClipboardJS('button.clipboard');
     clipboardJS.on('success', function(e) {

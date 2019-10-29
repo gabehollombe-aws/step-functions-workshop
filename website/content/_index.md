@@ -338,7 +338,61 @@ Also, for the sake of keeping our code simple, we’ll implement our name and ad
 
 ### Make these changes
 
-Step 1. Create `workshop-dir/data-checking.js` with <button class="clipboard" data-clipboard-target="#idafda3a78b92c4a4496e120325053d4ef">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idafda3a78b92c4a4496e120325053d4ef" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+Step 1. Create `workshop-dir/data-checking.js` with <button class="clipboard" data-clipboard-target="#id1f98e176b3b543c2b0422a70d9c760ea">this content</button> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-id1f98e176b3b543c2b0422a70d9c760ea"></div> <pre xstyle="display: none;" data-diff-for="diff-id1f98e176b3b543c2b0422a70d9c760ea">diff --git a/code/data-checking.js b/code/data-checking.js
+index 053e284..a6ee7f0 100644
+--- a/code/data-checking.js
++++ b/code/data-checking.js
+@@ -3,35 +3,32 @@
+ const checkName = (data) => {
+     const { name } = data
+ 
+-    if (name.includes("UNPROCESSABLE_DATA")) {
+-        const simulatedError = new Error(`Simulated error: Name '${name}' is not possible to check.`)
+-        simulatedError.name = 'UnprocessableDataException'
+-        throw simulatedError
+-    }
+-
+-    const flagged = name.includes('evil')
++    const flagged = (name.indexOf('evil') !== -1)
+     return { flagged }
+ }
+ 
+ const checkAddress = (data) => {
+     const { address } = data
++
+     const flagged = (address.match(/(\d+ \w+)|(\w+ \d+)/g) === null)
+     return { flagged }
+ }
+ 
++
+ const commandHandlers = {
+     'CHECK_NAME': checkName,
+     'CHECK_ADDRESS': checkAddress,
+ }
+ 
+-module.exports.handler = (event) => {
++module.exports.handler = (event, context, callback) => {
+     try {
+         const { command, data } = event
++
+         const result = commandHandlers[command](data)
+-        return result
++        callback(null, result)
+     } catch (ex) {
+         console.error(ex)
+         console.info('event', JSON.stringify(event))
+-        throw ex
++        callback(ex)
+     }
+-};
+\ No newline at end of file
++};
+</pre>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<pre id="id1f98e176b3b543c2b0422a70d9c760ea" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -373,9 +427,52 @@ module.exports.handler = (event, context, callback) => {
     }
 };
 
-</pre>{{% /safehtml %}}
+</pre>
+{{< /safehtml >}}
 
-Step 2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id98b7e4244ad54bc699b8ca0add6b16d0">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id98b7e4244ad54bc699b8ca0add6b16d0" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#idfa557a196e824649999e3629e0b6c1aa">this content</button> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-idfa557a196e824649999e3629e0b6c1aa"></div> <pre xstyle="display: none;" data-diff-for="diff-idfa557a196e824649999e3629e0b6c1aa">diff --git a/serverless.yml b/serverless.yml
+index 2869132..07bc6d3 100644
+--- a/serverless.yml
++++ b/serverless.yml
+@@ -53,6 +53,11 @@ functions:
+       ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+     role: ApproveRole
+ 
++  DataChecking:
++    name: ${self:service}__data_checking__${self:provider.stage}
++    handler: data-checking.handler
++    role: DataCheckingRole
++
+ resources:
+   Resources:
+     LambdaLoggingPolicy:
+@@ -167,6 +172,20 @@ resources:
+           - { Ref: LambdaLoggingPolicy }
+           - { Ref: DynamoPolicy }
+ 
++    DataCheckingRole:
++      Type: AWS::IAM::Role
++      Properties:
++        AssumeRolePolicyDocument:
++          Version: '2012-10-17'
++          Statement:
++            - Effect: Allow
++              Principal:
++                Service:
++                  - lambda.amazonaws.com
++              Action: sts:AssumeRole
++        ManagedPolicyArns:
++          - { Ref: LambdaLoggingPolicy }
++
+     ApplicationsDynamoDBTable:
+       Type: 'AWS::DynamoDB::Table'
+       Properties:
+</pre>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<pre id="idfa557a196e824649999e3629e0b6c1aa" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -588,7 +685,8 @@ resources:
                         KeyType: HASH
                 Projection:
                     ProjectionType: ALL
-</pre>{{% /safehtml %}}
+</pre>
+{{< /safehtml >}}
 
 <div class="notices note">
     <p>
@@ -856,7 +954,85 @@ Step 1. In the left sidebar of the Step Functions web console, click ‘State ma
 
 Step 2. Select the step function we defined manually earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
-Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id21eaba7c00d44be6a907ab249e842be3">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id21eaba7c00d44be6a907ab249e842be3" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id6b9e530286ef421c847dbebf56ce6ace">this content</button> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-id6b9e530286ef421c847dbebf56ce6ace"></div> <pre xstyle="display: none;" data-diff-for="diff-id6b9e530286ef421c847dbebf56ce6ace">diff --git a/serverless.yml b/serverless.yml
+index 07bc6d3..0b9f3b9 100644
+--- a/serverless.yml
++++ b/serverless.yml
+@@ -210,4 +210,65 @@ resources:
+                         AttributeName: state
+                         KeyType: HASH
+                 Projection:
+-                    ProjectionType: ALL
+\ No newline at end of file
++                    ProjectionType: ALL
++
++    StepFunctionRole:
++      Type: 'AWS::IAM::Role'
++      Properties:
++        AssumeRolePolicyDocument:
++            Version: '2012-10-17'
++            Statement:
++                -
++                  Effect: Allow
++                  Principal:
++                      Service: 'states.amazonaws.com'
++                  Action: 'sts:AssumeRole'
++        Policies:
++            -
++              PolicyName: lambda
++              PolicyDocument:
++                Statement:
++                  -
++                    Effect: Allow
++                    Action: 'lambda:InvokeFunction'
++                    Resource:
++                        - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
++
++    ProcessApplicationsStateMachine:
++      Type: AWS::StepFunctions::StateMachine
++      Properties:
++        StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
++        RoleArn: !GetAtt StepFunctionRole.Arn
++        DefinitionString:
++          !Sub
++            - |-
++              {
++                "StartAt": "Check Name",
++                "States": {
++                    "Check Name": {
++                        "Type": "Task",
++                        "Parameters": {
++                            "command": "CHECK_NAME",
++                            "data": { "name.$": "$.application.name" }
++                        },
++                        "Resource": "#{dataCheckingLambdaArn}",
++                        "Next": "Check Address"
++                    },
++                    "Check Address": {
++                        "Type": "Task",
++                        "Parameters": {
++                            "command": "CHECK_ADDRESS",
++                            "data": { "address.$": "$.application.address" }
++                        },
++                        "Resource": "#{dataCheckingLambdaArn}",
++                        "Next": "Approve Application"
++                    },
++                    "Approve Application": {
++                        "Type": "Pass",
++                        "End": true
++                    }
++                }
++              }
++            - {
++              dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
++            }
+\ No newline at end of file
+</pre>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<pre id="id6b9e530286ef421c847dbebf56ce6ace" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -1130,7 +1306,8 @@ resources:
             - {
               dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
             }
-</pre>{{% /safehtml %}}
+</pre>
+{{< /safehtml >}}
 
 <div class="notices note">
         <p>
@@ -1292,7 +1469,32 @@ So, to fix our current issue, we need to add a `ResultPath` statement, instructi
 Below is a new version of our serverless.yml file that contains updated Check Name and Check Address states, using the ResultPath property to merge their outputs into helpfully-named keys that we can be used later on.
 
 
-Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id83b891e8d0654019bb93f03e53a75c8b">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id83b891e8d0654019bb93f03e53a75c8b" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#ida05308ff5f0446b88b8730e3f5b919ed">this content</button> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-ida05308ff5f0446b88b8730e3f5b919ed"></div> <pre xstyle="display: none;" data-diff-for="diff-ida05308ff5f0446b88b8730e3f5b919ed">diff --git a/serverless.yml b/serverless.yml
+index 0b9f3b9..83b94ce 100644
+--- a/serverless.yml
++++ b/serverless.yml
+@@ -252,6 +252,7 @@ resources:
+                             "data": { "name.$": "$.application.name" }
+                         },
+                         "Resource": "#{dataCheckingLambdaArn}",
++                        "ResultPath": "$.checks.name",
+                         "Next": "Check Address"
+                     },
+                     "Check Address": {
+@@ -261,6 +262,7 @@ resources:
+                             "data": { "address.$": "$.application.address" }
+                         },
+                         "Resource": "#{dataCheckingLambdaArn}",
++                        "ResultPath": "$.checks.address",
+                         "Next": "Approve Application"
+                     },
+                     "Approve Application": {
+</pre>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<pre id="ida05308ff5f0446b88b8730e3f5b919ed" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -1568,7 +1770,8 @@ resources:
             - {
               dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
             }
-</pre>{{% /safehtml %}}
+</pre>
+{{< /safehtml >}}
 
 <div class="notices note">
     <p>
@@ -1643,7 +1846,46 @@ Here is what our updated flow will look like after we're done with this step:
 
 ### Make these changes
 
-Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id9c0896dbaf6c40259494fa85ea9c83ca">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id9c0896dbaf6c40259494fa85ea9c83ca" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id26396fce0ac94f74b3d0fb67211a93dc">this content</button> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-id26396fce0ac94f74b3d0fb67211a93dc"></div> <pre xstyle="display: none;" data-diff-for="diff-id26396fce0ac94f74b3d0fb67211a93dc">diff --git a/serverless.yml b/serverless.yml
+index 83b94ce..47a3b0f 100644
+--- a/serverless.yml
++++ b/serverless.yml
+@@ -263,8 +263,28 @@ resources:
+                         },
+                         "Resource": "#{dataCheckingLambdaArn}",
+                         "ResultPath": "$.checks.address",
+-                        "Next": "Approve Application"
++                        "Next": "Review Required?"
+                     },
++                    "Review Required?": {
++                        "Type": "Choice",
++                        "Choices": [
++                          {
++                            "Variable": "$.checks.name.flagged",
++                            "BooleanEquals": true,
++                            "Next": "Pending Review"
++                          },
++                          {
++                            "Variable": "$.checks.address.flagged",
++                            "BooleanEquals": true,
++                            "Next": "Pending Review"
++                          }
++                        ],
++                        "Default": "Approve Application"
++                    },
++                    "Pending Review": {
++                        "Type": "Pass",
++                        "End": true
++                     },
+                     "Approve Application": {
+                         "Type": "Pass",
+                         "End": true
+</pre>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<pre id="id26396fce0ac94f74b3d0fb67211a93dc" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -1939,7 +2181,8 @@ resources:
             - {
               dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
             }
-</pre>{{% /safehtml %}}
+</pre>
+{{< /safehtml >}}
 
 <div class="notices note">
     <p>
@@ -2054,7 +2297,63 @@ To do this, we will integrate our Account Applications service with our applicat
 
 ### Make these changes
 
-Step 1. Replace `account-applications/submit.js` with <button class="clipboard" data-clipboard-target="#id722da4bce48b4cb4a573338a58959282">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id722da4bce48b4cb4a573338a58959282" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+Step 1. Replace `account-applications/submit.js` with <button class="clipboard" data-clipboard-target="#id8372dd43069a403ca93cf202f3b08d8b">this content</button> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-id8372dd43069a403ca93cf202f3b08d8b"></div> <pre xstyle="display: none;" data-diff-for="diff-id8372dd43069a403ca93cf202f3b08d8b">diff --git a/account-applications/submit.js b/account-applications/submit.js
+index ce94300..8072958 100644
+--- a/account-applications/submit.js
++++ b/account-applications/submit.js
+@@ -1,11 +1,13 @@
+ 'use strict';
+ const REGION = process.env.REGION
+ const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
++const APPLICATION_PROCESSING_STEP_FUNCTION_ARN = process.env.APPLICATION_PROCESSING_STEP_FUNCTION_ARN
+ 
+ const AWS = require('aws-sdk')
+ AWS.config.update({region: REGION});
+ 
+ const dynamo = new AWS.DynamoDB.DocumentClient();
++const stepfunctions = new AWS.StepFunctions();
+ 
+ const AccountApplications = require('./AccountApplications')(ACCOUNTS_TABLE_NAME, dynamo)
+ 
+@@ -15,18 +17,28 @@ const submitNewAccountApplication = async (data) => {
+     return application
+ } 
+ 
++const startStateMachineExecution = (application) => {
++    const params = {
++        "input": JSON.stringify({ application }),
++        "name": `ApplicationID-${application.id}`,
++        "stateMachineArn": APPLICATION_PROCESSING_STEP_FUNCTION_ARN
++    }
++    stepfunctions.startExecution(params).promise()
++}
++
+ module.exports.handler = async(event) => {
+     let application
+     try {
+         application = await submitNewAccountApplication(event)
++        await startStateMachineExecution(application)
+         return application
+     } catch (ex) {
++        console.error(ex)
++        console.info('event', JSON.stringify(event))
++
+         if (application !== undefined) {
+             await AccountApplications.delete(application.id)
+         }
+-
+-        console.error(ex)
+-        console.info('event', JSON.stringify(event))
+         throw ex
+     }
+ }
+\ No newline at end of file
+</pre>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<pre id="id8372dd43069a403ca93cf202f3b08d8b" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 const APPLICATION_PROCESSING_STEP_FUNCTION_ARN = process.env.APPLICATION_PROCESSING_STEP_FUNCTION_ARN
@@ -2098,7 +2397,8 @@ module.exports.handler = async(event) => {
         throw ex
     }
 }
-</pre>{{% /safehtml %}}
+</pre>
+{{< /safehtml >}}
 
 <div class="notices note">
     <p>
@@ -2132,7 +2432,54 @@ module.exports.handler = async(event) => {
     </pre>
 </div>
 
-Step 2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#idf859720a38684150b8d12c789c22caa9">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idf859720a38684150b8d12c789c22caa9" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id91787ee9b9cb4bafb5358de6d8f8f669">this content</button> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-id91787ee9b9cb4bafb5358de6d8f8f669"></div> <pre xstyle="display: none;" data-diff-for="diff-id91787ee9b9cb4bafb5358de6d8f8f669">diff --git a/serverless.yml b/serverless.yml
+index 47a3b0f..eec141d 100644
+--- a/serverless.yml
++++ b/serverless.yml
+@@ -19,6 +19,7 @@ functions:
+     environment:
+       REGION: ${self:provider.region}
+       ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
++      APPLICATION_PROCESSING_STEP_FUNCTION_ARN: { Ref: "ProcessApplicationsStateMachine" }
+     role: SubmitRole
+ 
+   FlagApplication:
+@@ -97,6 +98,21 @@ resources:
+                         - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
+                         - '*'
+ 
++    StepFunctionsPolicy:
++      Type: 'AWS::IAM::ManagedPolicy'
++      Properties:
++        PolicyDocument:
++          Version: '2012-10-17'
++          Statement:
++            -
++              Effect: "Allow"
++              Action:
++                - "states:StartExecution"
++                - "states:SendTaskSuccess"
++                - "states:SendTaskFailure"
++              Resource:
++                - { Ref: ProcessApplicationsStateMachine }
++
+     SubmitRole:
+       Type: AWS::IAM::Role
+       Properties:
+@@ -111,6 +127,7 @@ resources:
+         ManagedPolicyArns:
+           - { Ref: LambdaLoggingPolicy }
+           - { Ref: DynamoPolicy }
++          - { Ref: StepFunctionsPolicy }
+ 
+     FlagRole:
+       Type: AWS::IAM::Role
+</pre>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<pre id="id91787ee9b9cb4bafb5358de6d8f8f669" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -2445,7 +2792,8 @@ resources:
             - {
               dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
             }
-</pre>{{% /safehtml %}}
+</pre>
+{{< /safehtml >}}
 
 <div class="notices note">
     <p>
@@ -2541,7 +2889,33 @@ We’ll need to make a few updates to our workflow in order for this to work.
 
 ### Make these changes
 
-Step 1. Replace `account-applications/flag.js` with <button class="clipboard" data-clipboard-target="#idade4d7851dc340879b91b665419ce909">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idade4d7851dc340879b91b665419ce909" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+Step 1. Replace `account-applications/flag.js` with <button class="clipboard" data-clipboard-target="#idc153c57c1ce94c60a2d7eff3181defd3">this content</button> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-idc153c57c1ce94c60a2d7eff3181defd3"></div> <pre xstyle="display: none;" data-diff-for="diff-idc153c57c1ce94c60a2d7eff3181defd3">diff --git a/account-applications/flag.js b/account-applications/flag.js
+index 3e700d5..8bbdcb1 100644
+--- a/account-applications/flag.js
++++ b/account-applications/flag.js
+@@ -10,7 +10,7 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
+ const AccountApplications = require('./AccountApplications')(ACCOUNTS_TABLE_NAME, dynamo)
+ 
+ const flagForReview = async (data) => {
+-    const { id, flagType } = data
++    const { id, flagType, taskToken } = data
+ 
+     if (flagType !== 'REVIEW' && flagType !== 'UNPROCESSABLE_DATA') {
+         throw new Error("flagType must be REVIEW or UNPROCESSABLE_DATA")
+@@ -32,6 +32,7 @@ const flagForReview = async (data) => {
+         {
+             state: newState,
+             reason,
++            taskToken
+         }
+     )
+     return updatedApplication
+</pre>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<pre id="idc153c57c1ce94c60a2d7eff3181defd3" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -2591,7 +2965,8 @@ module.exports.handler = async(event) => {
         throw ex
     }
 };
-</pre>{{% /safehtml %}}
+</pre>
+{{< /safehtml >}}
 
 <div class="notices note">
     <p>
@@ -2614,7 +2989,66 @@ module.exports.handler = async(event) => {
     </pre>
 </div>
 
-Step 2. Create `account-applications/review.js` with <button class="clipboard" data-clipboard-target="#id211e5dd84d16405c97a9efa7fdbd5e51">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id211e5dd84d16405c97a9efa7fdbd5e51" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+Step 2. Create `account-applications/review.js` with <button class="clipboard" data-clipboard-target="#id0c577006066f4dab9bc69dafe6da8096">this content</button> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-id0c577006066f4dab9bc69dafe6da8096"></div> <pre xstyle="display: none;" data-diff-for="diff-id0c577006066f4dab9bc69dafe6da8096">diff --git a/account-applications/review.js b/account-applications/review.js
+new file mode 100644
+index 0000000..74b3186
+--- /dev/null
++++ b/account-applications/review.js
+@@ -0,0 +1,47 @@
++'use strict';
++const REGION = process.env.REGION
++const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
++
++const AWS = require('aws-sdk')
++AWS.config.update({region: REGION});
++
++const dynamo = new AWS.DynamoDB.DocumentClient();
++const stepfunctions = new AWS.StepFunctions();
++
++const AccountApplications = require('./AccountApplications')(ACCOUNTS_TABLE_NAME, dynamo)
++
++const updateApplicationWithDecision = (id, decision) => {
++    if (decision !== 'APPROVE' && decision !== 'REJECT') {
++        throw new Error("Required `decision` parameter must be 'APPROVE' or 'REJECT'")
++    }
++
++    switch(decision) {
++        case 'APPROVE': return AccountApplications.update(id, { state: 'REVIEW_APPROVED' })
++        case 'REJECT': return AccountApplications.update(id, { state: 'REVIEW_REJECTED' })
++    }
++}
++
++const updateWorkflowWithReviewDecision = async (data) => {
++    const { id, decision } = data
++
++    const updatedApplication = await updateApplicationWithDecision(id, decision)
++
++    let params = {
++        output: JSON.stringify({ decision }),
++        taskToken: updatedApplication.taskToken
++    };
++    await stepfunctions.sendTaskSuccess(params).promise()
++
++    return updatedApplication
++}
++
++module.exports.handler = async(event) => {
++    try {
++        const result = await updateWorkflowWithReviewDecision(event)
++        return result
++    } catch (ex) {
++        console.error(ex)
++        console.info('event', JSON.stringify(event))
++        throw ex
++    }
++};
+\ No newline at end of file
+</pre>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<pre id="id0c577006066f4dab9bc69dafe6da8096" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -2661,9 +3095,111 @@ module.exports.handler = async(event) => {
         throw ex
     }
 };
-</pre>{{% /safehtml %}}
+</pre>
+{{< /safehtml >}}
 
-Step 3. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#ide5ddaa8aedbf47b389385a8474ea0dbe">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="ide5ddaa8aedbf47b389385a8474ea0dbe" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 3. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id92d69418b5914baeb075be1bb8617206">this content</button> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-id92d69418b5914baeb075be1bb8617206"></div> <pre xstyle="display: none;" data-diff-for="diff-id92d69418b5914baeb075be1bb8617206">diff --git a/serverless.yml b/serverless.yml
+index eec141d..acc14c6 100644
+--- a/serverless.yml
++++ b/serverless.yml
+@@ -30,6 +30,14 @@ functions:
+       ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+     role: FlagRole
+ 
++  ReviewApplication:
++    name: ${self:service}__account_applications__review__${self:provider.stage}
++    handler: account-applications/review.handler
++    environment:
++      REGION: ${self:provider.region}
++      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
++    role: ReviewRole
++
+   FindApplications:
+     name: ${self:service}__account_applications__find__${self:provider.stage}
+     handler: account-applications/find.handler
+@@ -144,6 +152,22 @@ resources:
+           - { Ref: LambdaLoggingPolicy }
+           - { Ref: DynamoPolicy }
+ 
++    ReviewRole:
++      Type: AWS::IAM::Role
++      Properties:
++        AssumeRolePolicyDocument:
++          Version: '2012-10-17'
++          Statement:
++            - Effect: Allow
++              Principal:
++                Service:
++                  - lambda.amazonaws.com
++              Action: sts:AssumeRole
++        ManagedPolicyArns:
++          - { Ref: LambdaLoggingPolicy }
++          - { Ref: DynamoPolicy }
++          - { Ref: StepFunctionsPolicy }
++
+     RejectRole:
+       Type: AWS::IAM::Role
+       Properties:
+@@ -250,6 +274,7 @@ resources:
+                     Action: 'lambda:InvokeFunction'
+                     Resource:
+                         - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
++                        - Fn::GetAtt: [FlagApplicationLambdaFunction, Arn]
+ 
+     ProcessApplicationsStateMachine:
+       Type: AWS::StepFunctions::StateMachine
+@@ -299,8 +324,36 @@ resources:
+                         "Default": "Approve Application"
+                     },
+                     "Pending Review": {
+-                        "Type": "Pass",
+-                        "End": true
++                      "Type": "Task",
++                      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
++                      "Parameters": {
++                          "FunctionName": "#{flagApplicationLambdaName}",
++                          "Payload": {
++                              "id.$": "$.application.id",
++                              "flagType": "REVIEW",
++                              "taskToken.$": "$$.Task.Token"
++                          }
++                      },
++                      "ResultPath": "$.review",
++                      "Next": "Review Approved?"
++                    },
++                    "Review Approved?": {
++                        "Type": "Choice",
++                        "Choices": [{
++                                "Variable": "$.review.decision",
++                                "StringEquals": "APPROVE",
++                                "Next": "Approve Application"
++                            },
++                            {
++                                "Variable": "$.review.decision",
++                                "StringEquals": "REJECT",
++                                "Next": "Reject Application"
++                            }
++                        ]
++                    },
++                    "Reject Application": {
++                         "Type": "Pass",
++                         "End": true
+                      },
+                     "Approve Application": {
+                         "Type": "Pass",
+@@ -310,4 +363,5 @@ resources:
+               }
+             - {
+               dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
++              flagApplicationLambdaName: !Ref FlagApplicationLambdaFunction,
+             }
+\ No newline at end of file
+</pre>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<pre id="id92d69418b5914baeb075be1bb8617206" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -3030,7 +3566,8 @@ resources:
               dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
               flagApplicationLambdaName: !Ref FlagApplicationLambdaFunction,
             }
-</pre>{{% /safehtml %}}
+</pre>
+{{< /safehtml >}}
 
 <div class="notices note">
     <p>
@@ -3185,7 +3722,60 @@ Until now, we’ve left the Approve Application state empty, using the Pass stat
 
 ### Make these changes
 
-Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#idf1bbee08bb224d87ac2c46af6bcc04ee">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idf1bbee08bb224d87ac2c46af6bcc04ee" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id879f9d0736e1463dbf8efd413c288a00">this content</button> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-id879f9d0736e1463dbf8efd413c288a00"></div> <pre xstyle="display: none;" data-diff-for="diff-id879f9d0736e1463dbf8efd413c288a00">diff --git a/serverless.yml b/serverless.yml
+index acc14c6..4010aa8 100644
+--- a/serverless.yml
++++ b/serverless.yml
+@@ -275,6 +275,8 @@ resources:
+                     Resource:
+                         - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
+                         - Fn::GetAtt: [FlagApplicationLambdaFunction, Arn]
++                        - Fn::GetAtt: [ApproveApplicationLambdaFunction, Arn]
++                        - Fn::GetAtt: [RejectApplicationLambdaFunction, Arn]
+ 
+     ProcessApplicationsStateMachine:
+       Type: AWS::StepFunctions::StateMachine
+@@ -351,17 +353,27 @@ resources:
+                             }
+                         ]
+                     },
+-                    "Reject Application": {
+-                         "Type": "Pass",
+-                         "End": true
++                     "Reject Application": {
++                        "Type": "Task",
++                        "Parameters": {
++                            "id.$": "$.application.id"
++                        },
++                        "Resource": "#{rejectApplicationLambdaArn}",
++                        "End": true
+                      },
+-                    "Approve Application": {
+-                        "Type": "Pass",
++                     "Approve Application": {
++                        "Type": "Task",
++                        "Parameters": {
++                            "id.$": "$.application.id"
++                        },
++                        "Resource": "#{approveApplicationLambdaArn}",
+                         "End": true
+-                    }
++                     }
+                 }
+               }
+             - {
+               dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
+               flagApplicationLambdaName: !Ref FlagApplicationLambdaFunction,
++              rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
++              approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
+             }
+\ No newline at end of file
+</pre>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<pre id="id879f9d0736e1463dbf8efd413c288a00" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -3564,7 +4154,8 @@ resources:
               rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
               approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
             }
-</pre>{{% /safehtml %}}
+</pre>
+{{< /safehtml >}}
 
 <div class="notices note">
     <p>
@@ -3652,7 +4243,66 @@ The [developer guide identifies the types of transient Lambda service errors tha
 
 ### Make these changes
 
-Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#idc15ede4f8a9842329bb5fcda238e86a3">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idc15ede4f8a9842329bb5fcda238e86a3" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#idac1be756f7ca4dccaa56cf815c7efa3e">this content</button> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-idac1be756f7ca4dccaa56cf815c7efa3e"></div> <pre xstyle="display: none;" data-diff-for="diff-idac1be756f7ca4dccaa56cf815c7efa3e">diff --git a/serverless.yml b/serverless.yml
+index 4010aa8..f28884a 100644
+--- a/serverless.yml
++++ b/serverless.yml
+@@ -297,6 +297,9 @@ resources:
+                         },
+                         "Resource": "#{dataCheckingLambdaArn}",
+                         "ResultPath": "$.checks.name",
++                        "Retry": [ {
++                            "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
++                        } ],
+                         "Next": "Check Address"
+                     },
+                     "Check Address": {
+@@ -307,6 +310,9 @@ resources:
+                         },
+                         "Resource": "#{dataCheckingLambdaArn}",
+                         "ResultPath": "$.checks.address",
++                        "Retry": [ {
++                            "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
++                        } ],
+                         "Next": "Review Required?"
+                     },
+                     "Review Required?": {
+@@ -337,6 +343,9 @@ resources:
+                           }
+                       },
+                       "ResultPath": "$.review",
++                      "Retry": [ {
++                          "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
++                      } ],
+                       "Next": "Review Approved?"
+                     },
+                     "Review Approved?": {
+@@ -359,6 +368,9 @@ resources:
+                             "id.$": "$.application.id"
+                         },
+                         "Resource": "#{rejectApplicationLambdaArn}",
++                        "Retry": [ {
++                            "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
++                        } ],
+                         "End": true
+                      },
+                      "Approve Application": {
+@@ -367,6 +379,9 @@ resources:
+                             "id.$": "$.application.id"
+                         },
+                         "Resource": "#{approveApplicationLambdaArn}",
++                        "Retry": [ {
++                            "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
++                        } ],
+                         "End": true
+                      }
+                 }
+</pre>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<pre id="idac1be756f7ca4dccaa56cf815c7efa3e" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -4046,7 +4696,8 @@ resources:
               rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
               approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
             }
-</pre>{{% /safehtml %}}
+</pre>
+{{< /safehtml >}}
 
 <div class="notices note">
     <p>
@@ -4114,7 +4765,31 @@ To show this in action, we’ll update our Data Checking Lambda, telling it to t
 
 ### Make these changes
 
-Step 1. Replace `data-checking.js` with <button class="clipboard" data-clipboard-target="#id39703d60a91f4d55995a4d71c69a6078">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id39703d60a91f4d55995a4d71c69a6078" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+Step 1. Replace `data-checking.js` with <button class="clipboard" data-clipboard-target="#id99b59b1e682843bca7971a3ec7b3613f">this content</button> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-id99b59b1e682843bca7971a3ec7b3613f"></div> <pre xstyle="display: none;" data-diff-for="diff-id99b59b1e682843bca7971a3ec7b3613f">diff --git a/code/data-checking.js b/code/data-checking.js
+index a6ee7f0..ff12893 100644
+--- a/code/data-checking.js
++++ b/code/data-checking.js
+@@ -3,7 +3,13 @@
+ const checkName = (data) => {
+     const { name } = data
+ 
+-    const flagged = (name.indexOf('evil') !== -1)
++    if (name.includes("UNPROCESSABLE_DATA")) {
++        const simulatedError = new Error(`Simulated error: Name '${name}' is not possible to check.`)
++        simulatedError.name = 'UnprocessableDataException'
++        throw simulatedError
++    }
++
++    const flagged = name.includes('evil')
+     return { flagged }
+ }
+ 
+</pre>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<pre id="id99b59b1e682843bca7971a3ec7b3613f" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -4155,7 +4830,8 @@ module.exports.handler = (event, context, callback) => {
     }
 };
 
-</pre>{{% /safehtml %}}
+</pre>
+{{< /safehtml >}}
 
 <div class="notices note">
     <p>
@@ -4182,7 +4858,54 @@ module.exports.handler = (event, context, callback) => {
     </pre>
 </div> 
 
-Step 2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#ideb03baae78534437887bcf1b31a2a8e6">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="ideb03baae78534437887bcf1b31a2a8e6" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#idfe64689dbd494f4ba4c534026747f1bb">this content</button> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-idfe64689dbd494f4ba4c534026747f1bb"></div> <pre xstyle="display: none;" data-diff-for="diff-idfe64689dbd494f4ba4c534026747f1bb">diff --git a/serverless.yml b/serverless.yml
+index f28884a..47f7742 100644
+--- a/serverless.yml
++++ b/serverless.yml
+@@ -300,6 +300,11 @@ resources:
+                         "Retry": [ {
+                             "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
+                         } ],
++                        "Catch": [ {
++                          "ErrorEquals": ["UnprocessableDataException"],
++                          "ResultPath": "$.error-info",
++                          "Next": "Flag Application As Unprocessable"
++                        } ],
+                         "Next": "Check Address"
+                     },
+                     "Check Address": {
+@@ -383,7 +388,24 @@ resources:
+                             "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
+                         } ],
+                         "End": true
+-                     }
++                     },
++                    "Flag Application As Unprocessable": {
++                      "Type": "Task",
++                      "Resource": "arn:aws:states:::lambda:invoke",
++                      "Parameters": {
++                          "FunctionName": "#{flagApplicationLambdaName}",
++                          "Payload": {
++                              "id.$": "$.application.id",
++                              "flagType": "UNPROCESSABLE_DATA",
++                              "errorInfo.$": "$.error-info"
++                          }
++                      },
++                      "ResultPath": "$.review",
++                      "Retry": [ {
++                          "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
++                      } ],
++                      "End": true
++                    }
+                 }
+               }
+             - {
+</pre>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<pre id="idfe64689dbd494f4ba4c534026747f1bb" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -4598,7 +5321,8 @@ resources:
               rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
               approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
             }
-</pre>{{% /safehtml %}}
+</pre>
+{{< /safehtml >}}
 
 <div class="notices note">
     <p>
@@ -4694,7 +5418,142 @@ Step Functions has a `Parallel` state type which, unsurprisingly, lets a state m
 
 Let's refactor our state machine to  perform the name and address checks in parallel:
 
-Step 1. Replace `serverless.yml` with <button class="clipboard" <button class="clipboard" data-clipboard-target="#idb4777fff9869432893a4624fe24d5013">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idb4777fff9869432893a4624fe24d5013" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 1. Replace `serverless.yml` with <button class="clipboard" <button class="clipboard" data-clipboard-target="#idce97081aa89d4f2881fd5bb454d9108b">this content</button> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-idce97081aa89d4f2881fd5bb454d9108b"></div> <pre xstyle="display: none;" data-diff-for="diff-idce97081aa89d4f2881fd5bb454d9108b">diff --git a/serverless.yml b/serverless.yml
+index 47f7742..c463339 100644
+--- a/serverless.yml
++++ b/serverless.yml
+@@ -287,49 +287,63 @@ resources:
+           !Sub
+             - |-
+               {
+-                "StartAt": "Check Name",
++                "StartAt": "Check Applicant Data",
+                 "States": {
+-                    "Check Name": {
+-                        "Type": "Task",
+-                        "Parameters": {
+-                            "command": "CHECK_NAME",
+-                            "data": { "name.$": "$.application.name" }
+-                        },
+-                        "Resource": "#{dataCheckingLambdaArn}",
+-                        "ResultPath": "$.checks.name",
+-                        "Retry": [ {
+-                            "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
+-                        } ],
+-                        "Catch": [ {
+-                          "ErrorEquals": ["UnprocessableDataException"],
+-                          "ResultPath": "$.error-info",
+-                          "Next": "Flag Application As Unprocessable"
+-                        } ],
+-                        "Next": "Check Address"
+-                    },
+-                    "Check Address": {
+-                        "Type": "Task",
+-                        "Parameters": {
+-                            "command": "CHECK_ADDRESS",
+-                            "data": { "address.$": "$.application.address" }
+-                        },
+-                        "Resource": "#{dataCheckingLambdaArn}",
+-                        "ResultPath": "$.checks.address",
+-                        "Retry": [ {
+-                            "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
+-                        } ],
+-                        "Next": "Review Required?"
++                    "Check Applicant Data": {
++                      "Type": "Parallel",
++                      "Branches": [{
++                              "StartAt": "Check Name",
++                              "States": {
++                                  "Check Name": {
++                                      "Type": "Task",
++                                      "Parameters": {
++                                          "command": "CHECK_NAME",
++                                          "data": { "name.$": "$.application.name" }
++                                      },
++                                      "Resource": "#{dataCheckingLambdaArn}",
++                                      "Retry": [ {
++                                          "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException" ]
++                                      } ],
++                                      "End": true
++                                  }
++                              }
++                          },
++                          {
++                              "StartAt": "Check Address",
++                              "States": {
++                                  "Check Address": {
++                                      "Type": "Task",
++                                      "Parameters": {
++                                          "command": "CHECK_ADDRESS",
++                                          "data": { "address.$": "$.application.address" }
++                                      },
++                                      "Resource": "#{dataCheckingLambdaArn}",
++                                      "Retry": [ {
++                                          "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
++                                      } ],
++                                      "End": true
++                                  }
++                              }
++                          }
++                      ],
++                      "Catch": [ {
++                        "ErrorEquals": ["UnprocessableDataException"],
++                        "ResultPath": "$.error-info",
++                        "Next": "Flag Application As Unprocessable"
++                      } ],
++                      "ResultPath": "$.checks",
++                      "Next": "Review Required?"
+                     },
+                     "Review Required?": {
+                         "Type": "Choice",
+                         "Choices": [
+                           {
+-                            "Variable": "$.checks.name.flagged",
++                            "Variable": "$.checks[0].flagged",
+                             "BooleanEquals": true,
+                             "Next": "Pending Review"
+                           },
+                           {
+-                            "Variable": "$.checks.address.flagged",
++                            "Variable": "$.checks[1].flagged",
+                             "BooleanEquals": true,
+                             "Next": "Pending Review"
+                           }
+@@ -367,7 +381,7 @@ resources:
+                             }
+                         ]
+                     },
+-                     "Reject Application": {
++                    "Reject Application": {
+                         "Type": "Task",
+                         "Parameters": {
+                             "id.$": "$.application.id"
+@@ -377,8 +391,8 @@ resources:
+                             "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
+                         } ],
+                         "End": true
+-                     },
+-                     "Approve Application": {
++                    },
++                    "Approve Application": {
+                         "Type": "Task",
+                         "Parameters": {
+                             "id.$": "$.application.id"
+@@ -388,7 +402,7 @@ resources:
+                             "ErrorEquals": [ "Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"]
+                         } ],
+                         "End": true
+-                     },
++                    },
+                     "Flag Application As Unprocessable": {
+                       "Type": "Task",
+                       "Resource": "arn:aws:states:::lambda:invoke",
+</pre>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<pre id="idce97081aa89d4f2881fd5bb454d9108b" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -5124,7 +5983,8 @@ resources:
               rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
               approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
             }
-</pre>{{% /safehtml %}}
+</pre>
+{{< /safehtml >}}
 
 <div class="notices note">
     <p>
