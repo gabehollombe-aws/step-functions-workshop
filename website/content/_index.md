@@ -241,7 +241,7 @@ sls deploy
 ```
 
 {{% notice warn %}}
-By default, the Serverless Framework will deploy resources into the `us-east-1` region. If you want to poke around your AWS Web console to see what's there, be sure you're looking in the right region. If you want to override this default region setting, you can do so by prepending  TODO - finish this
+By default, the Serverless Framework will deploy resources into the `us-east-1` region. When using the AWS Web Console during this workshop, please ensure you're in the `N. Virginia` (us-east-1) region.<br/><br/>If you want to override this default region setting, you can do so by specifying a region argument to the `sls deploy` command. See [the Serverless Framework CLI deploy command documentation](https://serverless.com/framework/docs/providers/aws/cli-reference/deploy/) for more details.
 {{% /notice %}}
 
 {{% notice note %}}
@@ -338,7 +338,7 @@ Also, for the sake of keeping our code simple, we’ll implement our name and ad
 
 ### Make these changes
 
-Step 1. Create `workshop-dir/data-checking.js` with <button class="clipboard" data-clipboard-target="#idda2982e4101147caa5076c329949ba2f">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idda2982e4101147caa5076c329949ba2f" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+Step 1. Create `workshop-dir/data-checking.js` with <button class="clipboard" data-clipboard-target="#idafda3a78b92c4a4496e120325053d4ef">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idafda3a78b92c4a4496e120325053d4ef" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -375,7 +375,7 @@ module.exports.handler = (event, context, callback) => {
 
 </pre>{{% /safehtml %}}
 
-Step 2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#idb0e67f77b4444d6a8c8456fb299eb5cc">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idb0e67f77b4444d6a8c8456fb299eb5cc" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id98b7e4244ad54bc699b8ca0add6b16d0">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id98b7e4244ad54bc699b8ca0add6b16d0" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -856,7 +856,7 @@ Step 1. In the left sidebar of the Step Functions web console, click ‘State ma
 
 Step 2. Select the step function we defined manually earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
-Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id91653fe69d284eb4b75fc58b18cf2910">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id91653fe69d284eb4b75fc58b18cf2910" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id21eaba7c00d44be6a907ab249e842be3">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id21eaba7c00d44be6a907ab249e842be3" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -1292,7 +1292,7 @@ So, to fix our current issue, we need to add a `ResultPath` statement, instructi
 Below is a new version of our serverless.yml file that contains updated Check Name and Check Address states, using the ResultPath property to merge their outputs into helpfully-named keys that we can be used later on.
 
 
-Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id18c075279dbd4c31a5b50d540b3bcba9">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id18c075279dbd4c31a5b50d540b3bcba9" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id83b891e8d0654019bb93f03e53a75c8b">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id83b891e8d0654019bb93f03e53a75c8b" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -1643,7 +1643,7 @@ Here is what our updated flow will look like after we're done with this step:
 
 ### Make these changes
 
-Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id76aba8a333f24acb92e8e68f9d91fdf3">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id76aba8a333f24acb92e8e68f9d91fdf3" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id9c0896dbaf6c40259494fa85ea9c83ca">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id9c0896dbaf6c40259494fa85ea9c83ca" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -2054,7 +2054,7 @@ To do this, we will integrate our Account Applications service with our applicat
 
 ### Make these changes
 
-Step 1. Replace `account-applications/submit.js` with <button class="clipboard" data-clipboard-target="#id4b6b75359ad3415cb5d988064b07b15d">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id4b6b75359ad3415cb5d988064b07b15d" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+Step 1. Replace `account-applications/submit.js` with <button class="clipboard" data-clipboard-target="#id722da4bce48b4cb4a573338a58959282">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id722da4bce48b4cb4a573338a58959282" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 const APPLICATION_PROCESSING_STEP_FUNCTION_ARN = process.env.APPLICATION_PROCESSING_STEP_FUNCTION_ARN
@@ -2132,7 +2132,7 @@ module.exports.handler = async(event) => {
     </pre>
 </div>
 
-Step 2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id956368bf2bac4dde90c67eea81a3ebf5">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id956368bf2bac4dde90c67eea81a3ebf5" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#idf859720a38684150b8d12c789c22caa9">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idf859720a38684150b8d12c789c22caa9" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -2541,7 +2541,7 @@ We’ll need to make a few updates to our workflow in order for this to work.
 
 ### Make these changes
 
-Step 1. Replace `account-applications/flag.js` with <button class="clipboard" data-clipboard-target="#iddabdb231bf754cf8a2be90270f7e1c7c">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="iddabdb231bf754cf8a2be90270f7e1c7c" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+Step 1. Replace `account-applications/flag.js` with <button class="clipboard" data-clipboard-target="#idade4d7851dc340879b91b665419ce909">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idade4d7851dc340879b91b665419ce909" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -2614,7 +2614,7 @@ module.exports.handler = async(event) => {
     </pre>
 </div>
 
-Step 2. Create `account-applications/review.js` with <button class="clipboard" data-clipboard-target="#idce3249c154254b9a94c43ff06e452d48">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idce3249c154254b9a94c43ff06e452d48" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+Step 2. Create `account-applications/review.js` with <button class="clipboard" data-clipboard-target="#id211e5dd84d16405c97a9efa7fdbd5e51">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id211e5dd84d16405c97a9efa7fdbd5e51" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -2663,7 +2663,7 @@ module.exports.handler = async(event) => {
 };
 </pre>{{% /safehtml %}}
 
-Step 3. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id3ab73c38a2ef4990b55802cb133172dd">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id3ab73c38a2ef4990b55802cb133172dd" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 3. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#ide5ddaa8aedbf47b389385a8474ea0dbe">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="ide5ddaa8aedbf47b389385a8474ea0dbe" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -3185,7 +3185,7 @@ Until now, we’ve left the Approve Application state empty, using the Pass stat
 
 ### Make these changes
 
-Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#id5e196f583df44a2f974b90abb4994ddc">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id5e196f583df44a2f974b90abb4994ddc" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#idf1bbee08bb224d87ac2c46af6bcc04ee">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idf1bbee08bb224d87ac2c46af6bcc04ee" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -3652,7 +3652,7 @@ The [developer guide identifies the types of transient Lambda service errors tha
 
 ### Make these changes
 
-Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#iddb08a7ea2c954100ab3bc8591ec6f286">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="iddb08a7ea2c954100ab3bc8591ec6f286" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 1. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#idc15ede4f8a9842329bb5fcda238e86a3">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idc15ede4f8a9842329bb5fcda238e86a3" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -4114,7 +4114,7 @@ To show this in action, we’ll update our Data Checking Lambda, telling it to t
 
 ### Make these changes
 
-Step 1. Replace `data-checking.js` with <button class="clipboard" data-clipboard-target="#idf95b15fd845445e9a228e0525cb580b9">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idf95b15fd845445e9a228e0525cb580b9" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+Step 1. Replace `data-checking.js` with <button class="clipboard" data-clipboard-target="#id39703d60a91f4d55995a4d71c69a6078">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="id39703d60a91f4d55995a4d71c69a6078" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -4182,7 +4182,7 @@ module.exports.handler = (event, context, callback) => {
     </pre>
 </div> 
 
-Step 2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#idc23067f81c69401e846661b24a62ea65">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idc23067f81c69401e846661b24a62ea65" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 2. Replace `serverless.yml` with <button class="clipboard" data-clipboard-target="#ideb03baae78534437887bcf1b31a2a8e6">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="ideb03baae78534437887bcf1b31a2a8e6" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -4694,7 +4694,7 @@ Step Functions has a `Parallel` state type which, unsurprisingly, lets a state m
 
 Let's refactor our state machine to  perform the name and address checks in parallel:
 
-Step 1. Replace `serverless.yml` with <button class="clipboard" <button class="clipboard" data-clipboard-target="#idbb61dc06d836471490922a331770aa12">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idbb61dc06d836471490922a331770aa12" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+Step 1. Replace `serverless.yml` with <button class="clipboard" <button class="clipboard" data-clipboard-target="#idb4777fff9869432893a4624fe24d5013">this content</button> (click the gray button to copy to clipboard).{{% safehtml %}}<pre id="idb4777fff9869432893a4624fe24d5013" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -5222,16 +5222,30 @@ At this point, we have a well structured state machine to manage the workflow of
 
 ## Wrapping Up
 
-**Congratulations**! 
+### Congratulations!
 
-If you’ve taken the time to work through all of the steps in this workshop, you’re now well equipped with the knowledge and experience to begin orchestrating your own service collaborations with AWS Step Functions.
+If you’ve taken the time to work through all of the steps in this workshop, you’re now well equipped with the basic knowledge and experience required to begin orchestrating your own service collaborations with AWS Step Functions.
 
-### What we didn't cover
+Thanks for choosing to spend your valuable time working through this material.
 
-TODO: discuss further learning like:
-- Activities
-- Map and Wait states
-- where to learn more
+### Further Learning
+
+{{% notice tip %}}
+Did you know that Step Functions can do more than just orchestrate Lambda functions together?<br/><br/>See the points below for some other exciting capabilities that we didn't cover in this workshop.
+{{% /notice %}}
+
+**[Activities](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-activities.html)** are an AWS Step Functions feature that **enables you to have a task in your state machine where the work is performed by a worker that can be hosted anywhere**, including Amazon Elastic Compute Cloud (Amazon EC2), Amazon Elastic Container Service (Amazon ECS), mobile devices, or anywhere else you can have a process poll the AWS Step Functions API over HTTPS.
+
+**The [Map](https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-map-state.html) state can be used to run a set of steps for each element of an input array.** While the Parallel state executes multiple branches of steps using the same input, a Map state will execute the same steps for multiple entries of an array in the state input.
+
+**The [Wait](https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-wait-state.html) state delays the state machine from continuing for a specified time.** You can choose either a relative time, specified in seconds from when the state begins, or an absolute end time, specified as a timestamp. 
+
+**Step Functions can integrate directly with _many_ other AWS Services** including AWS Batch, Amazon DynamoDB, Amazon ECS and Fargate, Amazon SQS and SNS, AWS Glue, Amazon Sagemaker, and more! Check out the [full list of AWS service integrations](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-service-integrations.html) for more info.
+
+### Next Steps
+
+If you'd like to continue your Step Functions learning journey, the best next step is to read through the [Developer Guide](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html).  After that, check out some [sample projects](https://docs.aws.amazon.com/step-functions/latest/dg/create-sample-projects.html). Finally, you can browse relevant webinars, blog posts, reference architectures, videos, and more at the [AWS Step Functions Resources](https://aws.amazon.com/step-functions/resources/) page.
+
 
 ### Cleaning up
 
