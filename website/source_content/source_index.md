@@ -283,34 +283,34 @@ Below, we're using the Serverless Framework, via `sls invoke ...`, to directly i
 
 Step 1. Submit a new application. In the terminal, run:
 
-    ```bash
-    sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "123 Enterprise Street" }'
-    ```
+```bash
+sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "123 Enterprise Street" }'
+```
 
-    ![Workflow collaboration](images/copy-application-id.png)
+![Workflow collaboration](images/copy-application-id.png)
 
-    Copy the ID of the new application, shown in the output from the above command. We’ll use it in the next step.
+Copy the ID of the new application, shown in the output from the above command. We’ll use it in the next step.
 
 
 Step 2. Flag an application for review (replace REPLACE_WITH_ID below with the ID of the application you just created in step 1). Run with replacement:
 
-    ```bash
-    sls invoke -f FlagApplication --data='{ "id": "REPLACE_WITH_ID", "flagType": "REVIEW" }'
-    ```
+```bash
+sls invoke -f FlagApplication --data='{ "id": "REPLACE_WITH_ID", "flagType": "REVIEW" }'
+```
 
 Step 3. List all of the applications that are currently flagged for review. Run:
 
-    ```bash
-    sls invoke -f FindApplications --data='{ "state": "FLAGGED_FOR_REVIEW" }'
-    ```
+```bash
+sls invoke -f FindApplications --data='{ "state": "FLAGGED_FOR_REVIEW" }'
+```
 
-    We could also run the above function with other states like ‘SUBMITTED’ or ‘APPROVED’ or ‘REJECTED’.
+We could also run the above function with other states like ‘SUBMITTED’ or ‘APPROVED’ or ‘REJECTED’.
 
 Step 4. Approve the application (replace REPLACE_WITH_ID below with the ID of the application ID you copied in step 1). Run with replacement:
 
-    ```bash
-    sls invoke -f ApproveApplication --data='{ "id": "REPLACE_WITH_ID" }'
-    ```
+```bash
+sls invoke -f ApproveApplication --data='{ "id": "REPLACE_WITH_ID" }'
+```
 
 
 
@@ -464,7 +464,7 @@ Step 2. Every time we ask Step Functions to execute a state machine, we can prov
 
 Step 3. You’ll now see the details page for the execution we just triggered. Click on any of the step names in the visualization and notice how we can see the input and output values for each state in the execution.
     
-    ![Workflow simplified all pass states](images/simplified-workflow-vis-all-pass.png)
+![Workflow simplified all pass states](images/simplified-workflow-vis-all-pass.png)
 
 
 
@@ -524,11 +524,11 @@ Step 2. Next, we’re going to update our state machine definition. Note that af
 
 Step 3. Back on your terminal, run:
 
-    ```
-    sls info --verbose | grep DataCheckingLambdaFunctionQualifiedArn | cut -d ' ' -f 2
-    ```
-    
-    This shows the ARN of the Data Checking Lambda.
+```
+sls info --verbose | grep DataCheckingLambdaFunctionQualifiedArn | cut -d ' ' -f 2
+```
+
+This shows the ARN of the Data Checking Lambda.
    
 Step 4. Copy the ARN to your clipboard.
 
@@ -546,24 +546,24 @@ Step 1. Click ‘Start execution’
 
 Step 2. Paste the following JSON into the input field:
 
-    ```
-    {
-        "application": { 
-            "name": "Spock", 
-            "address": "123 Enterprise Street" 
-        }
+```
+{
+    "application": { 
+        "name": "Spock", 
+        "address": "123 Enterprise Street" 
     }
-    ```
+}
+```
 
 Step 3. Click ‘Start execution’. 
     
-    After a moment, you should see the results of this failed execution. The ‘Execution Status’ label shows ‘Failed’ underneath it, and you’ll see a big red background in the visualization section, highlighting the state that experienced a failure. 
+After a moment, you should see the results of this failed execution. The ‘Execution Status’ label shows ‘Failed’ underneath it, and you’ll see a big red background in the visualization section, highlighting the state that experienced a failure. 
 
 Step 4. Click the failed state, then expand the Exception area on the right-hand side to see more details about the failure. You should see something like the screenshot below.
 
+![Check name failure](images/simplified-workflow-vis-name-fail.png)
 
-    ![Check name failure](images/simplified-workflow-vis-name-fail.png)
-    This failure isn’t surprising. When this state machine executes, it assumes an IAM role in order to determine which sorts of actions it’s allowed to take inside the AWS cloud. And, of course, we haven’t yet added any explicit permissions to allow this role to invoke our Data Checking Lambda so, to keep things secure, we get a failure when this state machine tries to run.
+This failure isn’t surprising. When this state machine executes, it assumes an IAM role in order to determine which sorts of actions it’s allowed to take inside the AWS cloud. And, of course, we haven’t yet added any explicit permissions to allow this role to invoke our Data Checking Lambda so, to keep things secure, we get a failure when this state machine tries to run.
 
 Let’s fix this by adding the appropriate permissions to the role that our Step Function assumes during execution. 
 
@@ -599,14 +599,15 @@ Step 1. Head back to the Step Functions web console and look for a state machine
 Step 2. Click ‘Start execution’
 
 Step 3. Paste the following JSON into the input field
-    ```json
-    {
-        "application": { 
-            "name": "Spock", 
-            "address": "123 Enterprise Street" 
-        }
+
+```json
+{
+    "application": { 
+        "name": "Spock", 
+        "address": "123 Enterprise Street" 
     }
-    ```
+}
+```
 
 Step 4. Click ‘Start execution’
 
@@ -623,16 +624,16 @@ Step 1. In the ‘Execution event history’ section, expand the last row, which
 
 Step 2. Notice that the error message gives us a helpful description of what went wrong.
 
-    ```
-    {
-    "error": "States.Runtime",
-    "cause": "An error occurred while executing the state 'Check Address' 
-    (entered at the event id #7). 
-    The JSONPath '$.application.address' specified for 
-    the field 'address.$' could not be found 
-    in the input '\"{\\\"flagged\\\":false}\"'"
-    }
-    ```
+```
+{
+"error": "States.Runtime",
+"cause": "An error occurred while executing the state 'Check Address' 
+(entered at the event id #7). 
+The JSONPath '$.application.address' specified for 
+the field 'address.$' could not be found 
+in the input '\"{\\\"flagged\\\":false}\"'"
+}
+```
 
 Let’s unpack this so we can understand why the state was cancelled.  If you look back at our state machine definition for the Check Address state (shown below), you’ll see that it expects to have an `application` object in its input, and it tries to pass `application.address` down into the Data Checking lambda. 
 
@@ -749,7 +750,7 @@ Step 1. Back in the Step Functions web console, click ‘New execution’
 
 Step 2. Try a valid application by pasting this as input:
 
-    `{ "application": { "name": "Spock", "address": "123 Enterprise Street" } }`
+`{ "application": { "name": "Spock", "address": "123 Enterprise Street" } }`
 
 Step 3. Click ‘Start execution’. 
 
@@ -757,15 +758,15 @@ Step 3. Click ‘Start execution’.
 
 Step 4. Try another execution with this invalid application (flagged for an evil name):
 
-    `{ "application": { "name": "evil Spock", "address": "123 Enterprise Street" } }`
+`{ "application": { "name": "evil Spock", "address": "123 Enterprise Street" } }`
 
-    Notice how this time, because we passed in a troublesome name (remember, our name checking logic will flag anything with the string ‘evil’ in the name), our workflow routes to the Pending Review State.
+Notice how this time, because we passed in a troublesome name (remember, our name checking logic will flag anything with the string ‘evil’ in the name), our workflow routes to the Pending Review State.
 
 Step 5. Finally, for the sake of completeness, let’s do one more execution with this invalid address:
 
-    `{ "application": { "name": "Spock", "address": "Somewhere" } }`
+`{ "application": { "name": "Spock", "address": "Somewhere" } }`
    
-    Once again, notice how we route to the Pending Review state gain, this time because we passed in a troublesome address (our address checking logic will flag anything that does not match the number(s)-space-letter(s) pattern)
+Once again, notice how we route to the Pending Review state gain, this time because we passed in a troublesome address (our address checking logic will flag anything that does not match the number(s)-space-letter(s) pattern)
 
 
 Thanks to the Choice state, we are now routing our workflow the way we want. But, we still have placeholder Pass states for our Approve Application and Pending Review steps. We’ll hold off on implementing the Approve Application step until later in the workshop (since we already know how to integrate with a Lambda function call from a step function). Instead, we’ll keep our learning momentum going and learn how to implement our Pending Review state. 
@@ -806,9 +807,9 @@ Now that we’ve integrated our Account Applications service with our processing
 
 Step 1. Run:
 
-    ```bash
-    sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "AnInvalidAddress" }'
-    ```
+```bash
+sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "AnInvalidAddress" }'
+```
 
 Step 2. Go back to the step functions web console’s detail view for our state machine and look for a new execution at the top of the list. It should have a timestamp close to right now and it will contain a name that starts with ‘ProcessAccountApplication’. If you click in to view the details of this execution, you should see it also take the Pending Review path, as we expect (because we submitted an invalid address), and you should also be able to see an `id` attribute on the application input passed in, and through, the state machine’s steps.
 
@@ -821,20 +822,20 @@ Step Functions does its work by integrating with various AWS services directly, 
 
 * Call a service and let Step Functions progress to the next state immediately after it gets an HTTP response. 
     
-    You’ve already seen this integration type in action. It’s what we’re using to call the Data Checking Lambda function and get back a response.
+You’ve already seen this integration type in action. It’s what we’re using to call the Data Checking Lambda function and get back a response.
     
 * Call a service and have Step Functions wait for a job to complete. 
     
-    This is most commonly used for triggering batch style workloads, pausing, then resuming execution after the job completes. We won’t use this style of service integration in this workshop.
+This is most commonly used for triggering batch style workloads, pausing, then resuming execution after the job completes. We won’t use this style of service integration in this workshop.
     
 * Call a service with a task token and have Step Functions wait until that token is returned along with a payload.
     
-    This is the integration pattern we want to use here, since we want to make a service call, and then wait for an asynchronous callback to arrive sometime in the future, and then resume execution.
+This is the integration pattern we want to use here, since we want to make a service call, and then wait for an asynchronous callback to arrive sometime in the future, and then resume execution.
 
 
 Callback tasks provide a way to pause a workflow until a task token is returned. A task might need to wait for a human approval, integrate with a third party, or call legacy systems. For tasks like these, you can pause a Step Function execution and wait for an external process or workflow to complete.
 
- In these situations, you can instruct a Task state to generate a unique task token (a unique ID that references a specific Task state in a specific execution), invoke your desired AWS service call, and then pause execution until the Step Functions  service receives that task token back via an API call from some other process.
+In these situations, you can instruct a Task state to generate a unique task token (a unique ID that references a specific Task state in a specific execution), invoke your desired AWS service call, and then pause execution until the Step Functions  service receives that task token back via an API call from some other process.
 
 We’ll need to make a few updates to our workflow in order for this to work. 
 
@@ -888,11 +889,11 @@ Step 5. Click in to the running execution and you’ll see in the visualization 
 
 Step 6. To trigger this callback that it’s waiting for, act as a human reviewer and approve the review (we haven't built a web interface for this, so we'll just invoke another function in the Account Applications service. Take care to paste the ID you copied in Step 3 above into this command when you run it, replacing REPLACE_WITH_APPLICATION_ID. 
 
-    Run with replacement:
+Run with replacement:
 
-    ```bash
-    sls invoke -f ReviewApplication --data='{ "id": "REPLACE_WITH_APPLICATION_ID", "decision": "APPROVE" }'
-    ```
+```bash
+sls invoke -f ReviewApplication --data='{ "id": "REPLACE_WITH_APPLICATION_ID", "decision": "APPROVE" }'
+```
 
 Step 7. Go back to the execution details page in the Step Functions web console (you shouldn’t need to refresh it), and notice that the execution resumed and, because we approved the review, the state machine transitioned into the Approve Application state after examining the input provided to it by our callback.  You can click on the the ‘Review Approved?‘ step to see our review decision passed into the step’s input (via the SendTaskSuccess callback that `account-applications/review.js` called).
 
@@ -1005,23 +1006,24 @@ Let’s test out our new error handling capabilities:
 
 Step 1. Try submitting a new application that contains our simulated unprocessable data for the applicant’s name field. 
 
-    Run:
+Run:
 
-    ```bash
-    sls invoke -f SubmitApplication --data='{ "name": "UNPROCESSABLE_DATA", "address": "123 Street" }'
-    ```
+```bash
+sls invoke -f SubmitApplication --data='{ "name": "UNPROCESSABLE_DATA", "address": "123 Street" }'
+```
 
 Step 2. Refresh the state machine in the AWS web console, find the most recent execution, and click into it to view its execution details.
 
-    Notice that our state machine now shows that it encountered, and handled, an error by transitioning to our new Flag Application As Unprocessable state.
+Notice that our state machine now shows that it encountered, and handled, an error by transitioning to our new Flag Application As Unprocessable state.
 
 Step 3. If you like, you can see that our application record was flagged correctly by running this command:
 
-    ```bash
-    sls invoke -f FindApplications --data='{ "state": "FLAGGED_WITH_UNPROCESSABLE_DATA" }'
-    ```
+```bash
+sls invoke -f FindApplications --data='{ "state": "FLAGGED_WITH_UNPROCESSABLE_DATA" }'
+```
 
 ![Catching errors](images/workflow-vis-error-catch.png)
+
 Finally, before we wrap up, there’s one more improvement we can make to our workflow.
 
 
@@ -1055,31 +1057,34 @@ sls deploy
 Now you can try a few types of application submissions to see how they each execute:
 
 Step 1. Submit a valid application and see it auto approve after checking the data fields in parallel. Run:
-    ```bash
-    sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "123 Enterprise Street" }'
-    ```
 
-    Here is what a valid application execution flow looks like:
+```bash
+sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "123 Enterprise Street" }'
+```
 
-    ![Parallel check auto approving](images/workflow-vis-parallel-approved.png)
+Here is what a valid application execution flow looks like:
+
+![Parallel check auto approving](images/workflow-vis-parallel-approved.png)
 
 Step 2. Submit an application with an invalid name or address (or both) and see the parallel checks result in the workflow routing to wait for a review. Run:
-    ```bash
-    sls invoke -f SubmitApplication --data='{ "name": "Gabe", "address": "ABadAddress" }'
-    ```
 
-    Here is what an invalid application execution flow looks like:
+```bash
+sls invoke -f SubmitApplication --data='{ "name": "Gabe", "address": "ABadAddress" }'
+```
 
-    ![Parallel check pending](images/workflow-vis-parallel-pending.png)
+Here is what an invalid application execution flow looks like:
+
+![Parallel check pending](images/workflow-vis-parallel-pending.png)
 
 Step 3. Submit an application with our test unprocessable name to see the parallel data checking state throw the error and route to the state to flag an application as unprocessable. Run: 
-    ```bash
-    sls invoke -f SubmitApplication --data='{ "name": "UNPROCESSABLE_DATA", "address": "123 Street" }'
-    ```
 
-    Here is what an unprocessable application execution flow looks like:
-    
-    ![Parallel check unprocessable](images/workflow-vis-parallel-unprocessable.png)
+```bash
+sls invoke -f SubmitApplication --data='{ "name": "UNPROCESSABLE_DATA", "address": "123 Street" }'
+```
+
+Here is what an unprocessable application execution flow looks like:
+
+![Parallel check unprocessable](images/workflow-vis-parallel-unprocessable.png)
 
 At this point, we have a well structured state machine to manage the workflow of processing new account applications for our simple banking system. If we wanted to, we could add on another step in our workflow to handle further downstream logic involved with opening up a bank account for applications that get approved. But, this is a good place to wrap up because you already have all the experience needed to continue implementing these further steps on your own, if you wish.
 
