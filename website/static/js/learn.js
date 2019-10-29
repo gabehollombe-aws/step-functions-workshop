@@ -188,7 +188,7 @@ jQuery(document).ready(function() {
     })
 
     // additional clipboarding from buttons
-    var clipboardJS = new ClipboardJS('button.clipboard');
+    var clipboardJS = new ClipboardJS('span.clipboard');
     clipboardJS.on('success', function(e) {
         console.info('Action:', e.action);
         console.info('Text:', e.text);
