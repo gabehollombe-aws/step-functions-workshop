@@ -1039,7 +1039,7 @@ Step Functions has a `Parallel` state type which, unsurprisingly, lets a state m
 
 Let's refactor our state machine to  perform the name and address checks in parallel:
 
-Step 1. Replace `serverless.yml` with <button class="clipboard" ___CLIPBOARD_BUTTON 8f6d5e019d11e6805e4124fb30cdd6a03b41a681:serverless.yml|
+Step 1. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 8f6d5e019d11e6805e4124fb30cdd6a03b41a681:serverless.yml|
 
 Step 2. Run:
 

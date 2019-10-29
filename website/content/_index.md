@@ -338,9 +338,9 @@ Also, for the sake of keeping our code simple, we’ll implement our name and ad
 
 ### Make these changes
 
-Step 1. Create `workshop-dir/data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id71e3c402eab143f8a8a65d4fda4a2b4b">this content</span> (click the gray button to copy to clipboard). 
+Step 1. Create `workshop-dir/data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id81a0328f2d67412e8978ec62ff9546ad">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id71e3c402eab143f8a8a65d4fda4a2b4b"></div> <pre xstyle="display: none;" data-diff-for="diff-id71e3c402eab143f8a8a65d4fda4a2b4b">diff --git a/code/data-checking.js b/code/data-checking.js
+<div id="diff-id81a0328f2d67412e8978ec62ff9546ad"></div> <pre style="display: none;" data-diff-for="diff-id81a0328f2d67412e8978ec62ff9546ad">diff --git a/code/data-checking.js b/code/data-checking.js
 index 053e284..a6ee7f0 100644
 --- a/code/data-checking.js
 +++ b/code/data-checking.js
@@ -392,7 +392,7 @@ index 053e284..a6ee7f0 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id71e3c402eab143f8a8a65d4fda4a2b4b" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+<pre id="id81a0328f2d67412e8978ec62ff9546ad" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -430,9 +430,9 @@ module.exports.handler = (event, context, callback) => {
 </pre>
 {{< /safehtml >}}
 
-Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id6e9b58f4e5aa4430af6b0a63b57b7194">this content</span> (click the gray button to copy to clipboard). 
+Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id297034c26bf34b3383679d0da94734a0">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id6e9b58f4e5aa4430af6b0a63b57b7194"></div> <pre xstyle="display: none;" data-diff-for="diff-id6e9b58f4e5aa4430af6b0a63b57b7194">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id297034c26bf34b3383679d0da94734a0"></div> <pre style="display: none;" data-diff-for="diff-id297034c26bf34b3383679d0da94734a0">diff --git a/serverless.yml b/serverless.yml
 index 2869132..07bc6d3 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -472,7 +472,7 @@ index 2869132..07bc6d3 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id6e9b58f4e5aa4430af6b0a63b57b7194" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="id297034c26bf34b3383679d0da94734a0" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -926,9 +926,9 @@ Step 1. In the left sidebar of the Step Functions web console, click ‘State ma
 
 Step 2. Select the step function we defined manually earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
-Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id68ed702f5949431197eedf9bd24d544d">this content</span> (click the gray button to copy to clipboard). 
+Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idab7c7f1d1f224116b833002bdc46837d">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id68ed702f5949431197eedf9bd24d544d"></div> <pre xstyle="display: none;" data-diff-for="diff-id68ed702f5949431197eedf9bd24d544d">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-idab7c7f1d1f224116b833002bdc46837d"></div> <pre style="display: none;" data-diff-for="diff-idab7c7f1d1f224116b833002bdc46837d">diff --git a/serverless.yml b/serverless.yml
 index 07bc6d3..0b9f3b9 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -1004,7 +1004,7 @@ index 07bc6d3..0b9f3b9 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id68ed702f5949431197eedf9bd24d544d" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="idab7c7f1d1f224116b833002bdc46837d" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -1372,9 +1372,9 @@ So, to fix our current issue, we need to add a `ResultPath` statement, instructi
 Below is a new version of our serverless.yml file that contains updated Check Name and Check Address states, using the ResultPath property to merge their outputs into helpfully-named keys that we can be used later on.
 
 
-Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id96df01e25be745ad9d037958c77a2593">this content</span> (click the gray button to copy to clipboard). 
+Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idbe89da9641c4411e9feae4d888c80fcd">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id96df01e25be745ad9d037958c77a2593"></div> <pre xstyle="display: none;" data-diff-for="diff-id96df01e25be745ad9d037958c77a2593">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-idbe89da9641c4411e9feae4d888c80fcd"></div> <pre style="display: none;" data-diff-for="diff-idbe89da9641c4411e9feae4d888c80fcd">diff --git a/serverless.yml b/serverless.yml
 index 0b9f3b9..83b94ce 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -1397,7 +1397,7 @@ index 0b9f3b9..83b94ce 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id96df01e25be745ad9d037958c77a2593" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="idbe89da9641c4411e9feae4d888c80fcd" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -1720,9 +1720,9 @@ Here is what our updated flow will look like after we're done with this step:
 
 ### Make these changes
 
-Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idf54a7ab43dee497b800ce0a707d8adb1">this content</span> (click the gray button to copy to clipboard). 
+Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idae3b04df9c664b1cae17f5e1d1d99661">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idf54a7ab43dee497b800ce0a707d8adb1"></div> <pre xstyle="display: none;" data-diff-for="diff-idf54a7ab43dee497b800ce0a707d8adb1">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-idae3b04df9c664b1cae17f5e1d1d99661"></div> <pre style="display: none;" data-diff-for="diff-idae3b04df9c664b1cae17f5e1d1d99661">diff --git a/serverless.yml b/serverless.yml
 index 83b94ce..47a3b0f 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -1759,7 +1759,7 @@ index 83b94ce..47a3b0f 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="idf54a7ab43dee497b800ce0a707d8adb1" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="idae3b04df9c664b1cae17f5e1d1d99661" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -2123,9 +2123,9 @@ To do this, we will integrate our Account Applications service with our applicat
 
 ### Make these changes
 
-Step 1. Replace `account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#idd2a6b251d27548e38de1a4b7490548e6">this content</span> (click the gray button to copy to clipboard). 
+Step 1. Replace `account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#idfbb39a562f754d58b8546d95a532ce02">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idd2a6b251d27548e38de1a4b7490548e6"></div> <pre xstyle="display: none;" data-diff-for="diff-idd2a6b251d27548e38de1a4b7490548e6">diff --git a/account-applications/submit.js b/account-applications/submit.js
+<div id="diff-idfbb39a562f754d58b8546d95a532ce02"></div> <pre style="display: none;" data-diff-for="diff-idfbb39a562f754d58b8546d95a532ce02">diff --git a/account-applications/submit.js b/account-applications/submit.js
 index ce94300..8072958 100644
 --- a/account-applications/submit.js
 +++ b/account-applications/submit.js
@@ -2179,7 +2179,7 @@ index ce94300..8072958 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="idd2a6b251d27548e38de1a4b7490548e6" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+<pre id="idfbb39a562f754d58b8546d95a532ce02" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 const APPLICATION_PROCESSING_STEP_FUNCTION_ARN = process.env.APPLICATION_PROCESSING_STEP_FUNCTION_ARN
@@ -2226,9 +2226,9 @@ module.exports.handler = async(event) => {
 </pre>
 {{< /safehtml >}}
 
-Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id93ee5116eda14c43a1c8719e2e53c8a1">this content</span> (click the gray button to copy to clipboard). 
+Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id833ebd8c17c04989993564a9120e7adf">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id93ee5116eda14c43a1c8719e2e53c8a1"></div> <pre xstyle="display: none;" data-diff-for="diff-id93ee5116eda14c43a1c8719e2e53c8a1">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id833ebd8c17c04989993564a9120e7adf"></div> <pre style="display: none;" data-diff-for="diff-id833ebd8c17c04989993564a9120e7adf">diff --git a/serverless.yml b/serverless.yml
 index 47a3b0f..eec141d 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -2273,7 +2273,7 @@ index 47a3b0f..eec141d 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id93ee5116eda14c43a1c8719e2e53c8a1" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="id833ebd8c17c04989993564a9120e7adf" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -2646,9 +2646,9 @@ We’ll need to make a few updates to our workflow in order for this to work.
 
 ### Make these changes
 
-Step 1. Replace `account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#ide7e944a6e36b42b9babba7ded53113a6">this content</span> (click the gray button to copy to clipboard). 
+Step 1. Replace `account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#id6a83782765c543bd9dcb0777267b226d">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-ide7e944a6e36b42b9babba7ded53113a6"></div> <pre xstyle="display: none;" data-diff-for="diff-ide7e944a6e36b42b9babba7ded53113a6">diff --git a/account-applications/flag.js b/account-applications/flag.js
+<div id="diff-id6a83782765c543bd9dcb0777267b226d"></div> <pre style="display: none;" data-diff-for="diff-id6a83782765c543bd9dcb0777267b226d">diff --git a/account-applications/flag.js b/account-applications/flag.js
 index 3e700d5..8bbdcb1 100644
 --- a/account-applications/flag.js
 +++ b/account-applications/flag.js
@@ -2672,7 +2672,7 @@ index 3e700d5..8bbdcb1 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="ide7e944a6e36b42b9babba7ded53113a6" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+<pre id="id6a83782765c543bd9dcb0777267b226d" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -2725,9 +2725,9 @@ module.exports.handler = async(event) => {
 </pre>
 {{< /safehtml >}}
 
-Step 2. Create `account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#id66e0d9ab04184c76b8817512200f30f3">this content</span> (click the gray button to copy to clipboard). 
+Step 2. Create `account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#id171cd903fd9649c1a5f54885434ef8db">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id66e0d9ab04184c76b8817512200f30f3"></div> <pre xstyle="display: none;" data-diff-for="diff-id66e0d9ab04184c76b8817512200f30f3">diff --git a/account-applications/review.js b/account-applications/review.js
+<div id="diff-id171cd903fd9649c1a5f54885434ef8db"></div> <pre style="display: none;" data-diff-for="diff-id171cd903fd9649c1a5f54885434ef8db">diff --git a/account-applications/review.js b/account-applications/review.js
 new file mode 100644
 index 0000000..74b3186
 --- /dev/null
@@ -2784,7 +2784,7 @@ index 0000000..74b3186
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id66e0d9ab04184c76b8817512200f30f3" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+<pre id="id171cd903fd9649c1a5f54885434ef8db" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -2834,9 +2834,9 @@ module.exports.handler = async(event) => {
 </pre>
 {{< /safehtml >}}
 
-Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id8d46dc1a973c4245bd86876c8b2abe09">this content</span> (click the gray button to copy to clipboard). 
+Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id94b4c45114694cb69696b7c13da831e7">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id8d46dc1a973c4245bd86876c8b2abe09"></div> <pre xstyle="display: none;" data-diff-for="diff-id8d46dc1a973c4245bd86876c8b2abe09">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id94b4c45114694cb69696b7c13da831e7"></div> <pre style="display: none;" data-diff-for="diff-id94b4c45114694cb69696b7c13da831e7">diff --git a/serverless.yml b/serverless.yml
 index eec141d..acc14c6 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -2935,7 +2935,7 @@ index eec141d..acc14c6 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id8d46dc1a973c4245bd86876c8b2abe09" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="id94b4c45114694cb69696b7c13da831e7" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -3365,9 +3365,9 @@ Until now, we’ve left the Approve Application state empty, using the Pass stat
 
 ### Make these changes
 
-Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id827b8ff238fa4f87b6883855302240a1">this content</span> (click the gray button to copy to clipboard). 
+Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id1191f09ec073439b83a3cb74a8e5bf3a">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id827b8ff238fa4f87b6883855302240a1"></div> <pre xstyle="display: none;" data-diff-for="diff-id827b8ff238fa4f87b6883855302240a1">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id1191f09ec073439b83a3cb74a8e5bf3a"></div> <pre style="display: none;" data-diff-for="diff-id1191f09ec073439b83a3cb74a8e5bf3a">diff --git a/serverless.yml b/serverless.yml
 index acc14c6..4010aa8 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -3418,7 +3418,7 @@ index acc14c6..4010aa8 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id827b8ff238fa4f87b6883855302240a1" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="id1191f09ec073439b83a3cb74a8e5bf3a" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -3842,9 +3842,9 @@ The [developer guide identifies the types of transient Lambda service errors tha
 
 ### Make these changes
 
-Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idadf3a46efe204b5eb447f21ed021e9a5">this content</span> (click the gray button to copy to clipboard). 
+Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ida2244cff88c245deb0d2fddef2f1f8fb">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idadf3a46efe204b5eb447f21ed021e9a5"></div> <pre xstyle="display: none;" data-diff-for="diff-idadf3a46efe204b5eb447f21ed021e9a5">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-ida2244cff88c245deb0d2fddef2f1f8fb"></div> <pre style="display: none;" data-diff-for="diff-ida2244cff88c245deb0d2fddef2f1f8fb">diff --git a/serverless.yml b/serverless.yml
 index 4010aa8..f28884a 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -3901,7 +3901,7 @@ index 4010aa8..f28884a 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="idadf3a46efe204b5eb447f21ed021e9a5" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="ida2244cff88c245deb0d2fddef2f1f8fb" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -4325,9 +4325,9 @@ To show this in action, we’ll update our Data Checking Lambda, telling it to t
 
 ### Make these changes
 
-Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id34a142a2bd394873946d88b91841c5ed">this content</span> (click the gray button to copy to clipboard). 
+Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#idab8cd36d11724b499fc322e3aace22e9">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id34a142a2bd394873946d88b91841c5ed"></div> <pre xstyle="display: none;" data-diff-for="diff-id34a142a2bd394873946d88b91841c5ed">diff --git a/code/data-checking.js b/code/data-checking.js
+<div id="diff-idab8cd36d11724b499fc322e3aace22e9"></div> <pre style="display: none;" data-diff-for="diff-idab8cd36d11724b499fc322e3aace22e9">diff --git a/code/data-checking.js b/code/data-checking.js
 index a6ee7f0..ff12893 100644
 --- a/code/data-checking.js
 +++ b/code/data-checking.js
@@ -4349,7 +4349,7 @@ index a6ee7f0..ff12893 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id34a142a2bd394873946d88b91841c5ed" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+<pre id="idab8cd36d11724b499fc322e3aace22e9" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -4393,9 +4393,9 @@ module.exports.handler = (event, context, callback) => {
 </pre>
 {{< /safehtml >}}
 
-Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id5b1eb403c3d64c2f966c03fd6ab43a94">this content</span> (click the gray button to copy to clipboard). 
+Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id302a4cf029b041458c5c21c7619cb6ef">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id5b1eb403c3d64c2f966c03fd6ab43a94"></div> <pre xstyle="display: none;" data-diff-for="diff-id5b1eb403c3d64c2f966c03fd6ab43a94">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id302a4cf029b041458c5c21c7619cb6ef"></div> <pre style="display: none;" data-diff-for="diff-id302a4cf029b041458c5c21c7619cb6ef">diff --git a/serverless.yml b/serverless.yml
 index f28884a..47f7742 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -4440,7 +4440,7 @@ index f28884a..47f7742 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id5b1eb403c3d64c2f966c03fd6ab43a94" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="id302a4cf029b041458c5c21c7619cb6ef" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -4908,9 +4908,9 @@ Step Functions has a `Parallel` state type which, unsurprisingly, lets a state m
 
 Let's refactor our state machine to  perform the name and address checks in parallel:
 
-Step 1. Replace `serverless.yml` with <button class="clipboard" <span class="clipBtn clipboard" data-clipboard-target="#id0930419543ed45608fbd5b54b749dc04">this content</span> (click the gray button to copy to clipboard). 
+Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id954d398ee1bb42ebabac0c188e16978d">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id0930419543ed45608fbd5b54b749dc04"></div> <pre xstyle="display: none;" data-diff-for="diff-id0930419543ed45608fbd5b54b749dc04">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id954d398ee1bb42ebabac0c188e16978d"></div> <pre style="display: none;" data-diff-for="diff-id954d398ee1bb42ebabac0c188e16978d">diff --git a/serverless.yml b/serverless.yml
 index 47f7742..c463339 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -5043,7 +5043,7 @@ index 47f7742..c463339 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id0930419543ed45608fbd5b54b749dc04" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="id954d398ee1bb42ebabac0c188e16978d" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
