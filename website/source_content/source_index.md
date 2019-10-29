@@ -36,7 +36,7 @@ This workshop is designed to teach you the following:
 
 ### Before you begin
 
-Before you begin, please ensure you have an AWS Accout with Administrator privileges. 
+Before you begin, please ensure you have an AWS Account with Administrator privileges. 
 
 All set? <a href="#understanding-service-orchestration">Click here to skip ahead to the introduction.</a>
 
@@ -251,7 +251,7 @@ Here are some important files worth looking at:
 <br/><br/>
 `account-applications/submit.js`<br/>This implements our SubmitApplication Lambda function. There are similar files for `find`, `flag`, `reject`, and `approve` as well.<br/><br/>
 `account-applications/AccountApplications.js`<br/>This is a common file that provides CRUD style operations for our Account Application data type. It's used by the various `account-applications/*.js` Lambda functions.<br/><br/>
-`serverless.yml`<br/>This is the file that the Serverless Framework looks at to determine what we want resources we want to cloud create and deploy as part of our solution. If you're familiar with AWS CloudFormation, the structure of this file will look pretty familar to you. Notice we are defining seperate roles for each Lambda function, and each role is built up of cusom shared policies we define in the file as well.
+`serverless.yml`<br/>This is the file that the Serverless Framework looks at to determine what we want resources we want to cloud create and deploy as part of our solution. If you're familiar with AWS CloudFormation, the structure of this file will look pretty familiar to you. Notice we are defining separate roles for each Lambda function, and each role is built up of custom shared policies we define in the file as well.
 {{% /notice %}}
 
 
@@ -1022,7 +1022,7 @@ Let’s test out our new error handling capabilities:
 Finally, before we wrap up, there’s one more improvement we can make to our workflow.
 
 
-## Processing independant states in parallel
+## Processing independent states in parallel
 
 Up until now we have performed both of our data checking steps in a serial fashion, one after the other. But checking an applicant’s address doesn’t depend on the result from checking the applicant’s name. So, this is a great opportunity to speed things up and perform our two data check steps in parallel instead. 
 
@@ -1032,7 +1032,7 @@ Step Functions has a `Parallel` state type which, unsurprisingly, lets a state m
 
 * Update our state machine to run the Check Name and Check Address states in parallel using the `Parallel` state type
 
-* Update our state machine's 'Review Requried?' `Choice` state to handle the results from the parallel data checks. We need to do this because the Parallel state returns each check as an element in an array in the same order the steps are specified in the `Parallel` state definition.
+* Update our state machine's 'Review Required?' `Choice` state to handle the results from the parallel data checks. We need to do this because the Parallel state returns each check as an element in an array in the same order the steps are specified in the `Parallel` state definition.
 
 
 ### Make these changes
