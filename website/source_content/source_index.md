@@ -240,7 +240,7 @@ From the terminal, run:
 sls deploy
 ```
 
-{{% notice warn %}}
+{{% notice warning %}}
 By default, the Serverless Framework will deploy resources into the `us-east-1` region. When using the AWS Web Console during this workshop, please ensure you're in the `N. Virginia` (us-east-1) region.<br/><br/>If you want to override this default region setting, you can do so by specifying a region argument to the `sls deploy` command. See [the Serverless Framework CLI deploy command documentation](https://serverless.com/framework/docs/providers/aws/cli-reference/deploy/) for more details.
 {{% /notice %}}
 
