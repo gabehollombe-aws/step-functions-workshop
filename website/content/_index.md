@@ -193,7 +193,7 @@ To start, we’ll create several functions that, when taken collectively, could 
 
 First, install the Serverless CLI tool, initialize a new project, install two dependencies from NPM, and remove the default Lambda function handler created by the new project. 
 
-Step 1. In the terminal command line, run these commands to handle all of the housekeeping of getting our first version of the Account Applications service deployed:
+➡️ Step 1. In the terminal command line, run these commands to handle all of the housekeeping of getting our first version of the Account Applications service deployed:
 
 ```bash
 # Install the Serverless Framework CLI
@@ -232,7 +232,7 @@ npm install --save serverless-cf-vars uuid
     
 ```
 
-Step 2. Use the Serverless Framework command to deploy our Lambda functions and Dynamo DB table. 
+➡️ Step 2. Use the Serverless Framework command to deploy our Lambda functions and Dynamo DB table. 
 
 From the terminal, run:
 
@@ -281,7 +281,7 @@ Using the Serverless Framework CLI, we can invoke any of the service’s functio
 Below, we're using the Serverless Framework, via `sls invoke ...`, to directly invoke a deployed AWS Lambda function with our desired payloads. We haven't started AWS Step Functions yet. Here, we are just exploring the surface area of the Lambda functions that we will begin to orchestrate using Step Functions a bit later on in this workshop.
 {{% /notice %}}
 
-Step 1. Submit a new application. In the terminal, run:
+➡️ Step 1. Submit a new application. In the terminal, run:
 
 ```bash
 sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "123 Enterprise Street" }'
@@ -292,13 +292,13 @@ Copy the ID of the new application, shown in the output from the above command. 
 ![Workflow collaboration](images/copy-application-id.png)
 
 
-Step 2. Flag an application for review (replace REPLACE_WITH_ID below with the ID of the application you just created in step 1). Run with replacement:
+➡️ Step 2. Flag an application for review (replace REPLACE_WITH_ID below with the ID of the application you just created in step 1). Run with replacement:
 
 ```bash
 sls invoke -f FlagApplication --data='{ "id": "REPLACE_WITH_ID", "flagType": "REVIEW" }'
 ```
 
-Step 3. List all of the applications that are currently flagged for review. Run:
+➡️ Step 3. List all of the applications that are currently flagged for review. Run:
 
 ```bash
 sls invoke -f FindApplications --data='{ "state": "FLAGGED_FOR_REVIEW" }'
@@ -306,7 +306,7 @@ sls invoke -f FindApplications --data='{ "state": "FLAGGED_FOR_REVIEW" }'
 
 We could also run the above function with other states like ‘SUBMITTED’ or ‘APPROVED’ or ‘REJECTED’.
 
-Step 4. Approve the application (replace REPLACE_WITH_ID below with the ID of the application ID you copied in step 1). Run with replacement:
+➡️ Step 4. Approve the application (replace REPLACE_WITH_ID below with the ID of the application ID you copied in step 1). Run with replacement:
 
 ```bash
 sls invoke -f ApproveApplication --data='{ "id": "REPLACE_WITH_ID" }'
@@ -338,9 +338,9 @@ Also, for the sake of keeping our code simple, we’ll implement our name and ad
 
 ### Make these changes
 
-Step 1. Create `workshop-dir/data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id5c5be41a98d04d0d970f38d744dddf8e">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Create `workshop-dir/data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id16b54522d149458c8d3093c21ad9541a">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id5c5be41a98d04d0d970f38d744dddf8e"></div> <pre style="display: none;" data-diff-for="diff-id5c5be41a98d04d0d970f38d744dddf8e">diff --git a/code/data-checking.js b/code/data-checking.js
+<div id="diff-id16b54522d149458c8d3093c21ad9541a"></div> <pre style="display: none;" data-diff-for="diff-id16b54522d149458c8d3093c21ad9541a">diff --git a/code/data-checking.js b/code/data-checking.js
 index 053e284..a6ee7f0 100644
 --- a/code/data-checking.js
 +++ b/code/data-checking.js
@@ -392,7 +392,7 @@ index 053e284..a6ee7f0 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id5c5be41a98d04d0d970f38d744dddf8e" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+<pre id="id16b54522d149458c8d3093c21ad9541a" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -430,9 +430,9 @@ module.exports.handler = (event, context, callback) => {
 </pre>
 {{< /safehtml >}}
 
-Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id7237785282234f1cae50724e0a6440cb">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id96b235fb4a7646129ab7fa99eed9024f">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id7237785282234f1cae50724e0a6440cb"></div> <pre style="display: none;" data-diff-for="diff-id7237785282234f1cae50724e0a6440cb">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id96b235fb4a7646129ab7fa99eed9024f"></div> <pre style="display: none;" data-diff-for="diff-id96b235fb4a7646129ab7fa99eed9024f">diff --git a/serverless.yml b/serverless.yml
 index 2869132..07bc6d3 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -472,7 +472,7 @@ index 2869132..07bc6d3 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id7237785282234f1cae50724e0a6440cb" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="id96b235fb4a7646129ab7fa99eed9024f" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -688,7 +688,7 @@ resources:
 </pre>
 {{< /safehtml >}}
 
-Step 3. From the terminal, run:
+➡️ Step 3. From the terminal, run:
 
 ```bash
 sls deploy
@@ -700,25 +700,25 @@ sls deploy
 After the deploy finishes, we can interact with our new data-checking lambda to check any name or address string we like. Try each check with valid and invalid inputs.
 
 
-Step 1. Check a valid name. Run:
+➡️ Step 1. Check a valid name. Run:
 
 ```
 sls invoke -f DataChecking --data='{"command": "CHECK_NAME", "data": { "name": "Spock" } }'
 ```
 
-Step 2. Check an invalid name. Run:
+➡️ Step 2. Check an invalid name. Run:
 
 ```
 sls invoke -f DataChecking --data='{"command": "CHECK_NAME", "data": { "name": "evil Spock" } }'
 ```
 
-Step 3. Check a valid address. Run:
+➡️ Step 3. Check a valid address. Run:
 
 ```
 sls invoke -f DataChecking --data='{"command": "CHECK_ADDRESS", "data": { "address": "123 Street" } }'
 ```
 
-Step 4. Check an invalid address. Run:
+➡️ Step 4. Check an invalid address. Run:
 
 ```
 sls invoke -f DataChecking --data='{"command": "CHECK_ADDRESS", "data": { "address": "DoesntMatchAddressPattern" } }'
@@ -761,15 +761,15 @@ To start out, let’s just try to model the steps involved to check a name, chec
 
 ![Simplified workflow](images/simplified-workflow-sm.png)
 
-Step 1. Open the [AWS Step Functions web console](https://console.aws.amazon.com/states/home?region=us-east-1)
+➡️ Step 1. Open the [AWS Step Functions web console](https://console.aws.amazon.com/states/home?region=us-east-1)
 
-Step 2. If the left sidebar is collapsed, expand it
+➡️ Step 2. If the left sidebar is collapsed, expand it
 
-Step 3. Make sure you’re in the State machines section and click the ‘Create state machine’  button on the right
+➡️ Step 3. Make sure you’re in the State machines section and click the ‘Create state machine’  button on the right
 
-Step 4. In the Name field, enter ‘Process_New_Account_Applications’
+➡️ Step 4. In the Name field, enter ‘Process_New_Account_Applications’
 
-Step 5. In the ‘State machine definition’ section, replace the example state machine definition with the following JSON instead:
+➡️ Step 5. In the ‘State machine definition’ section, replace the example state machine definition with the following JSON instead:
 
 ```
 {
@@ -791,13 +791,13 @@ Step 5. In the ‘State machine definition’ section, replace the example state
 }
 ```
 
-Step 1. Click the refresh icon and you should see a diagram matching the one above. This is really helpful for making sure we’re connecting our states together in the right way.
+➡️ Step 1. Click the refresh icon and you should see a diagram matching the one above. This is really helpful for making sure we’re connecting our states together in the right way.
 
-Step 2. Click ‘Next’ to continue
+➡️ Step 2. Click ‘Next’ to continue
 j
-Step 3. We need to specify an IAM role for the Step Function to assume when it executes. For now we can just start with the default role. Select ‘Create an IAM role for me’ and enter a name for the role like ‘Process_New_Account_Applications_Role’
+➡️ Step 3. We need to specify an IAM role for the Step Function to assume when it executes. For now we can just start with the default role. Select ‘Create an IAM role for me’ and enter a name for the role like ‘Process_New_Account_Applications_Role’
 
-Step 4. Click ‘Create state machine’
+➡️ Step 4. Click ‘Create state machine’
 
 
 {{% notice info %}}
@@ -808,11 +808,11 @@ At this point, although we’ve created a valid step function, it doesn’t real
 
 ### Try it out
 
-Step 1. Click ‘Start execution’
+➡️ Step 1. Click ‘Start execution’
 
-Step 2. Every time we ask Step Functions to execute a state machine, we can provide some initial input if we want. Let’s just leave the initial example input as-is and click ‘Start execution’
+➡️ Step 2. Every time we ask Step Functions to execute a state machine, we can provide some initial input if we want. Let’s just leave the initial example input as-is and click ‘Start execution’
 
-Step 3. You’ll now see the details page for the execution we just triggered. Click on any of the step names in the visualization and notice how we can see the input and output values for each state in the execution.
+➡️ Step 3. You’ll now see the details page for the execution we just triggered. Click on any of the step names in the visualization and notice how we can see the input and output values for each state in the execution.
     
 ![Workflow simplified all pass states](images/simplified-workflow-vis-all-pass.png)
 
@@ -834,9 +834,9 @@ The state machine description we use below assumes that the state machine will r
 
 ### Make these changes
 
-Step 1. Back in the Step Functions web console, click ‘Edit state machine’
+➡️ Step 1. Back in the Step Functions web console, click ‘Edit state machine’
 
-Step 2. Next, we’re going to update our state machine definition. Note that after you paste the content below,  you will see a few lines with error indicators because our new state machine definition has some placeholder strings called ‘REPLACE_WITH_DATA_CHECKING_LAMBDA_ARN’.  We’ll fix this in the next step. Replace our existing definition with the following updated state machine definition:
+➡️ Step 2. Next, we’re going to update our state machine definition. Note that after you paste the content below,  you will see a few lines with error indicators because our new state machine definition has some placeholder strings called ‘REPLACE_WITH_DATA_CHECKING_LAMBDA_ARN’.  We’ll fix this in the next step. Replace our existing definition with the following updated state machine definition:
 
 ```
 {
@@ -872,7 +872,7 @@ Step 2. Next, we’re going to update our state machine definition. Note that af
 }
 ```
 
-Step 3. Back on your terminal, run:
+➡️ Step 3. Back on your terminal, run:
 
 ```
 sls info --verbose | grep DataCheckingLambdaFunctionQualifiedArn | cut -d ' ' -f 2
@@ -880,21 +880,21 @@ sls info --verbose | grep DataCheckingLambdaFunctionQualifiedArn | cut -d ' ' -f
 
 This shows the ARN of the Data Checking Lambda.
    
-Step 4. Copy the ARN to your clipboard.
+➡️ Step 4. Copy the ARN to your clipboard.
 
-Step 5. In the state machine definition you pasted in step 3, go back and find the two occurrences of REPLACE_WITH_DATA_CHECKING_LAMBDA_ARN and replace them with the ARN you just copied.
+➡️ Step 5. In the state machine definition you pasted in step 3, go back and find the two occurrences of REPLACE_WITH_DATA_CHECKING_LAMBDA_ARN and replace them with the ARN you just copied.
 
-Step 6. Click ‘Save’
+➡️ Step 6. Click ‘Save’
 
-Step 7. Notice how we receive a warning that our IAM role may need to change in order to allow our updated state machine to execute. This is a helpful reminder. In fact, we *have* changed our state machine in way that will require permissions changes. Now, we require the ability to invoke our Data Checking Lambda function in order to execute this state machine. We’ll address this next. Click ‘Save anyway’ to continue.
+➡️ Step 7. Notice how we receive a warning that our IAM role may need to change in order to allow our updated state machine to execute. This is a helpful reminder. In fact, we *have* changed our state machine in way that will require permissions changes. Now, we require the ability to invoke our Data Checking Lambda function in order to execute this state machine. We’ll address this next. Click ‘Save anyway’ to continue.
 
 ### Try it out
 
 The warning we saw just now when we updated our state machine definition was correct. We *will* need to update our IAM role permissions in order for this to work. But let’s try another execution anyway just to see what an insufficient permission failure looks like.
 
-Step 1. Click ‘Start execution’
+➡️ Step 1. Click ‘Start execution’
 
-Step 2. Paste the following JSON into the input field:
+➡️ Step 2. Paste the following JSON into the input field:
 
 ```
 {
@@ -905,11 +905,11 @@ Step 2. Paste the following JSON into the input field:
 }
 ```
 
-Step 3. Click ‘Start execution’. 
+➡️ Step 3. Click ‘Start execution’. 
     
 After a moment, you should see the results of this failed execution. The ‘Execution Status’ label shows ‘Failed’ underneath it, and you’ll see a big red background in the visualization section, highlighting the state that experienced a failure. 
 
-Step 4. Click the failed state, then expand the Exception area on the right-hand side to see more details about the failure. You should see something like the screenshot below.
+➡️ Step 4. Click the failed state, then expand the Exception area on the right-hand side to see more details about the failure. You should see something like the screenshot below.
 
 ![Check name failure](images/simplified-workflow-vis-name-fail.png)
 
@@ -929,13 +929,13 @@ However, rather than continue to work in the web console and make these fixes by
 
 Before we migrate our step function definition over to our `serverless.yml` file, we should delete the function we’ve been interacting with in the Step Functions web console so that we don’t get confused when a similar state machine is deployed as part of our Serverless stack deployment.
 
-Step 1. In the left sidebar of the Step Functions web console, click ‘State machines’
+➡️ Step 1. In the left sidebar of the Step Functions web console, click ‘State machines’
 
-Step 2. Select the step function we defined manually earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
+➡️ Step 2. Select the step function we defined manually earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
-Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id8e17a13ce235410c890375e226253e3a">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idf9335be38d6742c7b88b92bfe6ef3041">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id8e17a13ce235410c890375e226253e3a"></div> <pre style="display: none;" data-diff-for="diff-id8e17a13ce235410c890375e226253e3a">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-idf9335be38d6742c7b88b92bfe6ef3041"></div> <pre style="display: none;" data-diff-for="diff-idf9335be38d6742c7b88b92bfe6ef3041">diff --git a/serverless.yml b/serverless.yml
 index 07bc6d3..0b9f3b9 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -1011,7 +1011,7 @@ index 07bc6d3..0b9f3b9 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id8e17a13ce235410c890375e226253e3a" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="idf9335be38d6742c7b88b92bfe6ef3041" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -1288,7 +1288,7 @@ resources:
 </pre>
 {{< /safehtml >}}
 
-Step 4. Run:
+➡️ Step 4. Run:
 
 ```bash
 sls deploy
@@ -1297,11 +1297,11 @@ sls deploy
 
 ### Try it out
 
-Step 1. Head back to the Step Functions web console and look for a state machine named `StepFunctionsWorkshop__process_account_applications__dev` and click it. This is the re-deployed version of our state machine. The new version of our state machine hasn’t changed, except that we granted its IAM role permissions to invoke our Data Checking lambda. Let’s try executing it again with some sample input to see what happens.
+➡️ Step 1. Head back to the Step Functions web console and look for a state machine named `StepFunctionsWorkshop__process_account_applications__dev` and click it. This is the re-deployed version of our state machine. The new version of our state machine hasn’t changed, except that we granted its IAM role permissions to invoke our Data Checking lambda. Let’s try executing it again with some sample input to see what happens.
 
-Step 2. Click ‘Start execution’
+➡️ Step 2. Click ‘Start execution’
 
-Step 3. Paste the following JSON into the input field
+➡️ Step 3. Paste the following JSON into the input field
 
 ```json
 {
@@ -1312,7 +1312,7 @@ Step 3. Paste the following JSON into the input field
 }
 ```
 
-Step 4. Click ‘Start execution’
+➡️ Step 4. Click ‘Start execution’
 
 
 After a moment, you should see that the execution **failed**. But, this time, we don’t have any red states, because our failure mode is different. 
@@ -1323,9 +1323,9 @@ Now, we know that our state machine was able to execute our Data Checking lambda
 
 ### Do these steps
 
-Step 1. In the ‘Execution event history’ section, expand the last row, which should show ‘Execution failed’
+➡️ Step 1. In the ‘Execution event history’ section, expand the last row, which should show ‘Execution failed’
 
-Step 2. Notice that the error message gives us a helpful description of what went wrong.
+➡️ Step 2. Notice that the error message gives us a helpful description of what went wrong.
 
 ```
 {
@@ -1360,9 +1360,9 @@ So, to fix our current issue, we need to add a `ResultPath` statement, instructi
 Below is a new version of our serverless.yml file that contains updated Check Name and Check Address states, using the ResultPath property to merge their outputs into helpfully-named keys that we can be used later on.
 
 
-Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id2164796bb4a94efca63715b3903e7daa">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idedb6c22d685e41d9a3245343285d44cf">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id2164796bb4a94efca63715b3903e7daa"></div> <pre style="display: none;" data-diff-for="diff-id2164796bb4a94efca63715b3903e7daa">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-idedb6c22d685e41d9a3245343285d44cf"></div> <pre style="display: none;" data-diff-for="diff-idedb6c22d685e41d9a3245343285d44cf">diff --git a/serverless.yml b/serverless.yml
 index 0b9f3b9..83b94ce 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -1385,7 +1385,7 @@ index 0b9f3b9..83b94ce 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id2164796bb4a94efca63715b3903e7daa" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="idedb6c22d685e41d9a3245343285d44cf" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -1664,7 +1664,7 @@ resources:
 </pre>
 {{< /safehtml >}}
 
-Step 2. Run:
+➡️ Step 2. Run:
 
 ```bash
 sls deploy
@@ -1674,11 +1674,11 @@ sls deploy
 
 With our new version deployed, each data checking step will now pass its whole input to its output as well as adding the data checking result to a new property in its output, too. Let’s retry another execution to see how things go.
 
-Step 1. Back in the Step Functions web console, click ‘New Execution’
+➡️ Step 1. Back in the Step Functions web console, click ‘New Execution’
 
-Step 2. Leave the input the same as before and click ‘Start execution’. This time, you should see the execution succeed.
+➡️ Step 2. Leave the input the same as before and click ‘Start execution’. This time, you should see the execution succeed.
 
-Step 3. Click on the Check Address state in the visualization section and expand the Input and Output nodes on the right. 
+➡️ Step 3. Click on the Check Address state in the visualization section and expand the Input and Output nodes on the right. 
 
 Notice how the Check Name state kept our original input and appended its results inside of `$.checks.name` and how our Check Address took that output as its input and appended its own address check result inside of `$.checks.address`.  That’s the power of `ResultPath` at work!
 
@@ -1708,9 +1708,9 @@ Here is what our updated flow will look like after we're done with this step:
 
 ### Make these changes
 
-Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id336deeedc46d48b8b20a704ac9c83223">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#iddd5f3b5cc9d54f0c8839d46ff108a57a">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id336deeedc46d48b8b20a704ac9c83223"></div> <pre style="display: none;" data-diff-for="diff-id336deeedc46d48b8b20a704ac9c83223">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-iddd5f3b5cc9d54f0c8839d46ff108a57a"></div> <pre style="display: none;" data-diff-for="diff-iddd5f3b5cc9d54f0c8839d46ff108a57a">diff --git a/serverless.yml b/serverless.yml
 index 83b94ce..47a3b0f 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -1747,7 +1747,7 @@ index 83b94ce..47a3b0f 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id336deeedc46d48b8b20a704ac9c83223" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="iddd5f3b5cc9d54f0c8839d46ff108a57a" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -2046,7 +2046,7 @@ resources:
 </pre>
 {{< /safehtml >}}
 
-Step 2. Run:
+➡️ Step 2. Run:
 
 ```bash
 sls deploy
@@ -2067,23 +2067,23 @@ For a deeper discussion on the behavior and types of comparisons supported by th
 
 Let’s try some executions to see our Choice state in action:
 
-Step 1. Back in the Step Functions web console, click ‘New execution’
+➡️ Step 1. Back in the Step Functions web console, click ‘New execution’
 
-Step 2. Try a valid application by pasting this as input:
+➡️ Step 2. Try a valid application by pasting this as input:
 
 `{ "application": { "name": "Spock", "address": "123 Enterprise Street" } }`
 
-Step 3. Click ‘Start execution’. 
+➡️ Step 3. Click ‘Start execution’. 
 
     Notice how the ‘Review Required?’ state transitions to the Approve Application state. That’s because our name and our address both contained valid values.  
 
-Step 4. Try another execution with this invalid application (flagged for an evil name):
+➡️ Step 4. Try another execution with this invalid application (flagged for an evil name):
 
 `{ "application": { "name": "evil Spock", "address": "123 Enterprise Street" } }`
 
 Notice how this time, because we passed in a troublesome name (remember, our name checking logic will flag anything with the string ‘evil’ in the name), our workflow routes to the Pending Review State.
 
-Step 5. Finally, for the sake of completeness, let’s do one more execution with this invalid address:
+➡️ Step 5. Finally, for the sake of completeness, let’s do one more execution with this invalid address:
 
 `{ "application": { "name": "Spock", "address": "Somewhere" } }`
    
@@ -2111,9 +2111,9 @@ To do this, we will integrate our Account Applications service with our applicat
 
 ### Make these changes
 
-Step 1. Replace `account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#id2864924b6c35450f812e7a7bfd2d3c74">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#idb2caaf08c77b4d98a3f03260e6cce9ff">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id2864924b6c35450f812e7a7bfd2d3c74"></div> <pre style="display: none;" data-diff-for="diff-id2864924b6c35450f812e7a7bfd2d3c74">diff --git a/account-applications/submit.js b/account-applications/submit.js
+<div id="diff-idb2caaf08c77b4d98a3f03260e6cce9ff"></div> <pre style="display: none;" data-diff-for="diff-idb2caaf08c77b4d98a3f03260e6cce9ff">diff --git a/account-applications/submit.js b/account-applications/submit.js
 index ce94300..8072958 100644
 --- a/account-applications/submit.js
 +++ b/account-applications/submit.js
@@ -2167,7 +2167,7 @@ index ce94300..8072958 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id2864924b6c35450f812e7a7bfd2d3c74" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+<pre id="idb2caaf08c77b4d98a3f03260e6cce9ff" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 const APPLICATION_PROCESSING_STEP_FUNCTION_ARN = process.env.APPLICATION_PROCESSING_STEP_FUNCTION_ARN
@@ -2214,9 +2214,9 @@ module.exports.handler = async(event) => {
 </pre>
 {{< /safehtml >}}
 
-Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id345e2502ecb946419b6cb02439dafba8">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id02c8a33e41a547379224dc174d3af688">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id345e2502ecb946419b6cb02439dafba8"></div> <pre style="display: none;" data-diff-for="diff-id345e2502ecb946419b6cb02439dafba8">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id02c8a33e41a547379224dc174d3af688"></div> <pre style="display: none;" data-diff-for="diff-id02c8a33e41a547379224dc174d3af688">diff --git a/serverless.yml b/serverless.yml
 index 47a3b0f..eec141d 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -2261,7 +2261,7 @@ index 47a3b0f..eec141d 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id345e2502ecb946419b6cb02439dafba8" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="id02c8a33e41a547379224dc174d3af688" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -2577,7 +2577,7 @@ resources:
 </pre>
 {{< /safehtml >}}
 
-Step 3. Run:
+➡️ Step 3. Run:
 
 ```bash
 sls deploy
@@ -2588,13 +2588,13 @@ Now that we’ve integrated our Account Applications service with our processing
 
 ### Try it out
 
-Step 1. Run:
+➡️ Step 1. Run:
 
 ```bash
 sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "AnInvalidAddress" }'
 ```
 
-Step 2. Go back to the step functions web console’s detail view for our state machine and look for a new execution at the top of the list. It should have a timestamp close to right now and it will contain a name that starts with ‘ProcessAccountApplication’. If you click in to view the details of this execution, you should see it also take the Pending Review path, as we expect (because we submitted an invalid address), and you should also be able to see an `id` attribute on the application input passed in, and through, the state machine’s steps.
+➡️ Step 2. Go back to the step functions web console’s detail view for our state machine and look for a new execution at the top of the list. It should have a timestamp close to right now and it will contain a name that starts with ‘ProcessAccountApplication’. If you click in to view the details of this execution, you should see it also take the Pending Review path, as we expect (because we submitted an invalid address), and you should also be able to see an `id` attribute on the application input passed in, and through, the state machine’s steps.
 
 Now that we know we're passing an application ID to the step function successfully, we're ready to have our Pending Review state notify our Account Applications service whenever it wants to flag an application and pause its workflow processing the application until a human makes a decision about it.
 
@@ -2634,9 +2634,9 @@ We’ll need to make a few updates to our workflow in order for this to work.
 
 ### Make these changes
 
-Step 1. Replace `account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#id0e5f6aff7d064bc5a0382594fe7c7d85">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#id18eabd2d19c54b0bb767cbdeeb417be2">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id0e5f6aff7d064bc5a0382594fe7c7d85"></div> <pre style="display: none;" data-diff-for="diff-id0e5f6aff7d064bc5a0382594fe7c7d85">diff --git a/account-applications/flag.js b/account-applications/flag.js
+<div id="diff-id18eabd2d19c54b0bb767cbdeeb417be2"></div> <pre style="display: none;" data-diff-for="diff-id18eabd2d19c54b0bb767cbdeeb417be2">diff --git a/account-applications/flag.js b/account-applications/flag.js
 index 3e700d5..8bbdcb1 100644
 --- a/account-applications/flag.js
 +++ b/account-applications/flag.js
@@ -2660,7 +2660,7 @@ index 3e700d5..8bbdcb1 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id0e5f6aff7d064bc5a0382594fe7c7d85" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+<pre id="id18eabd2d19c54b0bb767cbdeeb417be2" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -2713,9 +2713,9 @@ module.exports.handler = async(event) => {
 </pre>
 {{< /safehtml >}}
 
-Step 2. Create `account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#id8303abca1ed4491e9115b7c7b730994e">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Create `account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#idc99a46f9f28e4084ad195644d810de56">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id8303abca1ed4491e9115b7c7b730994e"></div> <pre style="display: none;" data-diff-for="diff-id8303abca1ed4491e9115b7c7b730994e">diff --git a/account-applications/review.js b/account-applications/review.js
+<div id="diff-idc99a46f9f28e4084ad195644d810de56"></div> <pre style="display: none;" data-diff-for="diff-idc99a46f9f28e4084ad195644d810de56">diff --git a/account-applications/review.js b/account-applications/review.js
 new file mode 100644
 index 0000000..74b3186
 --- /dev/null
@@ -2772,7 +2772,7 @@ index 0000000..74b3186
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id8303abca1ed4491e9115b7c7b730994e" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+<pre id="idc99a46f9f28e4084ad195644d810de56" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -2822,9 +2822,9 @@ module.exports.handler = async(event) => {
 </pre>
 {{< /safehtml >}}
 
-Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id1b05b182fb954094a9ff01b38f192a84">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id1967cd9c27d14d8890dc7c13b737c2de">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id1b05b182fb954094a9ff01b38f192a84"></div> <pre style="display: none;" data-diff-for="diff-id1b05b182fb954094a9ff01b38f192a84">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id1967cd9c27d14d8890dc7c13b737c2de"></div> <pre style="display: none;" data-diff-for="diff-id1967cd9c27d14d8890dc7c13b737c2de">diff --git a/serverless.yml b/serverless.yml
 index eec141d..acc14c6 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -2923,7 +2923,7 @@ index eec141d..acc14c6 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id1b05b182fb954094a9ff01b38f192a84" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="id1967cd9c27d14d8890dc7c13b737c2de" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -3293,7 +3293,7 @@ resources:
 </pre>
 {{< /safehtml >}}
 
-Step 4. Run:
+➡️ Step 4. Run:
 
 ```bash
 sls deploy
@@ -3305,25 +3305,25 @@ Now we should be able to submit an invalid application, see that our application
 
 Let’s test this:
 
-Step 1. Submit an invalid application so it gets flagged. Run:
+➡️ Step 1. Submit an invalid application so it gets flagged. Run:
 
 ```bash
 sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "123EnterpriseStreet" }'
 ```
 
-Step 2. Check to see that our application is flagged for review. Run:
+➡️ Step 2. Check to see that our application is flagged for review. Run:
 
 ```bash
 sls invoke -f FindApplications --data='{ "state": "FLAGGED_FOR_REVIEW" }' 
 ```
 
-Step 3. Copy the application’s ID from the results, which we’ll use in a step below to provide a review decision for the application.
+➡️ Step 3. Copy the application’s ID from the results, which we’ll use in a step below to provide a review decision for the application.
 
-Step 4. In Step Functions web console, refresh the details page for our state machine, and look for the most recent execution. You should see that it is labeled as ‘Running’. 
+➡️ Step 4. In Step Functions web console, refresh the details page for our state machine, and look for the most recent execution. You should see that it is labeled as ‘Running’. 
 
-Step 5. Click in to the running execution and you’ll see in the visualization section that the Pending Review state is in-progress. This is the state machine indicating that it’s now paused and waiting for a callback before it will resume execution.
+➡️ Step 5. Click in to the running execution and you’ll see in the visualization section that the Pending Review state is in-progress. This is the state machine indicating that it’s now paused and waiting for a callback before it will resume execution.
 
-Step 6. To trigger this callback that it’s waiting for, act as a human reviewer and approve the review (we haven't built a web interface for this, so we'll just invoke another function in the Account Applications service. Take care to paste the ID you copied in Step 3 above into this command when you run it, replacing REPLACE_WITH_APPLICATION_ID. 
+➡️ Step 6. To trigger this callback that it’s waiting for, act as a human reviewer and approve the review (we haven't built a web interface for this, so we'll just invoke another function in the Account Applications service. Take care to paste the ID you copied in Step 3 above into this command when you run it, replacing REPLACE_WITH_APPLICATION_ID. 
 
 Run with replacement:
 
@@ -3331,7 +3331,7 @@ Run with replacement:
 sls invoke -f ReviewApplication --data='{ "id": "REPLACE_WITH_APPLICATION_ID", "decision": "APPROVE" }'
 ```
 
-Step 7. Go back to the execution details page in the Step Functions web console (you shouldn’t need to refresh it), and notice that the execution resumed and, because we approved the review, the state machine transitioned into the Approve Application state after examining the input provided to it by our callback.  You can click on the the ‘Review Approved?‘ step to see our review decision passed into the step’s input (via the SendTaskSuccess callback that `account-applications/review.js` called).
+➡️ Step 7. Go back to the execution details page in the Step Functions web console (you shouldn’t need to refresh it), and notice that the execution resumed and, because we approved the review, the state machine transitioned into the Approve Application state after examining the input provided to it by our callback.  You can click on the the ‘Review Approved?‘ step to see our review decision passed into the step’s input (via the SendTaskSuccess callback that `account-applications/review.js` called).
 
 
 Pretty cool, right?
@@ -3353,9 +3353,9 @@ Until now, we’ve left the Approve Application state empty, using the Pass stat
 
 ### Make these changes
 
-Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id69b401334deb49b09a4de878ff8438a5">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idcbd966ebc8fb46dcbb72d797678c172b">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id69b401334deb49b09a4de878ff8438a5"></div> <pre style="display: none;" data-diff-for="diff-id69b401334deb49b09a4de878ff8438a5">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-idcbd966ebc8fb46dcbb72d797678c172b"></div> <pre style="display: none;" data-diff-for="diff-idcbd966ebc8fb46dcbb72d797678c172b">diff --git a/serverless.yml b/serverless.yml
 index acc14c6..4010aa8 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -3406,7 +3406,7 @@ index acc14c6..4010aa8 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id69b401334deb49b09a4de878ff8438a5" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="idcbd966ebc8fb46dcbb72d797678c172b" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -3788,7 +3788,7 @@ resources:
 </pre>
 {{< /safehtml >}}
 
-Step 2. Run:
+➡️ Step 2. Run:
 
 ```bash
 sls deploy
@@ -3830,9 +3830,9 @@ The [developer guide identifies the types of transient Lambda service errors tha
 
 ### Make these changes
 
-Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id2426259fbff24eb3965720735eed9f2f">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id8a559124a89246e6972105ece04b16b5">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id2426259fbff24eb3965720735eed9f2f"></div> <pre style="display: none;" data-diff-for="diff-id2426259fbff24eb3965720735eed9f2f">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id8a559124a89246e6972105ece04b16b5"></div> <pre style="display: none;" data-diff-for="diff-id8a559124a89246e6972105ece04b16b5">diff --git a/serverless.yml b/serverless.yml
 index 4010aa8..f28884a 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -3889,7 +3889,7 @@ index 4010aa8..f28884a 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id2426259fbff24eb3965720735eed9f2f" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="id8a559124a89246e6972105ece04b16b5" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -4286,7 +4286,7 @@ resources:
 </pre>
 {{< /safehtml >}}
 
-Step 2. Run:
+➡️ Step 2. Run:
 
 ```bash
 sls deploy
@@ -4313,9 +4313,9 @@ To show this in action, we’ll update our Data Checking Lambda, telling it to t
 
 ### Make these changes
 
-Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id0ad1e366db1140ae8f7950aa0c775ad5">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id20884290b27347878c160630f7453342">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id0ad1e366db1140ae8f7950aa0c775ad5"></div> <pre style="display: none;" data-diff-for="diff-id0ad1e366db1140ae8f7950aa0c775ad5">diff --git a/code/data-checking.js b/code/data-checking.js
+<div id="diff-id20884290b27347878c160630f7453342"></div> <pre style="display: none;" data-diff-for="diff-id20884290b27347878c160630f7453342">diff --git a/code/data-checking.js b/code/data-checking.js
 index a6ee7f0..ff12893 100644
 --- a/code/data-checking.js
 +++ b/code/data-checking.js
@@ -4337,7 +4337,7 @@ index a6ee7f0..ff12893 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id0ad1e366db1140ae8f7950aa0c775ad5" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+<pre id="id20884290b27347878c160630f7453342" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -4381,9 +4381,9 @@ module.exports.handler = (event, context, callback) => {
 </pre>
 {{< /safehtml >}}
 
-Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id0d945a83d151426f81375b127ae774bf">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idd59cccf859ba48c2824c8e1e1f37081d">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id0d945a83d151426f81375b127ae774bf"></div> <pre style="display: none;" data-diff-for="diff-id0d945a83d151426f81375b127ae774bf">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-idd59cccf859ba48c2824c8e1e1f37081d"></div> <pre style="display: none;" data-diff-for="diff-idd59cccf859ba48c2824c8e1e1f37081d">diff --git a/serverless.yml b/serverless.yml
 index f28884a..47f7742 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -4428,7 +4428,7 @@ index f28884a..47f7742 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id0d945a83d151426f81375b127ae774bf" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="idd59cccf859ba48c2824c8e1e1f37081d" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -4847,7 +4847,7 @@ resources:
 </pre>
 {{< /safehtml >}}
     
-Step 3. Run:
+➡️ Step 3. Run:
 
 ```bash
 sls deploy
@@ -4857,7 +4857,7 @@ sls deploy
 
 Let’s test out our new error handling capabilities:
 
-Step 1. Try submitting a new application that contains our simulated unprocessable data for the applicant’s name field. 
+➡️ Step 1. Try submitting a new application that contains our simulated unprocessable data for the applicant’s name field. 
 
 Run:
 
@@ -4865,11 +4865,11 @@ Run:
 sls invoke -f SubmitApplication --data='{ "name": "UNPROCESSABLE_DATA", "address": "123 Street" }'
 ```
 
-Step 2. Refresh the state machine in the AWS web console, find the most recent execution, and click into it to view its execution details.
+➡️ Step 2. Refresh the state machine in the AWS web console, find the most recent execution, and click into it to view its execution details.
 
 Notice that our state machine now shows that it encountered, and handled, an error by transitioning to our new Flag Application As Unprocessable state.
 
-Step 3. If you like, you can see that our application record was flagged correctly by running this command:
+➡️ Step 3. If you like, you can see that our application record was flagged correctly by running this command:
 
 ```bash
 sls invoke -f FindApplications --data='{ "state": "FLAGGED_WITH_UNPROCESSABLE_DATA" }'
@@ -4897,9 +4897,9 @@ Step Functions has a `Parallel` state type which, unsurprisingly, lets a state m
 
 Let's refactor our state machine to  perform the name and address checks in parallel:
 
-Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id4635e075dc404afca650c8b6c0f7f60c">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id1369b2736f2e4711a027978fc97376aa">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id4635e075dc404afca650c8b6c0f7f60c"></div> <pre style="display: none;" data-diff-for="diff-id4635e075dc404afca650c8b6c0f7f60c">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id1369b2736f2e4711a027978fc97376aa"></div> <pre style="display: none;" data-diff-for="diff-id1369b2736f2e4711a027978fc97376aa">diff --git a/serverless.yml b/serverless.yml
 index 47f7742..c463339 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -5032,7 +5032,7 @@ index 47f7742..c463339 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id4635e075dc404afca650c8b6c0f7f60c" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<pre id="id1369b2736f2e4711a027978fc97376aa" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -5465,7 +5465,7 @@ resources:
 </pre>
 {{< /safehtml >}}
 
-Step 2. Run:
+➡️ Step 2. Run:
 
 ```bash
 sls deploy
@@ -5475,7 +5475,7 @@ sls deploy
 
 Now you can try a few types of application submissions to see how they each execute:
 
-Step 1. Submit a valid application and see it auto approve after checking the data fields in parallel. Run:
+➡️ Step 1. Submit a valid application and see it auto approve after checking the data fields in parallel. Run:
 
 ```bash
 sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "123 Enterprise Street" }'
@@ -5485,7 +5485,7 @@ Here is what a valid application execution flow looks like:
 
 ![Parallel check auto approving](images/workflow-vis-parallel-approved.png)
 
-Step 2. Submit an application with an invalid name or address (or both) and see the parallel checks result in the workflow routing to wait for a review. Run:
+➡️ Step 2. Submit an application with an invalid name or address (or both) and see the parallel checks result in the workflow routing to wait for a review. Run:
 
 ```bash
 sls invoke -f SubmitApplication --data='{ "name": "Gabe", "address": "ABadAddress" }'
@@ -5495,7 +5495,7 @@ Here is what an invalid application execution flow looks like:
 
 ![Parallel check pending](images/workflow-vis-parallel-pending.png)
 
-Step 3. Submit an application with our test unprocessable name to see the parallel data checking state throw the error and route to the state to flag an application as unprocessable. Run: 
+➡️ Step 3. Submit an application with our test unprocessable name to see the parallel data checking state throw the error and route to the state to flag an application as unprocessable. Run: 
 
 ```bash
 sls invoke -f SubmitApplication --data='{ "name": "UNPROCESSABLE_DATA", "address": "123 Street" }'
