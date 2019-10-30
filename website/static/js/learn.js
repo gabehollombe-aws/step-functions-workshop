@@ -190,10 +190,6 @@ jQuery(document).ready(function() {
      // additional clipboarding from buttons
      var clipboardJS = new ClipboardJS('span.clipboard');
      clipboardJS.on('success', function(e) {
-         console.info('Action:', e.action);
-         console.info('Text:', e.text);
-         console.info('Trigger:', e.trigger);
-     
          e.clearSelection();
          inPre = $(e.trigger).parent().prop('tagName') == 'PRE';
          $(e.trigger).attr('aria-label', 'Copied to clipboard!').addClass('tooltipped tooltipped-' + (inPre ? 'w' : 's'));

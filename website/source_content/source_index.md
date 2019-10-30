@@ -287,9 +287,9 @@ Step 1. Submit a new application. In the terminal, run:
 sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "123 Enterprise Street" }'
 ```
 
-![Workflow collaboration](images/copy-application-id.png)
-
 Copy the ID of the new application, shown in the output from the above command. We’ll use it in the next step.
+
+![Workflow collaboration](images/copy-application-id.png)
 
 
 Step 2. Flag an application for review (replace REPLACE_WITH_ID below with the ID of the application you just created in step 1). Run with replacement:
@@ -355,24 +355,28 @@ After the deploy finishes, we can interact with our new data-checking lambda to 
 
 
 Step 1. Check a valid name. Run:
-    ```
-    sls invoke -f DataChecking --data='{"command": "CHECK_NAME", "data": { "name": "Spock" } }'
-    ```
+
+```
+sls invoke -f DataChecking --data='{"command": "CHECK_NAME", "data": { "name": "Spock" } }'
+```
 
 Step 2. Check an invalid name. Run:
-    ```
-    sls invoke -f DataChecking --data='{"command": "CHECK_NAME", "data": { "name": "evil Spock" } }'
-    ```
+
+```
+sls invoke -f DataChecking --data='{"command": "CHECK_NAME", "data": { "name": "evil Spock" } }'
+```
 
 Step 3. Check a valid address. Run:
-    ```
-    sls invoke -f DataChecking --data='{"command": "CHECK_ADDRESS", "data": { "address": "123 Street" } }'
-    ```
+
+```
+sls invoke -f DataChecking --data='{"command": "CHECK_ADDRESS", "data": { "address": "123 Street" } }'
+```
 
 Step 4. Check an invalid address. Run:
-    ```
-    sls invoke -f DataChecking --data='{"command": "CHECK_ADDRESS", "data": { "address": "DoesntMatchAddressPattern" } }'
-    ```
+
+```
+sls invoke -f DataChecking --data='{"command": "CHECK_ADDRESS", "data": { "address": "DoesntMatchAddressPattern" } }'
+```
 
 
 As you can see, the Data Checking service just returns a simple JSON style response with one variable, `flagged` returning true if the value being checked requires further scrutiny by a human.
@@ -421,25 +425,25 @@ Step 4. In the Name field, enter ‘Process_New_Account_Applications’
 
 Step 5. In the ‘State machine definition’ section, replace the example state machine definition with the following JSON instead:
 
-    ```
-    {
-    "StartAt": "Check Name",
-    "States": {
-        "Check Name": {
-        "Type": "Pass",
-        "Next": "Check Address"
-        },
-        "Check Address": {
-        "Type": "Pass",
-        "Next": "Approve Application"
-        },
-        "Approve Application": {
-        "Type": "Pass",
-        "End": true
-        }
+```
+{
+"StartAt": "Check Name",
+"States": {
+    "Check Name": {
+    "Type": "Pass",
+    "Next": "Check Address"
+    },
+    "Check Address": {
+    "Type": "Pass",
+    "Next": "Approve Application"
+    },
+    "Approve Application": {
+    "Type": "Pass",
+    "End": true
     }
-    }
-    ```
+}
+}
+```
 
 Step 1. Click the refresh icon and you should see a diagram matching the one above. This is really helpful for making sure we’re connecting our states together in the right way.
 
