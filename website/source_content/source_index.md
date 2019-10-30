@@ -630,34 +630,14 @@ Step 2. Notice that the error message gives us a helpful description of what wen
 
 ```
 {
-"error": "States.Runtime",
-"cause": "An error occurred while executing the state 'Check Address' 
-(entered at the event id #7). 
-The JSONPath '$.application.address' specified for 
-the field 'address.$' could not be found 
-in the input '\"{\\\"flagged\\\":false}\"'"
+  "error": "States.Runtime",
+  "cause": "An error occurred while executing the state 'Check Address' (entered at the event id #7). The JSONPath '$.application.address' specified for the field 'address.$' could not be found in the input '{\"flagged\":false}'"
 }
 ```
 
 Let’s unpack this so we can understand why the state was cancelled.  If you look back at our state machine definition for the Check Address state (shown below), you’ll see that it expects to have an `application` object in its input, and it tries to pass `application.address` down into the Data Checking lambda. 
 
-
-```json
-[...],
-"Check Address": {
-          "Type": "Task",
-          "Parameters": {
-              "command": "CHECK_ADDRESS",
-              "data": {
-                  "address.$": "$.application.address"
-              }
-          },
-          "Resource": "...",
-          "Next": "Approve Application"
-      },
-[...],      
-```
-
+![Check Address expected data](images/check_address_expectation.png)
 
 The error message is telling us that it couldn’t find `application.address` in the state’s input. To understand why, we need to learn a bit more about how an active state generates its output and passes it to the next state’s input.
 
