@@ -1,4 +1,5 @@
 #baseURL = "https://github.com/gabehollombe-aws/step-functions-workshop-content" #TODO: Change this
+baseURL = "https://master.d2u24kjqamzz9q.amplifyapp.com/"
 languageCode = "en-us"
 defaultContentLanguage = "en"
 title = "Introduction to Step Functions - Workshop"
