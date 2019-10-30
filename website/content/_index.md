@@ -338,9 +338,9 @@ Also, for the sake of keeping our code simple, we’ll implement our name and ad
 
 ### Make these changes
 
-➡️ Step 1. Create `workshop-dir/data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id16b54522d149458c8d3093c21ad9541a">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Create `workshop-dir/data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id97af01c25b8c4f7883bd5fb3deb21369">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id16b54522d149458c8d3093c21ad9541a"></div> <pre style="display: none;" data-diff-for="diff-id16b54522d149458c8d3093c21ad9541a">diff --git a/code/data-checking.js b/code/data-checking.js
+<div id="diff-id97af01c25b8c4f7883bd5fb3deb21369"></div> <pre style="display: none;" data-diff-for="diff-id97af01c25b8c4f7883bd5fb3deb21369">diff --git a/code/data-checking.js b/code/data-checking.js
 index 053e284..a6ee7f0 100644
 --- a/code/data-checking.js
 +++ b/code/data-checking.js
@@ -392,7 +392,7 @@ index 053e284..a6ee7f0 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id16b54522d149458c8d3093c21ad9541a" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id97af01c25b8c4f7883bd5fb3deb21369" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -427,12 +427,12 @@ module.exports.handler = (event, context, callback) => {
     }
 };
 
-</pre>
+</textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id96b235fb4a7646129ab7fa99eed9024f">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id98597508267947bfa6f2ba150c4f8e6b">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id96b235fb4a7646129ab7fa99eed9024f"></div> <pre style="display: none;" data-diff-for="diff-id96b235fb4a7646129ab7fa99eed9024f">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id98597508267947bfa6f2ba150c4f8e6b"></div> <pre style="display: none;" data-diff-for="diff-id98597508267947bfa6f2ba150c4f8e6b">diff --git a/serverless.yml b/serverless.yml
 index 2869132..07bc6d3 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -472,7 +472,7 @@ index 2869132..07bc6d3 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id96b235fb4a7646129ab7fa99eed9024f" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id98597508267947bfa6f2ba150c4f8e6b" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -685,7 +685,7 @@ resources:
                         KeyType: HASH
                 Projection:
                     ProjectionType: ALL
-</pre>
+</textarea>
 {{< /safehtml >}}
 
 ➡️ Step 3. From the terminal, run:
@@ -933,9 +933,9 @@ Before we migrate our step function definition over to our `serverless.yml` file
 
 ➡️ Step 2. Select the step function we defined manually earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
-➡️ Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idf9335be38d6742c7b88b92bfe6ef3041">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id46d02c3a4ae94c4592e8789edbe929ee">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idf9335be38d6742c7b88b92bfe6ef3041"></div> <pre style="display: none;" data-diff-for="diff-idf9335be38d6742c7b88b92bfe6ef3041">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id46d02c3a4ae94c4592e8789edbe929ee"></div> <pre style="display: none;" data-diff-for="diff-id46d02c3a4ae94c4592e8789edbe929ee">diff --git a/serverless.yml b/serverless.yml
 index 07bc6d3..0b9f3b9 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -1011,7 +1011,7 @@ index 07bc6d3..0b9f3b9 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="idf9335be38d6742c7b88b92bfe6ef3041" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id46d02c3a4ae94c4592e8789edbe929ee" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -1285,7 +1285,7 @@ resources:
             - {
               dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
             }
-</pre>
+</textarea>
 {{< /safehtml >}}
 
 ➡️ Step 4. Run:
@@ -1360,9 +1360,9 @@ So, to fix our current issue, we need to add a `ResultPath` statement, instructi
 Below is a new version of our serverless.yml file that contains updated Check Name and Check Address states, using the ResultPath property to merge their outputs into helpfully-named keys that we can be used later on.
 
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idedb6c22d685e41d9a3245343285d44cf">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id83136a03d14c4299a0c6de253950b910">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idedb6c22d685e41d9a3245343285d44cf"></div> <pre style="display: none;" data-diff-for="diff-idedb6c22d685e41d9a3245343285d44cf">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id83136a03d14c4299a0c6de253950b910"></div> <pre style="display: none;" data-diff-for="diff-id83136a03d14c4299a0c6de253950b910">diff --git a/serverless.yml b/serverless.yml
 index 0b9f3b9..83b94ce 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -1385,7 +1385,7 @@ index 0b9f3b9..83b94ce 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="idedb6c22d685e41d9a3245343285d44cf" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id83136a03d14c4299a0c6de253950b910" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -1661,7 +1661,7 @@ resources:
             - {
               dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
             }
-</pre>
+</textarea>
 {{< /safehtml >}}
 
 ➡️ Step 2. Run:
@@ -1708,9 +1708,9 @@ Here is what our updated flow will look like after we're done with this step:
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#iddd5f3b5cc9d54f0c8839d46ff108a57a">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ide230da3d4d1b406d8551f54d1a36f08a">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-iddd5f3b5cc9d54f0c8839d46ff108a57a"></div> <pre style="display: none;" data-diff-for="diff-iddd5f3b5cc9d54f0c8839d46ff108a57a">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-ide230da3d4d1b406d8551f54d1a36f08a"></div> <pre style="display: none;" data-diff-for="diff-ide230da3d4d1b406d8551f54d1a36f08a">diff --git a/serverless.yml b/serverless.yml
 index 83b94ce..47a3b0f 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -1747,7 +1747,7 @@ index 83b94ce..47a3b0f 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="iddd5f3b5cc9d54f0c8839d46ff108a57a" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="ide230da3d4d1b406d8551f54d1a36f08a" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -2043,7 +2043,7 @@ resources:
             - {
               dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
             }
-</pre>
+</textarea>
 {{< /safehtml >}}
 
 ➡️ Step 2. Run:
@@ -2111,9 +2111,9 @@ To do this, we will integrate our Account Applications service with our applicat
 
 ### Make these changes
 
-➡️ Step 1. Replace `account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#idb2caaf08c77b4d98a3f03260e6cce9ff">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#id73e89c3d32e844d7b2343c40f83923e6">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idb2caaf08c77b4d98a3f03260e6cce9ff"></div> <pre style="display: none;" data-diff-for="diff-idb2caaf08c77b4d98a3f03260e6cce9ff">diff --git a/account-applications/submit.js b/account-applications/submit.js
+<div id="diff-id73e89c3d32e844d7b2343c40f83923e6"></div> <pre style="display: none;" data-diff-for="diff-id73e89c3d32e844d7b2343c40f83923e6">diff --git a/account-applications/submit.js b/account-applications/submit.js
 index ce94300..8072958 100644
 --- a/account-applications/submit.js
 +++ b/account-applications/submit.js
@@ -2167,7 +2167,7 @@ index ce94300..8072958 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="idb2caaf08c77b4d98a3f03260e6cce9ff" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id73e89c3d32e844d7b2343c40f83923e6" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 const APPLICATION_PROCESSING_STEP_FUNCTION_ARN = process.env.APPLICATION_PROCESSING_STEP_FUNCTION_ARN
@@ -2211,12 +2211,12 @@ module.exports.handler = async(event) => {
         throw ex
     }
 }
-</pre>
+</textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id02c8a33e41a547379224dc174d3af688">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id6eefd59bfb1344daac34a5dfcc908699">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id02c8a33e41a547379224dc174d3af688"></div> <pre style="display: none;" data-diff-for="diff-id02c8a33e41a547379224dc174d3af688">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id6eefd59bfb1344daac34a5dfcc908699"></div> <pre style="display: none;" data-diff-for="diff-id6eefd59bfb1344daac34a5dfcc908699">diff --git a/serverless.yml b/serverless.yml
 index 47a3b0f..eec141d 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -2261,7 +2261,7 @@ index 47a3b0f..eec141d 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id02c8a33e41a547379224dc174d3af688" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id6eefd59bfb1344daac34a5dfcc908699" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -2574,7 +2574,7 @@ resources:
             - {
               dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
             }
-</pre>
+</textarea>
 {{< /safehtml >}}
 
 ➡️ Step 3. Run:
@@ -2634,9 +2634,9 @@ We’ll need to make a few updates to our workflow in order for this to work.
 
 ### Make these changes
 
-➡️ Step 1. Replace `account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#id18eabd2d19c54b0bb767cbdeeb417be2">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#id108478d6f76b4ddb91839975f12cd83e">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id18eabd2d19c54b0bb767cbdeeb417be2"></div> <pre style="display: none;" data-diff-for="diff-id18eabd2d19c54b0bb767cbdeeb417be2">diff --git a/account-applications/flag.js b/account-applications/flag.js
+<div id="diff-id108478d6f76b4ddb91839975f12cd83e"></div> <pre style="display: none;" data-diff-for="diff-id108478d6f76b4ddb91839975f12cd83e">diff --git a/account-applications/flag.js b/account-applications/flag.js
 index 3e700d5..8bbdcb1 100644
 --- a/account-applications/flag.js
 +++ b/account-applications/flag.js
@@ -2660,7 +2660,7 @@ index 3e700d5..8bbdcb1 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id18eabd2d19c54b0bb767cbdeeb417be2" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id108478d6f76b4ddb91839975f12cd83e" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -2710,12 +2710,12 @@ module.exports.handler = async(event) => {
         throw ex
     }
 };
-</pre>
+</textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Create `account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#idc99a46f9f28e4084ad195644d810de56">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Create `account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#id1ccfc43acf0b457386eb5b96e60a4387">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idc99a46f9f28e4084ad195644d810de56"></div> <pre style="display: none;" data-diff-for="diff-idc99a46f9f28e4084ad195644d810de56">diff --git a/account-applications/review.js b/account-applications/review.js
+<div id="diff-id1ccfc43acf0b457386eb5b96e60a4387"></div> <pre style="display: none;" data-diff-for="diff-id1ccfc43acf0b457386eb5b96e60a4387">diff --git a/account-applications/review.js b/account-applications/review.js
 new file mode 100644
 index 0000000..74b3186
 --- /dev/null
@@ -2772,7 +2772,7 @@ index 0000000..74b3186
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="idc99a46f9f28e4084ad195644d810de56" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id1ccfc43acf0b457386eb5b96e60a4387" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -2819,12 +2819,12 @@ module.exports.handler = async(event) => {
         throw ex
     }
 };
-</pre>
+</textarea>
 {{< /safehtml >}}
 
-➡️ Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id1967cd9c27d14d8890dc7c13b737c2de">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idf7d4a80271004c97a0c57ba4b75d6d68">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id1967cd9c27d14d8890dc7c13b737c2de"></div> <pre style="display: none;" data-diff-for="diff-id1967cd9c27d14d8890dc7c13b737c2de">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-idf7d4a80271004c97a0c57ba4b75d6d68"></div> <pre style="display: none;" data-diff-for="diff-idf7d4a80271004c97a0c57ba4b75d6d68">diff --git a/serverless.yml b/serverless.yml
 index eec141d..acc14c6 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -2923,7 +2923,7 @@ index eec141d..acc14c6 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id1967cd9c27d14d8890dc7c13b737c2de" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idf7d4a80271004c97a0c57ba4b75d6d68" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -3290,7 +3290,7 @@ resources:
               dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
               flagApplicationLambdaName: !Ref FlagApplicationLambdaFunction,
             }
-</pre>
+</textarea>
 {{< /safehtml >}}
 
 ➡️ Step 4. Run:
@@ -3353,9 +3353,9 @@ Until now, we’ve left the Approve Application state empty, using the Pass stat
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idcbd966ebc8fb46dcbb72d797678c172b">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id30b552e923b74089bea66c65fae3d1d7">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idcbd966ebc8fb46dcbb72d797678c172b"></div> <pre style="display: none;" data-diff-for="diff-idcbd966ebc8fb46dcbb72d797678c172b">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-id30b552e923b74089bea66c65fae3d1d7"></div> <pre style="display: none;" data-diff-for="diff-id30b552e923b74089bea66c65fae3d1d7">diff --git a/serverless.yml b/serverless.yml
 index acc14c6..4010aa8 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -3406,7 +3406,7 @@ index acc14c6..4010aa8 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="idcbd966ebc8fb46dcbb72d797678c172b" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id30b552e923b74089bea66c65fae3d1d7" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -3785,7 +3785,7 @@ resources:
               rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
               approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
             }
-</pre>
+</textarea>
 {{< /safehtml >}}
 
 ➡️ Step 2. Run:
@@ -3830,9 +3830,9 @@ The [developer guide identifies the types of transient Lambda service errors tha
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id8a559124a89246e6972105ece04b16b5">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idda59c0ea01b74a34a79050b8faff8571">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id8a559124a89246e6972105ece04b16b5"></div> <pre style="display: none;" data-diff-for="diff-id8a559124a89246e6972105ece04b16b5">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-idda59c0ea01b74a34a79050b8faff8571"></div> <pre style="display: none;" data-diff-for="diff-idda59c0ea01b74a34a79050b8faff8571">diff --git a/serverless.yml b/serverless.yml
 index 4010aa8..f28884a 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -3889,7 +3889,7 @@ index 4010aa8..f28884a 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id8a559124a89246e6972105ece04b16b5" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idda59c0ea01b74a34a79050b8faff8571" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -4283,7 +4283,7 @@ resources:
               rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
               approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
             }
-</pre>
+</textarea>
 {{< /safehtml >}}
 
 ➡️ Step 2. Run:
@@ -4313,9 +4313,9 @@ To show this in action, we’ll update our Data Checking Lambda, telling it to t
 
 ### Make these changes
 
-➡️ Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id20884290b27347878c160630f7453342">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id67b7669a68a547acb8dd1ef766ac891d">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id20884290b27347878c160630f7453342"></div> <pre style="display: none;" data-diff-for="diff-id20884290b27347878c160630f7453342">diff --git a/code/data-checking.js b/code/data-checking.js
+<div id="diff-id67b7669a68a547acb8dd1ef766ac891d"></div> <pre style="display: none;" data-diff-for="diff-id67b7669a68a547acb8dd1ef766ac891d">diff --git a/code/data-checking.js b/code/data-checking.js
 index a6ee7f0..ff12893 100644
 --- a/code/data-checking.js
 +++ b/code/data-checking.js
@@ -4337,7 +4337,7 @@ index a6ee7f0..ff12893 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id20884290b27347878c160630f7453342" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id67b7669a68a547acb8dd1ef766ac891d" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -4378,12 +4378,12 @@ module.exports.handler = (event, context, callback) => {
     }
 };
 
-</pre>
+</textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idd59cccf859ba48c2824c8e1e1f37081d">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idfec5700ec9104d8587bd2b8b62c6ef6e">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idd59cccf859ba48c2824c8e1e1f37081d"></div> <pre style="display: none;" data-diff-for="diff-idd59cccf859ba48c2824c8e1e1f37081d">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-idfec5700ec9104d8587bd2b8b62c6ef6e"></div> <pre style="display: none;" data-diff-for="diff-idfec5700ec9104d8587bd2b8b62c6ef6e">diff --git a/serverless.yml b/serverless.yml
 index f28884a..47f7742 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -4428,7 +4428,7 @@ index f28884a..47f7742 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="idd59cccf859ba48c2824c8e1e1f37081d" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idfec5700ec9104d8587bd2b8b62c6ef6e" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -4844,7 +4844,7 @@ resources:
               rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
               approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
             }
-</pre>
+</textarea>
 {{< /safehtml >}}
     
 ➡️ Step 3. Run:
@@ -4897,9 +4897,9 @@ Step Functions has a `Parallel` state type which, unsurprisingly, lets a state m
 
 Let's refactor our state machine to  perform the name and address checks in parallel:
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id1369b2736f2e4711a027978fc97376aa">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idc66b1c8d0a3044f0a1fb9e5cb3e7b314">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id1369b2736f2e4711a027978fc97376aa"></div> <pre style="display: none;" data-diff-for="diff-id1369b2736f2e4711a027978fc97376aa">diff --git a/serverless.yml b/serverless.yml
+<div id="diff-idc66b1c8d0a3044f0a1fb9e5cb3e7b314"></div> <pre style="display: none;" data-diff-for="diff-idc66b1c8d0a3044f0a1fb9e5cb3e7b314">diff --git a/serverless.yml b/serverless.yml
 index 47f7742..c463339 100644
 --- a/serverless.yml
 +++ b/serverless.yml
@@ -5032,7 +5032,7 @@ index 47f7742..c463339 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<pre id="id1369b2736f2e4711a027978fc97376aa" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idc66b1c8d0a3044f0a1fb9e5cb3e7b314" style="position: absolute; left: -1000px; top: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -5462,7 +5462,7 @@ resources:
               rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
               approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
             }
-</pre>
+</textarea>
 {{< /safehtml >}}
 
 ➡️ Step 2. Run:
