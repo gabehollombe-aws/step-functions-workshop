@@ -2,8 +2,15 @@ const { execSync } = require('child_process')
 const { readFileSync, writeFileSync } = require('fs')
 const uuid = require('uuid/v4')
 
-const getUnifiedDiff = (sha, path) => {
+const getUnifiedDiff2 = (sha, path) => {
     const output = execSync(`git diff -p ${sha}^ ${sha} -- ${path}`, {
+        cwd: `${__dirname}/../..`
+    })
+    return output.toString()
+}
+
+const getUnifiedDiff = (sha, path) => {
+    const output = execSync(`git show --unified ${sha} -- ${path}`, {
         cwd: `${__dirname}/../..`
     })
     return output.toString()
