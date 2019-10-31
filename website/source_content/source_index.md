@@ -774,7 +774,7 @@ To do this, we will integrate our Account Applications service with our applicat
 
 ### Make these changes
 
-➡️ Step 1. Replace `account-applications/submit.js` with ___CLIPBOARD_BUTTON 55e4f1b3cf75014bbad84ac40e00a17e32969798:account-applications/submit.js|
+➡️ Step 1. Replace `account-applications/submit.js` with ___CLIPBOARD_BUTTON 509c5f4da832d190d3285f30d91fd29c3253b6fb:code/account-applications/submit.js|
 
 ➡️ Step 2. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 55e4f1b3cf75014bbad84ac40e00a17e32969798:serverless.yml|
 
