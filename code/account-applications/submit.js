@@ -23,7 +23,7 @@ const startStateMachineExecution = (application) => {
         "name": `ApplicationID-${application.id}`,
         "stateMachineArn": APPLICATION_PROCESSING_STEP_FUNCTION_ARN
     }
-    stepfunctions.startExecution(params).promise()
+    return stepfunctions.startExecution(params).promise()
 }
 
 module.exports.handler = async(event) => {
