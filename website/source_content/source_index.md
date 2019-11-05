@@ -144,15 +144,15 @@ Whenever a new bank account application comes in to our example system, we want 
 
 To sum up, here is the workflow that we want to manage:
 
-- Check an applicant’s name and address against a service to detect if they’re suspicious or otherwise warrant review by a human before processing the account application
+- Check an applicant’s name and address against a service to detect if they’re suspicious or otherwise warrant review by a human before processing the account application.
 
-- If the name and address checks come back without any issues, then automatically approve the application. If we encounter an error trying to check the name or the address, flag the application as unprocessable and stop. Otherwise, if the name or address checks reveal a concern about the data, proceed to step 3
+- If the name and address checks come back without any issues, then automatically approve the application. If we encounter an error trying to check the name or the address, flag the application as unprocessable and stop. Otherwise, if the name or address checks reveal a concern about the data, continue to the next step.
 
-- Flag the application for review by a human and pause further processing
+- Flag the application for review by a human and pause further processing.
 
-- Wait for a human to review the flagged application and make an approve or reject decision for the application
+- Wait for a human to review the flagged application and make an approve or reject decision for the application.
 
-- Approve or reject the application, as per the reviewer’s decision
+- Approve or reject the application, as per the reviewer’s decision.
 
 Here is a diagram to illustrate our this same workflow with boxes and arrows instead of words:
 ![Workflow collaboration](images/full-desired-workflow.png)
@@ -184,16 +184,14 @@ To start, we’ll create several functions that, when taken collectively, could 
 
 - Install the Serverless CLI tool, initialize a new project, and install a few dependencies from NPM
 
-- Download v1 of our Account Applications service functions (so you don't need to create a lot of initial files by hand). These functions will each be implemented with Node.js. 
+- Instead of creating a bunch of files by hand, we'll download a first version of our Account Applications service, comprised of several AWS Lambda functions. We'll use Node.js as the language for all of the Lambda functions in this workshop, but if you're not comfortable with Node.JS or JavaScript, don't worry; the code is really simple and you should be able to follow along without any issues.
 
 - Set up a v1 of the `serverless.yml` file, which is how we tell the Serverless Framework about all of the cloud resources that our system will use, including the AWS Lambda functions that implement each action in our API, an Amazon DynamoDB table to store the state of each application, and the necessary AWS IAM roles and permissions to ensure our Lambda functions can operate successfully and securely.
 
 
 ### Make these changes
 
-First, install the Serverless CLI tool, initialize a new project, install two dependencies from NPM, and remove the default Lambda function handler created by the new project. 
-
-➡️ Step 1. In the terminal command line, run these commands to handle all of the housekeeping of getting our first version of the Account Applications service deployed:
+➡️ Step 1. In your Cloud9 workspace's terminal command line, run these commands to handle all of the housekeeping of getting our first version of the Account Applications service deployed:
 
 ```bash
 # Install the Serverless Framework CLI
