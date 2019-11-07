@@ -53,7 +53,7 @@ After a moment, you should see that the execution **failed**. But, this time, we
 
 Now, we know that our state machine was able to execute our Data Checking lambda function because the ‘Check Name’ state is green. But, notice how the ‘Check Address’ state has a dark gray background. If you look at the color code at the bottom of the visualization section, you’ll see that this means the state was cancelled. Let’s see why.
 
-![Workflow simplified address cancelled](images/simplified-workflow-vis-address-error.png)
+![Workflow simplified address cancelled](/images/simplified-workflow-vis-address-error.png)
 
 ### Do these steps
 
@@ -70,6 +70,6 @@ Now, we know that our state machine was able to execute our Data Checking lambda
 
 Let’s unpack this so we can understand why the state was cancelled.  If you look back at our state machine definition for the Check Address state (shown below), you’ll see that it expects to have an `application` object in its input, and it tries to pass `application.address` down into the Data Checking lambda. 
 
-![Check Address expected data](images/check_address_expectation.png)
+![Check Address expected data](/images/check_address_expectation.png)
 
 The error message is telling us that it couldn’t find `application.address` in the state’s input. To understand why, we need to learn a bit more about how an active state generates its output and passes it to the next state’s input.

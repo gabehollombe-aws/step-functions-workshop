@@ -4,8 +4,6 @@ chapter = false
 weight = 10
 +++
 
-## Starting our workflow when a new application is submitted
-
 In our Pending Review state, we want to have the state machine call out to the Account Applications service to flag the application for review, and then to pause and wait for a callback from the Account Applications service, which will occur after a human reviews the application and makes a decision. Of course, in order for our step function to notify the Account Applications service that a record should be flagged, it’s going to need to pass it an application ID. And the only way the step function will be able to pass an ID back to our applications service is if we include an ID as part of the application information when the step function execution starts. Let’s take care of this now.
 
 To do this, we will integrate our Account Applications service with our application processing step function, starting a new execution each time a new application is submitted to the service. When we start the execution, in addition to passing the applicant’s name and address as input (so the name and address checks can execute), we’ll also pass in the application ID so that the step function can execute the Account Applications service’s FlagApplication function to flag applications for review.
@@ -20,9 +18,9 @@ To do this, we will integrate our Account Applications service with our applicat
 
 ### Make these changes
 
-➡️ Step 1. Replace `account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#ida8fa2b85e5164264a73910b8c062e335">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#id1b5a5865a3354e70a12823bbe83fefce">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-ida8fa2b85e5164264a73910b8c062e335"></div> <pre style="display: none;" data-diff-for="diff-ida8fa2b85e5164264a73910b8c062e335">commit 509c5f4da832d190d3285f30d91fd29c3253b6fb
+<div id="diff-id1b5a5865a3354e70a12823bbe83fefce"></div> <pre style="display: none;" data-diff-for="diff-id1b5a5865a3354e70a12823bbe83fefce">commit 509c5f4da832d190d3285f30d91fd29c3253b6fb
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Thu Oct 31 14:41:42 2019 +0800
 
@@ -70,7 +68,7 @@ index ce94300..1f80e87 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="ida8fa2b85e5164264a73910b8c062e335" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id1b5a5865a3354e70a12823bbe83fefce" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 const APPLICATION_PROCESSING_STEP_FUNCTION_ARN = process.env.APPLICATION_PROCESSING_STEP_FUNCTION_ARN
@@ -117,9 +115,9 @@ module.exports.handler = async(event) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ida3df1a59dcd54054a00b08daa8302535">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idcd74d7a530124dc7a5ae52e50a3f5b20">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-ida3df1a59dcd54054a00b08daa8302535"></div> <pre style="display: none;" data-diff-for="diff-ida3df1a59dcd54054a00b08daa8302535">commit 55e4f1b3cf75014bbad84ac40e00a17e32969798
+<div id="diff-idcd74d7a530124dc7a5ae52e50a3f5b20"></div> <pre style="display: none;" data-diff-for="diff-idcd74d7a530124dc7a5ae52e50a3f5b20">commit 55e4f1b3cf75014bbad84ac40e00a17e32969798
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Tue Oct 15 17:16:45 2019 +0800
 
@@ -170,7 +168,7 @@ index 47a3b0f..eec141d 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="ida3df1a59dcd54054a00b08daa8302535" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idcd74d7a530124dc7a5ae52e50a3f5b20" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

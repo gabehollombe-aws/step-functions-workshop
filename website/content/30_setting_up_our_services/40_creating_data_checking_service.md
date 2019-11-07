@@ -20,9 +20,9 @@ Also, for the sake of keeping our code simple, we’ll implement our name and ad
 
 ### Make these changes
 
-➡️ Step 1. Create `workshop-dir/data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id9159fcae75c44a53a9be0835c50ebc00">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Create `workshop-dir/data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id1225889461794b7e902dd32aa70f4ddd">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id9159fcae75c44a53a9be0835c50ebc00"></div> <pre style="display: none;" data-diff-for="diff-id9159fcae75c44a53a9be0835c50ebc00">commit 4b2da0cd48c78a59727400820bef2bdebeb29744
+<div id="diff-id1225889461794b7e902dd32aa70f4ddd"></div> <pre style="display: none;" data-diff-for="diff-id1225889461794b7e902dd32aa70f4ddd">commit 4b2da0cd48c78a59727400820bef2bdebeb29744
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Fri Oct 25 17:08:19 2019 +0800
 
@@ -80,7 +80,7 @@ index 053e284..a6ee7f0 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id9159fcae75c44a53a9be0835c50ebc00" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id1225889461794b7e902dd32aa70f4ddd" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -118,9 +118,9 @@ module.exports.handler = (event, context, callback) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id819c6a1f015f4b6c9280b0e0315e4142">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id9b06d25e832f4c639e5ed9386574c6f7">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id819c6a1f015f4b6c9280b0e0315e4142"></div> <pre style="display: none;" data-diff-for="diff-id819c6a1f015f4b6c9280b0e0315e4142">commit 03eee8d58ad56817b84197e45c12f2ce83ae8d52
+<div id="diff-id9b06d25e832f4c639e5ed9386574c6f7"></div> <pre style="display: none;" data-diff-for="diff-id9b06d25e832f4c639e5ed9386574c6f7">commit 03eee8d58ad56817b84197e45c12f2ce83ae8d52
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Mon Oct 14 16:45:44 2019 +0800
 
@@ -166,7 +166,7 @@ index 2869132..07bc6d3 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id819c6a1f015f4b6c9280b0e0315e4142" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id9b06d25e832f4c639e5ed9386574c6f7" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

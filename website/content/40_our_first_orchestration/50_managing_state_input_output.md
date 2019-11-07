@@ -1,110 +1,58 @@
 +++
-title = "Fixing Permissions"
+title = "Managing State Inputs and Outputs"
 chapter = false
-weight = 40
+weight = 50
 +++
 
-Rather than continue to work in the web console and make these fixes by hand, we’ll return to our `serverless.yml` file to define our state machine alongside the other resources used in this workshop, and we’ll take care to also set up the appropriate permissions for this state machine to execute successfully.
+Each Step Function state machine execution receives a JSON document as input and passes that input to the first state in the workflow. Individual states receive JSON as input and usually pass JSON as output to the next state. Understanding how this information flows from state to state, and learning how to filter and manipulate this data, is key to effectively designing and implementing workflows in AWS Step Functions. The [Input and Output Processing](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-input-output-filtering.html) section of the AWS Step Functions developer guide provides a comprehensive explanation, but for now we’ll just cover the bit of knowledge we need to get our state machine working.
+
+The output of a state can be a copy of its input, or the result it produces (for example, output from a `Task` state’s Lambda function), or a combination of its input and result. We can use the `ResultPath` property inside our state machine task definitions to control which combination of these result configurations is passed to the state output (which then, in turn, becomes the input for the next state). 
+
+The reason why our execution failed above is because the default behavior of a Task, if we don’t specify a `ResultPath` property, is to take the task’s output and use it as the input for the next state. In our case, since the previous state (Check Name) generated output of `{ "flagged": false }` this became the input to the next state (Check Address). Instead, what we want to do is preserve the original input, which contains our applicant’s info, merge Check Name’s result into that state, and pass the whole thing down to the Check Address.  Then, Check Address could do the same. What we want to do is get both data checking steps to execute correctly and merge their outputs together for some later step to inspect for further downstream routing logic.
+
+So, to fix our current issue, we need to add a `ResultPath` statement, instructing the state machine to generate its output by taking the Lambda function’s output and merging it with the state’s input. It’s a simple change, really. We just need to add a tiny bit of additional configuration to our Task state definitions: `"ResultPath": "$.SomePropertyName"`. In Amazon States Language, the dollar sign syntax you see here means *the state’s input.* So what we’re saying here is, put the result of this task execution (in this case it’s the Lambda function’s output) into a new property of the object containing the input state, and use that as the state’s output.
 
 ### In this step, we will
 
-* Define our new AWS Step Functions state machine inside `serverless.yml`
-
-* Add a new IAM role for our state machine to assume when it executes. The role grants permission for the state machine to invoke our Data Checking Lambda function.
+* Add `ResultPath` properties to our Check Name and Check Address states inside our state machine defined in `serverless.yml`
 
 ### Make these changes
 
-Before we migrate our step function definition over to our `serverless.yml` file, we should delete the function we’ve been interacting with in the Step Functions web console so that we don’t get confused when a similar state machine is deployed as part of our Serverless stack deployment.
+Below is a new version of our serverless.yml file that contains updated Check Name and Check Address states, using the ResultPath property to merge their outputs into helpfully-named keys that we can be used later on.
 
-➡️ Step 1. In the left sidebar of the Step Functions web console, click ‘State machines’
 
-➡️ Step 2. Select the state machne that we manually defined earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
-
-➡️ Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idbcad36fc46954e50a6c9147100a50f8f">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idf2984d7cf40340e48c004e5554ed4a03">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idbcad36fc46954e50a6c9147100a50f8f"></div> <pre style="display: none;" data-diff-for="diff-idbcad36fc46954e50a6c9147100a50f8f">commit c9b0e65eca70946d4da2fceaca4b26bfc6641a76
+<div id="diff-idf2984d7cf40340e48c004e5554ed4a03"></div> <pre style="display: none;" data-diff-for="diff-idf2984d7cf40340e48c004e5554ed4a03">commit 4114d55fdb744943184a1b480c94da7d77cfc80d
 Author: Gabe Hollombe <gabe@avantbard.com>
-Date:   Tue Oct 15 16:13:21 2019 +0800
+Date:   Tue Oct 15 17:02:48 2019 +0800
 
-    Add StepFunction simplified workflow to serverless.yml
+    Add ResultPath to data checking steps
 
 diff --git a/serverless.yml b/serverless.yml
-index 07bc6d3..0b9f3b9 100644
+index 0b9f3b9..83b94ce 100644
 --- a/serverless.yml
 +++ b/serverless.yml
-@@ -210,4 +210,65 @@ resources:
-                         AttributeName: state
-                         KeyType: HASH
-                 Projection:
--                    ProjectionType: ALL
-\ No newline at end of file
-+                    ProjectionType: ALL
-+
-+    StepFunctionRole:
-+      Type: 'AWS::IAM::Role'
-+      Properties:
-+        AssumeRolePolicyDocument:
-+            Version: '2012-10-17'
-+            Statement:
-+                -
-+                  Effect: Allow
-+                  Principal:
-+                      Service: 'states.amazonaws.com'
-+                  Action: 'sts:AssumeRole'
-+        Policies:
-+            -
-+              PolicyName: lambda
-+              PolicyDocument:
-+                Statement:
-+                  -
-+                    Effect: Allow
-+                    Action: 'lambda:InvokeFunction'
-+                    Resource:
-+                        - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-+
-+    ProcessApplicationsStateMachine:
-+      Type: AWS::StepFunctions::StateMachine
-+      Properties:
-+        StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
-+        RoleArn: !GetAtt StepFunctionRole.Arn
-+        DefinitionString:
-+          !Sub
-+            - |-
-+              {
-+                "StartAt": "Check Name",
-+                "States": {
-+                    "Check Name": {
-+                        "Type": "Task",
-+                        "Parameters": {
-+                            "command": "CHECK_NAME",
-+                            "data": { "name.$": "$.application.name" }
-+                        },
-+                        "Resource": "#{dataCheckingLambdaArn}",
-+                        "Next": "Check Address"
-+                    },
-+                    "Check Address": {
-+                        "Type": "Task",
-+                        "Parameters": {
-+                            "command": "CHECK_ADDRESS",
-+                            "data": { "address.$": "$.application.address" }
-+                        },
-+                        "Resource": "#{dataCheckingLambdaArn}",
-+                        "Next": "Approve Application"
-+                    },
-+                    "Approve Application": {
-+                        "Type": "Pass",
-+                        "End": true
-+                    }
-+                }
-+              }
-+            - {
-+              dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-+            }
-\ No newline at end of file
+@@ -252,6 +252,7 @@ resources:
+                             "data": { "name.$": "$.application.name" }
+                         },
+                         "Resource": "#{dataCheckingLambdaArn}",
++                        "ResultPath": "$.checks.name",
+                         "Next": "Check Address"
+                     },
+                     "Check Address": {
+@@ -261,6 +262,7 @@ resources:
+                             "data": { "address.$": "$.application.address" }
+                         },
+                         "Resource": "#{dataCheckingLambdaArn}",
++                        "ResultPath": "$.checks.address",
+                         "Next": "Approve Application"
+                     },
+                     "Approve Application": {
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idbcad36fc46954e50a6c9147100a50f8f" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idf2984d7cf40340e48c004e5554ed4a03" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -358,6 +306,7 @@ resources:
                             "data": { "name.$": "$.application.name" }
                         },
                         "Resource": "#{dataCheckingLambdaArn}",
+                        "ResultPath": "$.checks.name",
                         "Next": "Check Address"
                     },
                     "Check Address": {
@@ -367,6 +316,7 @@ resources:
                             "data": { "address.$": "$.application.address" }
                         },
                         "Resource": "#{dataCheckingLambdaArn}",
+                        "ResultPath": "$.checks.address",
                         "Next": "Approve Application"
                     },
                     "Approve Application": {
@@ -381,54 +331,26 @@ resources:
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 4. Run:
+➡️ Step 2. Run:
 
 ```bash
 sls deploy
 ```
 
-
 ### Try it out
 
-➡️ Step 1. Head back to the Step Functions web console and look for a state machine named `StepFunctionsWorkshop__process_account_applications__dev` and click it. This is the re-deployed version of our state machine. The new version of our state machine hasn’t changed, except that we granted its IAM role permissions to invoke our Data Checking lambda. Let’s try executing it again with some sample input to see what happens.
+With our new version deployed, each data checking step will now pass its whole input to its output as well as adding the data checking result to a new property in its output, too. Let’s retry another execution to see how things go.
 
-➡️ Step 2. Click ‘Start execution’
+➡️ Step 1. Back in the Step Functions web console, click ‘New Execution’
 
-➡️ Step 3. Paste the following JSON into the input field
+➡️ Step 2. Leave the input the same as before and click ‘Start execution’. This time, you should see the execution succeed.
 
-```json
-{
-    "application": { 
-        "name": "Spock", 
-        "address": "123 Enterprise Street" 
-    }
-}
-```
+➡️ Step 3. Click on the Check Address state in the visualization section and expand the Input and Output nodes on the right. 
 
-➡️ Step 4. Click ‘Start execution’
+Notice how the Check Name state kept our original input and appended its results inside of `$.checks.name` and how our Check Address took that output as its input and appended its own address check result inside of `$.checks.address`.  That’s the power of `ResultPath` at work!
 
+![Workflow simplified all working](/images/simplified-workflow-vis-working.png)
 
-After a moment, you should see that the execution **failed**. But, this time, we don’t have any red states, because our failure mode is different. 
+At this point, we have a workflow that executes successfully, but it’s still missing some important logic. Our workflow goes directly from Check Address to Approve Application.  What we actually want is to automatically approve an application only if both the name and address come back without flags, and otherwise we want to queue the application up for review by a human.  
 
-Now, we know that our state machine was able to execute our Data Checking lambda function because the ‘Check Name’ state is green. But, notice how the ‘Check Address’ state has a dark gray background. If you look at the color code at the bottom of the visualization section, you’ll see that this means the state was cancelled. Let’s see why.
-
-![Workflow simplified address cancelled](images/simplified-workflow-vis-address-error.png)
-
-### Do these steps
-
-➡️ Step 1. In the ‘Execution event history’ section, expand the last row, which should show ‘Execution failed’
-
-➡️ Step 2. Notice that the error message gives us a helpful description of what went wrong.
-
-```
-{
-  "error": "States.Runtime",
-  "cause": "An error occurred while executing the state 'Check Address' (entered at the event id #7). The JSONPath '$.application.address' specified for the field 'address.$' could not be found in the input '{\"flagged\":false}'"
-}
-```
-
-Let’s unpack this so we can understand why the state was cancelled.  If you look back at our state machine definition for the Check Address state (shown below), you’ll see that it expects to have an `application` object in its input, and it tries to pass `application.address` down into the Data Checking lambda. 
-
-![Check Address expected data](images/check_address_expectation.png)
-
-The error message is telling us that it couldn’t find `application.address` in the state’s input. To understand why, we need to learn a bit more about how an active state generates its output and passes it to the next state’s input.
+Eventually we will incorporate a step that will wait for a human response on flagged applications. But before that, we need to learn how to inspect the workflow’s state and execute some branching logic based on the checks we define.  To do this, we’ll need to add a new type of state to our state machine called the Choice state.

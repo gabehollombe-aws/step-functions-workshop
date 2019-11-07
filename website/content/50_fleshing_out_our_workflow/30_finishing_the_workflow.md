@@ -4,7 +4,7 @@ chapter = false
 weight = 30
 +++
 
-## Finishing the workflow - approving and rejecting account applications
+## Approving and rejecting account applications
 
 Until now, we’ve left the Approve Application state empty, using the Pass state a kind of placeholder reminding us to implement the step later. And we just added another placeholder state for Reject Application, too.  Let’s finish our workflow by replacing these Pass states with Task states that invoke appropriate Lambda functions.
 
@@ -18,9 +18,9 @@ Until now, we’ve left the Approve Application state empty, using the Pass stat
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id28e4ca0436c442819f600b71b78d1f37">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idd89254ee356d4a3991a0263730d7834a">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id28e4ca0436c442819f600b71b78d1f37"></div> <pre style="display: none;" data-diff-for="diff-id28e4ca0436c442819f600b71b78d1f37">commit 77603cdb8730955713c45470065e8c1b619fff93
+<div id="diff-idd89254ee356d4a3991a0263730d7834a"></div> <pre style="display: none;" data-diff-for="diff-idd89254ee356d4a3991a0263730d7834a">commit 77603cdb8730955713c45470065e8c1b619fff93
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:09:15 2019 +0800
 
@@ -77,7 +77,7 @@ index acc14c6..4010aa8 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id28e4ca0436c442819f600b71b78d1f37" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idd89254ee356d4a3991a0263730d7834a" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

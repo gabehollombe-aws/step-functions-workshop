@@ -1,7 +1,7 @@
 +++
 title = "Introducing the Choice State type"
 chapter = false
-weight = 40
+weight = 60
 +++
 
 A Choice state adds branching logic to a state machine. You can think of this like a *switch *statement common in many programming languages. A Choice state has an array of rules.  Each rule contains two things: an expression that evaluates some boolean expression, and a reference to the next state to transition to if this rule matches successfully. All of the rules are evaluated in order and the first rule to match successfully causes the state machine to transition to the next state defined by the rule.
@@ -9,7 +9,7 @@ A Choice state adds branching logic to a state machine. You can think of this li
 In our example workflow, we want to wait for a human to review an application if either the name or address check comes back as flagged. Otherwise, we want to automatically approve the application.  Let’s add in a Choice state that implements this flow.
 
 Here is what our updated flow will look like after we're done with this step:
-![Adding review required check](images/workflow-add-review-required-sm.png)
+![Adding review required check](/images/workflow-add-review-required-sm.png)
 
 ### In this step, we will
 
@@ -21,9 +21,9 @@ Here is what our updated flow will look like after we're done with this step:
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ida9e268fd34b4458db29bf73645ded560">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id422dd18888064a3d9efcd6f80e4c0870">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-ida9e268fd34b4458db29bf73645ded560"></div> <pre style="display: none;" data-diff-for="diff-ida9e268fd34b4458db29bf73645ded560">commit def5ea473552142257ef1b5a047ba98dd01749c2
+<div id="diff-id422dd18888064a3d9efcd6f80e4c0870"></div> <pre style="display: none;" data-diff-for="diff-id422dd18888064a3d9efcd6f80e4c0870">commit def5ea473552142257ef1b5a047ba98dd01749c2
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Tue Oct 15 17:15:47 2019 +0800
 
@@ -66,7 +66,7 @@ index 83b94ce..47a3b0f 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="ida9e268fd34b4458db29bf73645ded560" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id422dd18888064a3d9efcd6f80e4c0870" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

@@ -1,7 +1,7 @@
 +++
 title = "Introducing the Choice State type"
 chapter = false
-weight = 40
+weight = 60
 +++
 
 A Choice state adds branching logic to a state machine. You can think of this like a *switch *statement common in many programming languages. A Choice state has an array of rules.  Each rule contains two things: an expression that evaluates some boolean expression, and a reference to the next state to transition to if this rule matches successfully. All of the rules are evaluated in order and the first rule to match successfully causes the state machine to transition to the next state defined by the rule.
@@ -9,7 +9,7 @@ A Choice state adds branching logic to a state machine. You can think of this li
 In our example workflow, we want to wait for a human to review an application if either the name or address check comes back as flagged. Otherwise, we want to automatically approve the application.  Let’s add in a Choice state that implements this flow.
 
 Here is what our updated flow will look like after we're done with this step:
-![Adding review required check](images/workflow-add-review-required-sm.png)
+![Adding review required check](/images/workflow-add-review-required-sm.png)
 
 ### In this step, we will
 

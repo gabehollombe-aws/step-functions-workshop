@@ -4,8 +4,6 @@ chapter = false
 weight = 10
 +++
 
-## Improving resiliency by adding retries and error handling to our workflow
-
 Until now, we haven’t taken the time to add any resiliency into our state machine. What happens if some of our Lambda function calls result in a timeout, or if they experience some other sort of transient error? What if they throw an exception? Let’s address these what-ifs now and leverage the built in retry and error handling capabilities of AWS Step Functions.
 
 So, what kind of errors can occur? Here’s what the Step Functions developer guide has to say:
@@ -26,7 +24,7 @@ For our example workflow, we’re probably OK with just allowing our workflow to
 
 Task states (and others like Parallel states too, which we’ll get to later), have the capability to retry their work after they encounter an error. We just need to add a `Retry` parameter to our Task state definitions, telling them which types of errors they should retry for, and optionally specify additional configuration to control the rate of retries and the maximum number of retry attempts.
 
-The [developer guide identifies the types of transient Lambda service errors that should proactively handle with a retry](https://docs.aws.amazon.com/step-functions/latest/dg/bp-lambda-serviceexception.html) as a best practice.   So let’s add `Retry` configurations to each of our Lambda invoking Task states to handle these transient errors.
+The developer guide identifies the [types of transient Lambda service errors](https://docs.aws.amazon.com/step-functions/latest/dg/bp-lambda-serviceexception.html) that should proactively handle with a retry as a best practice.   So let’s add `Retry` configurations to each of our Lambda invoking Task states to handle these transient errors.
 
 ### In this step, we will
 
@@ -96,6 +94,6 @@ Notice that our state machine now shows that it encountered, and handled, an err
 sls invoke -f FindApplications --data='{ "state": "FLAGGED_WITH_UNPROCESSABLE_DATA" }'
 ```
 
-![Catching errors](images/workflow-vis-error-catch.png)
+![Catching errors](/images/workflow-vis-error-catch.png)
 
 Finally, before we wrap up, there’s one more improvement we can make to our workflow.

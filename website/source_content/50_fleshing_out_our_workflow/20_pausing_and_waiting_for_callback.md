@@ -4,21 +4,19 @@ chapter = false
 weight = 20
 +++
 
-## Pausing an execution and waiting for an external callback
-
 Step Functions does its work by integrating with various AWS services directly, and you can control these AWS services using three different service integration patterns: 
 
 * Call a service and let Step Functions progress to the next state immediately after it gets an HTTP response. 
-    
-You’ve already seen this integration type in action. It’s what we’re using to call the Data Checking Lambda function and get back a response.
+
+    You’ve already seen this integration type in action. It’s what we’re using to call the Data Checking Lambda function and get back a response.
     
 * Call a service and have Step Functions wait for a job to complete. 
     
-This is most commonly used for triggering batch style workloads, pausing, then resuming execution after the job completes. We won’t use this style of service integration in this workshop.
+    This is most commonly used for triggering batch style workloads, pausing, then resuming execution after the job completes. We won’t use this style of service integration in this workshop.
     
 * Call a service with a task token and have Step Functions wait until that token is returned along with a payload.
     
-This is the integration pattern we want to use here, since we want to make a service call, and then wait for an asynchronous callback to arrive sometime in the future, and then resume execution.
+    This is the integration pattern we want to use here, since we want to make a service call, and then wait for an asynchronous callback to arrive sometime in the future, and then resume execution.
 
 
 Callback tasks provide a way to pause a workflow until a task token is returned. A task might need to wait for a human approval, integrate with a third party, or call legacy systems. For tasks like these, you can pause a Step Function execution and wait for an external process or workflow to complete.

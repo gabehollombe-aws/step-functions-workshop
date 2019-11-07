@@ -4,7 +4,7 @@ chapter = false
 weight = 30
 +++
 
-## Finishing the workflow - approving and rejecting account applications
+## Approving and rejecting account applications
 
 Until now, we’ve left the Approve Application state empty, using the Pass state a kind of placeholder reminding us to implement the step later. And we just added another placeholder state for Reject Application, too.  Let’s finish our workflow by replacing these Pass states with Task states that invoke appropriate Lambda functions.
 

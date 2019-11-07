@@ -4,21 +4,19 @@ chapter = false
 weight = 20
 +++
 
-## Pausing an execution and waiting for an external callback
-
 Step Functions does its work by integrating with various AWS services directly, and you can control these AWS services using three different service integration patterns: 
 
 * Call a service and let Step Functions progress to the next state immediately after it gets an HTTP response. 
-    
-You’ve already seen this integration type in action. It’s what we’re using to call the Data Checking Lambda function and get back a response.
+
+    You’ve already seen this integration type in action. It’s what we’re using to call the Data Checking Lambda function and get back a response.
     
 * Call a service and have Step Functions wait for a job to complete. 
     
-This is most commonly used for triggering batch style workloads, pausing, then resuming execution after the job completes. We won’t use this style of service integration in this workshop.
+    This is most commonly used for triggering batch style workloads, pausing, then resuming execution after the job completes. We won’t use this style of service integration in this workshop.
     
 * Call a service with a task token and have Step Functions wait until that token is returned along with a payload.
     
-This is the integration pattern we want to use here, since we want to make a service call, and then wait for an asynchronous callback to arrive sometime in the future, and then resume execution.
+    This is the integration pattern we want to use here, since we want to make a service call, and then wait for an asynchronous callback to arrive sometime in the future, and then resume execution.
 
 
 Callback tasks provide a way to pause a workflow until a task token is returned. A task might need to wait for a human approval, integrate with a third party, or call legacy systems. For tasks like these, you can pause a Step Function execution and wait for an external process or workflow to complete.
@@ -39,9 +37,9 @@ We’ll need to make a few updates to our workflow in order for this to work.
 
 ### Make these changes
 
-➡️ Step 1. Replace `account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#id534ffaf04a1b476187028bb0b050d7b8">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#idaa47083d00294f7694e5cfac45265aaf">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id534ffaf04a1b476187028bb0b050d7b8"></div> <pre style="display: none;" data-diff-for="diff-id534ffaf04a1b476187028bb0b050d7b8">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
+<div id="diff-idaa47083d00294f7694e5cfac45265aaf"></div> <pre style="display: none;" data-diff-for="diff-idaa47083d00294f7694e5cfac45265aaf">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 10:58:50 2019 +0800
 
@@ -71,7 +69,7 @@ index 3e700d5..8bbdcb1 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id534ffaf04a1b476187028bb0b050d7b8" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="idaa47083d00294f7694e5cfac45265aaf" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -124,9 +122,9 @@ module.exports.handler = async(event) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Create `account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#id1a8c86a217ee4e40b35d866d1017aae1">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Create `account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#idfb15f35abca742d0bf78d35e8c69a47a">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id1a8c86a217ee4e40b35d866d1017aae1"></div> <pre style="display: none;" data-diff-for="diff-id1a8c86a217ee4e40b35d866d1017aae1">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
+<div id="diff-idfb15f35abca742d0bf78d35e8c69a47a"></div> <pre style="display: none;" data-diff-for="diff-idfb15f35abca742d0bf78d35e8c69a47a">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 10:58:50 2019 +0800
 
@@ -189,7 +187,7 @@ index 0000000..74b3186
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id1a8c86a217ee4e40b35d866d1017aae1" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="idfb15f35abca742d0bf78d35e8c69a47a" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -239,9 +237,9 @@ module.exports.handler = async(event) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idbe67e7b0bb4343b69279bfdbb749e1c0">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ide3d2bee669fe4f05a1c39b5b43f6bbbe">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idbe67e7b0bb4343b69279bfdbb749e1c0"></div> <pre style="display: none;" data-diff-for="diff-idbe67e7b0bb4343b69279bfdbb749e1c0">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
+<div id="diff-ide3d2bee669fe4f05a1c39b5b43f6bbbe"></div> <pre style="display: none;" data-diff-for="diff-ide3d2bee669fe4f05a1c39b5b43f6bbbe">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 10:58:50 2019 +0800
 
@@ -346,7 +344,7 @@ index eec141d..acc14c6 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idbe67e7b0bb4343b69279bfdbb749e1c0" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="ide3d2bee669fe4f05a1c39b5b43f6bbbe" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

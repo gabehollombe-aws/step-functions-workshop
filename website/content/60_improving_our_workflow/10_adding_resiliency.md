@@ -4,8 +4,6 @@ chapter = false
 weight = 10
 +++
 
-## Improving resiliency by adding retries and error handling to our workflow
-
 Until now, we haven’t taken the time to add any resiliency into our state machine. What happens if some of our Lambda function calls result in a timeout, or if they experience some other sort of transient error? What if they throw an exception? Let’s address these what-ifs now and leverage the built in retry and error handling capabilities of AWS Step Functions.
 
 So, what kind of errors can occur? Here’s what the Step Functions developer guide has to say:
@@ -26,7 +24,7 @@ For our example workflow, we’re probably OK with just allowing our workflow to
 
 Task states (and others like Parallel states too, which we’ll get to later), have the capability to retry their work after they encounter an error. We just need to add a `Retry` parameter to our Task state definitions, telling them which types of errors they should retry for, and optionally specify additional configuration to control the rate of retries and the maximum number of retry attempts.
 
-The [developer guide identifies the types of transient Lambda service errors that should proactively handle with a retry](https://docs.aws.amazon.com/step-functions/latest/dg/bp-lambda-serviceexception.html) as a best practice.   So let’s add `Retry` configurations to each of our Lambda invoking Task states to handle these transient errors.
+The developer guide identifies the [types of transient Lambda service errors](https://docs.aws.amazon.com/step-functions/latest/dg/bp-lambda-serviceexception.html) that should proactively handle with a retry as a best practice.   So let’s add `Retry` configurations to each of our Lambda invoking Task states to handle these transient errors.
 
 ### In this step, we will
 
@@ -35,9 +33,9 @@ The [developer guide identifies the types of transient Lambda service errors tha
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id25caa2b64b5b476794ad4cd4aaa31da1">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id1521d33cd50840e0bca2b735d7a66876">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id25caa2b64b5b476794ad4cd4aaa31da1"></div> <pre style="display: none;" data-diff-for="diff-id25caa2b64b5b476794ad4cd4aaa31da1">commit 43adfda72ed4228c5818e3b7b2c334dea6cdb340
+<div id="diff-id1521d33cd50840e0bca2b735d7a66876"></div> <pre style="display: none;" data-diff-for="diff-id1521d33cd50840e0bca2b735d7a66876">commit 43adfda72ed4228c5818e3b7b2c334dea6cdb340
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:19:09 2019 +0800
 
@@ -100,7 +98,7 @@ index 4010aa8..f28884a 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id25caa2b64b5b476794ad4cd4aaa31da1" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id1521d33cd50840e0bca2b735d7a66876" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -524,9 +522,9 @@ To show this in action, we’ll update our Data Checking Lambda, telling it to t
 
 ### Make these changes
 
-➡️ Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id11a7119509f640dfa8591e01babf487b">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#idb1622fea1bef4725a0c0b4b20cf4f7b9">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id11a7119509f640dfa8591e01babf487b"></div> <pre style="display: none;" data-diff-for="diff-id11a7119509f640dfa8591e01babf487b">commit 599d75abec2f61a2459bb36eaec4d4e0d7bcbc4d
+<div id="diff-idb1622fea1bef4725a0c0b4b20cf4f7b9"></div> <pre style="display: none;" data-diff-for="diff-idb1622fea1bef4725a0c0b4b20cf4f7b9">commit 599d75abec2f61a2459bb36eaec4d4e0d7bcbc4d
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Fri Oct 25 17:13:06 2019 +0800
 
@@ -554,7 +552,7 @@ index a6ee7f0..ff12893 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id11a7119509f640dfa8591e01babf487b" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="idb1622fea1bef4725a0c0b4b20cf4f7b9" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -598,9 +596,9 @@ module.exports.handler = (event, context, callback) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id8bf57eb542cc4c5ca176ee627599cbbc">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idd4e3f9bea5c74822bea3b7b429b4fcf4">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id8bf57eb542cc4c5ca176ee627599cbbc"></div> <pre style="display: none;" data-diff-for="diff-id8bf57eb542cc4c5ca176ee627599cbbc">commit afebf4c40193cc6a39c685ac9a15b27f9438a52b
+<div id="diff-idd4e3f9bea5c74822bea3b7b429b4fcf4"></div> <pre style="display: none;" data-diff-for="diff-idd4e3f9bea5c74822bea3b7b429b4fcf4">commit afebf4c40193cc6a39c685ac9a15b27f9438a52b
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:37:27 2019 +0800
 
@@ -651,7 +649,7 @@ index f28884a..47f7742 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id8bf57eb542cc4c5ca176ee627599cbbc" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idd4e3f9bea5c74822bea3b7b429b4fcf4" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -1098,6 +1096,6 @@ Notice that our state machine now shows that it encountered, and handled, an err
 sls invoke -f FindApplications --data='{ "state": "FLAGGED_WITH_UNPROCESSABLE_DATA" }'
 ```
 
-![Catching errors](images/workflow-vis-error-catch.png)
+![Catching errors](/images/workflow-vis-error-catch.png)
 
 Finally, before we wrap up, there’s one more improvement we can make to our workflow.

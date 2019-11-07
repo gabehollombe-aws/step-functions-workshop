@@ -4,8 +4,6 @@ chapter = false
 weight = 20
 +++
 
-## Processing independent states in parallel
-
 Up until now we have performed both of our data checking steps in a serial fashion, one after the other. But checking an applicant’s address doesn’t depend on the result from checking the applicant’s name. So, this is a great opportunity to speed things up and perform our two data check steps in parallel instead. 
 
 Step Functions has a `Parallel` state type which, unsurprisingly, lets a state machine perform parallel executions of multiple states. A `Parallel` state causes the interpreter to execute each branch starting with the state named in its `StartAt` field, as concurrently as possible, and wait until each branch terminates (reaches a terminal state) before processing the Parallel state's `Next` field. 
@@ -41,7 +39,7 @@ sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "123 Enter
 
 Here is what a valid application execution flow looks like:
 
-![Parallel check auto approving](images/workflow-vis-parallel-approved.png)
+![Parallel check auto approving](/images/workflow-vis-parallel-approved.png)
 
 ➡️ Step 2. Submit an application with an invalid name or address (or both) and see the parallel checks result in the workflow routing to wait for a review. Run:
 
@@ -51,7 +49,7 @@ sls invoke -f SubmitApplication --data='{ "name": "Gabe", "address": "ABadAddres
 
 Here is what an invalid application execution flow looks like:
 
-![Parallel check pending](images/workflow-vis-parallel-pending.png)
+![Parallel check pending](/images/workflow-vis-parallel-pending.png)
 
 ➡️ Step 3. Submit an application with our test unprocessable name to see the parallel data checking state throw the error and route to the state to flag an application as unprocessable. Run: 
 
@@ -61,6 +59,6 @@ sls invoke -f SubmitApplication --data='{ "name": "UNPROCESSABLE_DATA", "address
 
 Here is what an unprocessable application execution flow looks like:
 
-![Parallel check unprocessable](images/workflow-vis-parallel-unprocessable.png)
+![Parallel check unprocessable](/images/workflow-vis-parallel-unprocessable.png)
 
 At this point, we have a well structured state machine to manage the workflow of processing new account applications for our simple banking system. If we wanted to, we could add on another step in our workflow to handle further downstream logic involved with opening up a bank account for applications that get approved. But, this is a good place to wrap up because you already have all the experience needed to continue implementing these further steps on your own, if you wish.
