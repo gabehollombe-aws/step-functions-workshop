@@ -1,10 +1,10 @@
 ---
-title: "Home"
+title: "Workshop - Introduction to service coordination using AWS Step Functions"
 chapter: false
 weight: 1
 ---
 
-# Intro to<br/>service coordination<br/>using AWS Step Functions
+# Introduction to service coordination using AWS Step Functions
 
 ## Welcome
 

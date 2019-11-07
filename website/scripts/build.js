@@ -1,13 +1,10 @@
 const { execSync } = require('child_process')
-const { readFileSync, writeFileSync } = require('fs')
+const { readFileSync, writeFileSync, mkdirSync } = require('fs')
 const uuid = require('uuid/v4')
+const glob = require("glob")
+const path = require('path');
+const rimraf = require("rimraf");
 
-const getUnifiedDiff2 = (sha, path) => {
-    const output = execSync(`git diff -p ${sha}^ ${sha} -- ${path}`, {
-        cwd: `${__dirname}/../..`
-    })
-    return output.toString()
-}
 
 const getUnifiedDiff = (sha, path) => {
     const output = execSync(`git show --unified ${sha} -- ${path}`, {
@@ -50,21 +47,34 @@ const nextMatch = (str) => {
     return buttonMatches[0]
 }
 
+
 const main = () => {
     // templatePath="../source_content/test_index.md"
-    templatePath="../source_content/source_index.md"
-    compiledPath="../content/_index.md"
+    templateRootPath="../source_content"
+    compiledPath="../content"
 
-    let templateBufferStr = readFileSync(templatePath).toString()
-    let match = nextMatch(templateBufferStr)
-    while (match) {
-        console.log('Match', match)
-        templateBufferStr = templatize(templateBufferStr, match)
-        match = nextMatch(templateBufferStr)
-    }
+    console.log(`Recursively deleting ${compiledPath}`)
+    rimraf.sync(compiledPath)
 
-    writeFileSync(compiledPath, templateBufferStr)    
+    console.log(`Pre-procssing clipboard buttons from ${templateRootPath} into ${compiledPath}`)
+    glob(templateRootPath + "/**/*.md", {}, function (er, files) {
+        files.forEach( f => {
+            console.log(`Reading ${f}`)
 
+            let templateBufferStr = readFileSync(f).toString()
+            let match = nextMatch(templateBufferStr)
+            while (match) {
+                templateBufferStr = templatize(templateBufferStr, match)
+                match = nextMatch(templateBufferStr)
+            }
+
+            const destination = compiledPath + f.substr(templateRootPath.length)
+            const destinationDir = path.dirname(destination)
+            mkdirSync(destinationDir, { recursive: true }, (err) => { if (err) throw err; });
+            writeFileSync(destination, templateBufferStr)    
+            console.log(`Wrote ${destination}`)
+        })
+    })
     console.log('Done inserting clipboard buttons.')
 }
 
