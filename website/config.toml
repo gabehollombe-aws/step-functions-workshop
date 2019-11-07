@@ -1,11 +1,10 @@
-#baseURL = "https://github.com/gabehollombe-aws/step-functions-workshop-content" #TODO: Change this
-baseURL = "https://master.d2u24kjqamzz9q.amplifyapp.com/"
+baseURL = "https://step-functions-workshop.go-aws.com"
 languageCode = "en-us"
 defaultContentLanguage = "en"
 title = "Introduction to Step Functions - Workshop"
 theme = "learn"
 uglyurls = true
-googleAnalytics = "" #TODO: add this in
+googleAnalytics = "UA-129511631-2"
 sectionPagesMenu = "main"
 pygmentsCodeFences = true
 #pygmentsCodeFencesGuessSyntax = true

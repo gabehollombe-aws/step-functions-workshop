@@ -15,9 +15,6 @@
 		"test": "hugo server -w -v -DF --disableFastRender --bind=0.0.0.0",
 		"server": "hugo server -w -v --bind=0.0.0.0",
 		"build": "hugo -v",
-		"deploy": "aws s3 sync public/ s3://TODO/ --delete --profile TODO",
-		"deploycontent": "aws s3 sync public/ s3://TODO/ --delete --cache-control \"max-age=3600, public\" --exclude \"*\" --include \"*.html\" --include \"*.xml\"",
-		"deployothers": "aws s3 sync public/ s3://TODO/ --delete --cache-control \"max-age=86400, public\" --exclude \"*.html\" --exclude \"*.xml\""
 	},
 	"dependencies": {
 		"discharge": "^0.7.1",
