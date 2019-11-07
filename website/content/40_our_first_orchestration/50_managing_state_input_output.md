@@ -21,9 +21,9 @@ So, to fix our current issue, we need to add a `ResultPath` statement, instructi
 Below is a new version of our serverless.yml file that contains updated Check Name and Check Address states, using the ResultPath property to merge their outputs into helpfully-named keys that we can be used later on.
 
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idf2984d7cf40340e48c004e5554ed4a03">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id76bfdfeb3c16439dbd392bf3c0f9f905">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idf2984d7cf40340e48c004e5554ed4a03"></div> <pre style="display: none;" data-diff-for="diff-idf2984d7cf40340e48c004e5554ed4a03">commit 4114d55fdb744943184a1b480c94da7d77cfc80d
+<div id="diff-id76bfdfeb3c16439dbd392bf3c0f9f905"></div> <pre style="display: none;" data-diff-for="diff-id76bfdfeb3c16439dbd392bf3c0f9f905">commit 4114d55fdb744943184a1b480c94da7d77cfc80d
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Tue Oct 15 17:02:48 2019 +0800
 
@@ -52,7 +52,7 @@ index 0b9f3b9..83b94ce 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idf2984d7cf40340e48c004e5554ed4a03" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id76bfdfeb3c16439dbd392bf3c0f9f905" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

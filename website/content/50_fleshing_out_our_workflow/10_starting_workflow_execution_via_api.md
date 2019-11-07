@@ -18,9 +18,9 @@ To do this, we will integrate our Account Applications service with our applicat
 
 ### Make these changes
 
-➡️ Step 1. Replace `account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#id1b5a5865a3354e70a12823bbe83fefce">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#idde3f8a2f9fbc409cae4314c5dd119a39">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id1b5a5865a3354e70a12823bbe83fefce"></div> <pre style="display: none;" data-diff-for="diff-id1b5a5865a3354e70a12823bbe83fefce">commit 509c5f4da832d190d3285f30d91fd29c3253b6fb
+<div id="diff-idde3f8a2f9fbc409cae4314c5dd119a39"></div> <pre style="display: none;" data-diff-for="diff-idde3f8a2f9fbc409cae4314c5dd119a39">commit 509c5f4da832d190d3285f30d91fd29c3253b6fb
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Thu Oct 31 14:41:42 2019 +0800
 
@@ -68,7 +68,7 @@ index ce94300..1f80e87 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id1b5a5865a3354e70a12823bbe83fefce" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="idde3f8a2f9fbc409cae4314c5dd119a39" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 const APPLICATION_PROCESSING_STEP_FUNCTION_ARN = process.env.APPLICATION_PROCESSING_STEP_FUNCTION_ARN
@@ -115,9 +115,9 @@ module.exports.handler = async(event) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idcd74d7a530124dc7a5ae52e50a3f5b20">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id3d1bb528c57d4710bf8d3ad73c9368a7">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idcd74d7a530124dc7a5ae52e50a3f5b20"></div> <pre style="display: none;" data-diff-for="diff-idcd74d7a530124dc7a5ae52e50a3f5b20">commit 55e4f1b3cf75014bbad84ac40e00a17e32969798
+<div id="diff-id3d1bb528c57d4710bf8d3ad73c9368a7"></div> <pre style="display: none;" data-diff-for="diff-id3d1bb528c57d4710bf8d3ad73c9368a7">commit 55e4f1b3cf75014bbad84ac40e00a17e32969798
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Tue Oct 15 17:16:45 2019 +0800
 
@@ -168,7 +168,7 @@ index 47a3b0f..eec141d 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idcd74d7a530124dc7a5ae52e50a3f5b20" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id3d1bb528c57d4710bf8d3ad73c9368a7" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

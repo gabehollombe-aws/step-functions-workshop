@@ -37,9 +37,9 @@ We’ll need to make a few updates to our workflow in order for this to work.
 
 ### Make these changes
 
-➡️ Step 1. Replace `account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#idaa47083d00294f7694e5cfac45265aaf">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#id5c9c05eee3fb4f2182a7759983b09d2c">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idaa47083d00294f7694e5cfac45265aaf"></div> <pre style="display: none;" data-diff-for="diff-idaa47083d00294f7694e5cfac45265aaf">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
+<div id="diff-id5c9c05eee3fb4f2182a7759983b09d2c"></div> <pre style="display: none;" data-diff-for="diff-id5c9c05eee3fb4f2182a7759983b09d2c">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 10:58:50 2019 +0800
 
@@ -69,7 +69,7 @@ index 3e700d5..8bbdcb1 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idaa47083d00294f7694e5cfac45265aaf" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id5c9c05eee3fb4f2182a7759983b09d2c" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -122,9 +122,9 @@ module.exports.handler = async(event) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Create `account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#idfb15f35abca742d0bf78d35e8c69a47a">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Create `account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#id46400cfa5fe4438f969d23a1afcbfb15">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idfb15f35abca742d0bf78d35e8c69a47a"></div> <pre style="display: none;" data-diff-for="diff-idfb15f35abca742d0bf78d35e8c69a47a">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
+<div id="diff-id46400cfa5fe4438f969d23a1afcbfb15"></div> <pre style="display: none;" data-diff-for="diff-id46400cfa5fe4438f969d23a1afcbfb15">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 10:58:50 2019 +0800
 
@@ -187,7 +187,7 @@ index 0000000..74b3186
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idfb15f35abca742d0bf78d35e8c69a47a" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id46400cfa5fe4438f969d23a1afcbfb15" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -237,9 +237,9 @@ module.exports.handler = async(event) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ide3d2bee669fe4f05a1c39b5b43f6bbbe">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idf8c294c0007c41a38f621740b5936bff">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-ide3d2bee669fe4f05a1c39b5b43f6bbbe"></div> <pre style="display: none;" data-diff-for="diff-ide3d2bee669fe4f05a1c39b5b43f6bbbe">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
+<div id="diff-idf8c294c0007c41a38f621740b5936bff"></div> <pre style="display: none;" data-diff-for="diff-idf8c294c0007c41a38f621740b5936bff">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 10:58:50 2019 +0800
 
@@ -344,7 +344,7 @@ index eec141d..acc14c6 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="ide3d2bee669fe4f05a1c39b5b43f6bbbe" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idf8c294c0007c41a38f621740b5936bff" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

@@ -24,4 +24,3 @@ If you want to clean up the resources you've deployed in this workshop, just fol
 2. Select the environment named **workshop** and pick **Delete**
 
 3. **Type the phrase** 'Delete' into the confirmation box and click **Delete**
-#

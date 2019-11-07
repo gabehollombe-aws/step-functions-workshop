@@ -33,9 +33,9 @@ The developer guide identifies the [types of transient Lambda service errors](ht
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id1521d33cd50840e0bca2b735d7a66876">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idc6c3f5cfcdad438189a9b1902f3aab5e">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id1521d33cd50840e0bca2b735d7a66876"></div> <pre style="display: none;" data-diff-for="diff-id1521d33cd50840e0bca2b735d7a66876">commit 43adfda72ed4228c5818e3b7b2c334dea6cdb340
+<div id="diff-idc6c3f5cfcdad438189a9b1902f3aab5e"></div> <pre style="display: none;" data-diff-for="diff-idc6c3f5cfcdad438189a9b1902f3aab5e">commit 43adfda72ed4228c5818e3b7b2c334dea6cdb340
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:19:09 2019 +0800
 
@@ -98,7 +98,7 @@ index 4010aa8..f28884a 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id1521d33cd50840e0bca2b735d7a66876" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idc6c3f5cfcdad438189a9b1902f3aab5e" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -522,9 +522,9 @@ To show this in action, we’ll update our Data Checking Lambda, telling it to t
 
 ### Make these changes
 
-➡️ Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#idb1622fea1bef4725a0c0b4b20cf4f7b9">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id5705b3b2623e4212801012f716bbeee4">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idb1622fea1bef4725a0c0b4b20cf4f7b9"></div> <pre style="display: none;" data-diff-for="diff-idb1622fea1bef4725a0c0b4b20cf4f7b9">commit 599d75abec2f61a2459bb36eaec4d4e0d7bcbc4d
+<div id="diff-id5705b3b2623e4212801012f716bbeee4"></div> <pre style="display: none;" data-diff-for="diff-id5705b3b2623e4212801012f716bbeee4">commit 599d75abec2f61a2459bb36eaec4d4e0d7bcbc4d
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Fri Oct 25 17:13:06 2019 +0800
 
@@ -552,7 +552,7 @@ index a6ee7f0..ff12893 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idb1622fea1bef4725a0c0b4b20cf4f7b9" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id5705b3b2623e4212801012f716bbeee4" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -596,9 +596,9 @@ module.exports.handler = (event, context, callback) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idd4e3f9bea5c74822bea3b7b429b4fcf4">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id1dc7a189fe324777a0c02e66c113f124">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idd4e3f9bea5c74822bea3b7b429b4fcf4"></div> <pre style="display: none;" data-diff-for="diff-idd4e3f9bea5c74822bea3b7b429b4fcf4">commit afebf4c40193cc6a39c685ac9a15b27f9438a52b
+<div id="diff-id1dc7a189fe324777a0c02e66c113f124"></div> <pre style="display: none;" data-diff-for="diff-id1dc7a189fe324777a0c02e66c113f124">commit afebf4c40193cc6a39c685ac9a15b27f9438a52b
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:37:27 2019 +0800
 
@@ -649,7 +649,7 @@ index f28884a..47f7742 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idd4e3f9bea5c74822bea3b7b429b4fcf4" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id1dc7a189fe324777a0c02e66c113f124" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
