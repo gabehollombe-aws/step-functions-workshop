@@ -388,7 +388,7 @@ Given our earlier exploration of the orchestration patterns, this case feels lik
 
 At first glance, the most straightforward solution that may occur to you is to simply add more logic to our Account Applications service. When an application is submitted, we could make two cross-service calls out to the Data Checking service to check the name and address. Then, once we have the responses for both, we can flag the application for review if either data check came back with a flag, otherwise we can approve the application automatically. Certainly this approach will work, but there are some drawbacks that may not be immediately obvious.
 
-For one, we’ll need to elegantly handle timeout and error conditions. What happens if we don’t get a timely response from our cross-service call, or if we can a transient error and we want to retry the request?  If we’re gluing these services together directly in code, we’ll need to add some backoff/retry logic. In and of itself, this isn’t a big deal, but it ties up our main processing thread while its sleeping and waiting to retry those requests. 
+For one, we’ll need to elegantly handle timeout and error conditions. What happens if we don’t get a timely response from our cross-service call, or if we get a transient error and we want to retry the request?  If we’re gluing these services together directly in code, we’ll need to add some backoff/retry logic. In and of itself, this isn’t a big deal, but it ties up our main processing thread while its sleeping and waiting to retry those requests. 
 
 Another missed benefit here is that if we simply encoded this logic into application code, it’s not easy to generate a visual representation of this workflow design or its execution history. There is tremendous business value in being able to visualize the shape of business workflows, since it helps non-technical users understand and validate the business logic we’re encoding into our system. Furthermore, this workflow is starting out very simply, but as our workflows evolve, it often become increasingly difficult to audit the entirely of our workflow executions and to debug issues that arise from unexpected inputs into our system.
 
@@ -446,7 +446,7 @@ To start out, let’s just try to model the steps involved to check a name, chec
 ➡️ Step 1. Click the refresh icon and you should see a diagram matching the one above. This is really helpful for making sure we’re connecting our states together in the right way.
 
 ➡️ Step 2. Click ‘Next’ to continue
-j
+
 ➡️ Step 3. We need to specify an IAM role for the Step Function to assume when it executes. For now we can just start with the default role. Select ‘Create an IAM role for me’ and enter a name for the role like ‘Process_New_Account_Applications_Role’
 
 ➡️ Step 4. Click ‘Create state machine’
@@ -583,7 +583,7 @@ Before we migrate our step function definition over to our `serverless.yml` file
 
 ➡️ Step 1. In the left sidebar of the Step Functions web console, click ‘State machines’
 
-➡️ Step 2. Select the step function we defined manually earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
+➡️ Step 2. Select the state machne that we manually defined earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
 ➡️ Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with ___CLIPBOARD_BUTTON c9b0e65eca70946d4da2fceaca4b26bfc6641a76:serverless.yml|
 
@@ -646,7 +646,7 @@ Each Step Function state machine execution receives a JSON document as input and
 
 The output of a state can be a copy of its input, or the result it produces (for example, output from a `Task` state’s Lambda function), or a combination of its input and result. We can use the `ResultPath` property inside our state machine task definitions to control which combination of these result configurations is passed to the state output (which then, in turn, becomes the input for the next state). 
 
-The reason why our execution failed above is because the default behavior of a Task, if we don’t specify a `ResultPath` property, is to take the task’s output and use it as the input for the next state. In our case, since the previous state (Check Name) generated output of `{ "flagged": false }` this because the input to the next state (Check Address). Instead, what we want to do is preserve the original input, which contains our applicant’s info, merge Check Name’s result into that state, and pass the whole thing down to the Check Address.  Then, Check Address could do the same. What we want to do is get both data checking steps to execute correctly and merge their outputs together for some later step to inspect for further downstream routing logic.
+The reason why our execution failed above is because the default behavior of a Task, if we don’t specify a `ResultPath` property, is to take the task’s output and use it as the input for the next state. In our case, since the previous state (Check Name) generated output of `{ "flagged": false }` this became the input to the next state (Check Address). Instead, what we want to do is preserve the original input, which contains our applicant’s info, merge Check Name’s result into that state, and pass the whole thing down to the Check Address.  Then, Check Address could do the same. What we want to do is get both data checking steps to execute correctly and merge their outputs together for some later step to inspect for further downstream routing logic.
 
 So, to fix our current issue, we need to add a `ResultPath` statement, instructing the state machine to generate its output by taking the Lambda function’s output and merging it with the state’s input. It’s a simple change, really. We just need to add a tiny bit of additional configuration to our Task state definitions: `"ResultPath": "$.SomePropertyName"`. In Amazon States Language, the dollar sign syntax you see here means *the state’s input.* So what we’re saying here is, put the result of this task execution (in this case it’s the Lambda function’s output) into a new property of the object containing the input state, and use that as the state’s output.
 
@@ -793,7 +793,7 @@ Now that we’ve integrated our Account Applications service with our processing
 sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "AnInvalidAddress" }'
 ```
 
-➡️ Step 2. Go back to the step functions web console’s detail view for our state machine and look for a new execution at the top of the list. It should have a timestamp close to right now and it will contain a name that starts with ‘ProcessAccountApplication’. If you click in to view the details of this execution, you should see it also take the Pending Review path, as we expect (because we submitted an invalid address), and you should also be able to see an `id` attribute on the application input passed in, and through, the state machine’s steps.
+➡️ Step 2. Go back to the step functions web console’s detail view for our state machine and look for a new execution at the top of the list. It should have a timestamp close to right now and it will contain a name that starts with ‘ApplicationID-’. If you click in to view the details of this execution, you should see it also take the Pending Review path, as we expect (because we submitted an invalid address), and you should also be able to see an `id` attribute on the application input passed in, and through, the state machine’s steps.
 
 Now that we know we're passing an application ID to the step function successfully, we're ready to have our Pending Review state notify our Account Applications service whenever it wants to flag an application and pause its workflow processing the application until a human makes a decision about it.
 
@@ -1085,7 +1085,7 @@ Thanks for choosing to spend your valuable time working through this material.
 Did you know that Step Functions can do more than just orchestrate Lambda functions together?<br/><br/>See the points below for some other exciting capabilities that we didn't cover in this workshop.
 {{% /notice %}}
 
-**[Activities](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-activities.html)** are an AWS Step Functions feature that **enables you to have a task in your state machine where the work is performed by a worker that can be hosted anywhere**, including Amazon Elastic Compute Cloud (Amazon EC2), Amazon Elastic Container Service (Amazon ECS), mobile devices, or anywhere else you can have a process poll the AWS Step Functions API over HTTPS.
+**[Activities](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-activities.html)** are an AWS Step Functions feature that **enables you to have a task in your state machine where the work is performed by a worker that can be hosted anywhere**, including Amazon Elastic Compute Cloud (Amazon EC2), Amazon Elastic Container Service (Amazon ECS), mobile devices, or anywhere that you can have a process poll the AWS Step Functions API over HTTPS.
 
 **The [Map](https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-map-state.html) state can be used to run a set of steps for each element of an input array.** While the Parallel state executes multiple branches of steps using the same input, a Map state will execute the same steps for multiple entries of an array in the state input.
 

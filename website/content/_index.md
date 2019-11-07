@@ -336,9 +336,9 @@ Also, for the sake of keeping our code simple, we’ll implement our name and ad
 
 ### Make these changes
 
-➡️ Step 1. Create `workshop-dir/data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#idfc02f36388db4d6688ca1429f8eeb327">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Create `workshop-dir/data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id18b20f8abb704f0394c9829386206ade">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idfc02f36388db4d6688ca1429f8eeb327"></div> <pre style="display: none;" data-diff-for="diff-idfc02f36388db4d6688ca1429f8eeb327">commit 4b2da0cd48c78a59727400820bef2bdebeb29744
+<div id="diff-id18b20f8abb704f0394c9829386206ade"></div> <pre style="display: none;" data-diff-for="diff-id18b20f8abb704f0394c9829386206ade">commit 4b2da0cd48c78a59727400820bef2bdebeb29744
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Fri Oct 25 17:08:19 2019 +0800
 
@@ -396,7 +396,7 @@ index 053e284..a6ee7f0 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idfc02f36388db4d6688ca1429f8eeb327" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id18b20f8abb704f0394c9829386206ade" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -434,9 +434,9 @@ module.exports.handler = (event, context, callback) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ide2895e15cc964cb987c35a17f62fadf7">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id27741c1c43934f56b1d169498b1a0c03">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-ide2895e15cc964cb987c35a17f62fadf7"></div> <pre style="display: none;" data-diff-for="diff-ide2895e15cc964cb987c35a17f62fadf7">commit 03eee8d58ad56817b84197e45c12f2ce83ae8d52
+<div id="diff-id27741c1c43934f56b1d169498b1a0c03"></div> <pre style="display: none;" data-diff-for="diff-id27741c1c43934f56b1d169498b1a0c03">commit 03eee8d58ad56817b84197e45c12f2ce83ae8d52
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Mon Oct 14 16:45:44 2019 +0800
 
@@ -482,7 +482,7 @@ index 2869132..07bc6d3 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="ide2895e15cc964cb987c35a17f62fadf7" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id27741c1c43934f56b1d169498b1a0c03" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -746,7 +746,7 @@ Given our earlier exploration of the orchestration patterns, this case feels lik
 
 At first glance, the most straightforward solution that may occur to you is to simply add more logic to our Account Applications service. When an application is submitted, we could make two cross-service calls out to the Data Checking service to check the name and address. Then, once we have the responses for both, we can flag the application for review if either data check came back with a flag, otherwise we can approve the application automatically. Certainly this approach will work, but there are some drawbacks that may not be immediately obvious.
 
-For one, we’ll need to elegantly handle timeout and error conditions. What happens if we don’t get a timely response from our cross-service call, or if we can a transient error and we want to retry the request?  If we’re gluing these services together directly in code, we’ll need to add some backoff/retry logic. In and of itself, this isn’t a big deal, but it ties up our main processing thread while its sleeping and waiting to retry those requests. 
+For one, we’ll need to elegantly handle timeout and error conditions. What happens if we don’t get a timely response from our cross-service call, or if we get a transient error and we want to retry the request?  If we’re gluing these services together directly in code, we’ll need to add some backoff/retry logic. In and of itself, this isn’t a big deal, but it ties up our main processing thread while its sleeping and waiting to retry those requests. 
 
 Another missed benefit here is that if we simply encoded this logic into application code, it’s not easy to generate a visual representation of this workflow design or its execution history. There is tremendous business value in being able to visualize the shape of business workflows, since it helps non-technical users understand and validate the business logic we’re encoding into our system. Furthermore, this workflow is starting out very simply, but as our workflows evolve, it often become increasingly difficult to audit the entirely of our workflow executions and to debug issues that arise from unexpected inputs into our system.
 
@@ -804,7 +804,7 @@ To start out, let’s just try to model the steps involved to check a name, chec
 ➡️ Step 1. Click the refresh icon and you should see a diagram matching the one above. This is really helpful for making sure we’re connecting our states together in the right way.
 
 ➡️ Step 2. Click ‘Next’ to continue
-j
+
 ➡️ Step 3. We need to specify an IAM role for the Step Function to assume when it executes. For now we can just start with the default role. Select ‘Create an IAM role for me’ and enter a name for the role like ‘Process_New_Account_Applications_Role’
 
 ➡️ Step 4. Click ‘Create state machine’
@@ -941,11 +941,11 @@ Before we migrate our step function definition over to our `serverless.yml` file
 
 ➡️ Step 1. In the left sidebar of the Step Functions web console, click ‘State machines’
 
-➡️ Step 2. Select the step function we defined manually earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
+➡️ Step 2. Select the state machne that we manually defined earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
-➡️ Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id06d62faef03c45cdb794f8370655d87d">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ida55b47c5b382409998473b6d62e7742f">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id06d62faef03c45cdb794f8370655d87d"></div> <pre style="display: none;" data-diff-for="diff-id06d62faef03c45cdb794f8370655d87d">commit c9b0e65eca70946d4da2fceaca4b26bfc6641a76
+<div id="diff-ida55b47c5b382409998473b6d62e7742f"></div> <pre style="display: none;" data-diff-for="diff-ida55b47c5b382409998473b6d62e7742f">commit c9b0e65eca70946d4da2fceaca4b26bfc6641a76
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Tue Oct 15 16:13:21 2019 +0800
 
@@ -1027,7 +1027,7 @@ index 07bc6d3..0b9f3b9 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id06d62faef03c45cdb794f8370655d87d" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="ida55b47c5b382409998473b6d62e7742f" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -1363,7 +1363,7 @@ Each Step Function state machine execution receives a JSON document as input and
 
 The output of a state can be a copy of its input, or the result it produces (for example, output from a `Task` state’s Lambda function), or a combination of its input and result. We can use the `ResultPath` property inside our state machine task definitions to control which combination of these result configurations is passed to the state output (which then, in turn, becomes the input for the next state). 
 
-The reason why our execution failed above is because the default behavior of a Task, if we don’t specify a `ResultPath` property, is to take the task’s output and use it as the input for the next state. In our case, since the previous state (Check Name) generated output of `{ "flagged": false }` this because the input to the next state (Check Address). Instead, what we want to do is preserve the original input, which contains our applicant’s info, merge Check Name’s result into that state, and pass the whole thing down to the Check Address.  Then, Check Address could do the same. What we want to do is get both data checking steps to execute correctly and merge their outputs together for some later step to inspect for further downstream routing logic.
+The reason why our execution failed above is because the default behavior of a Task, if we don’t specify a `ResultPath` property, is to take the task’s output and use it as the input for the next state. In our case, since the previous state (Check Name) generated output of `{ "flagged": false }` this became the input to the next state (Check Address). Instead, what we want to do is preserve the original input, which contains our applicant’s info, merge Check Name’s result into that state, and pass the whole thing down to the Check Address.  Then, Check Address could do the same. What we want to do is get both data checking steps to execute correctly and merge their outputs together for some later step to inspect for further downstream routing logic.
 
 So, to fix our current issue, we need to add a `ResultPath` statement, instructing the state machine to generate its output by taking the Lambda function’s output and merging it with the state’s input. It’s a simple change, really. We just need to add a tiny bit of additional configuration to our Task state definitions: `"ResultPath": "$.SomePropertyName"`. In Amazon States Language, the dollar sign syntax you see here means *the state’s input.* So what we’re saying here is, put the result of this task execution (in this case it’s the Lambda function’s output) into a new property of the object containing the input state, and use that as the state’s output.
 
@@ -1376,9 +1376,9 @@ So, to fix our current issue, we need to add a `ResultPath` statement, instructi
 Below is a new version of our serverless.yml file that contains updated Check Name and Check Address states, using the ResultPath property to merge their outputs into helpfully-named keys that we can be used later on.
 
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ide722a93a386645fd95f7331272a49476">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id082a6aaad52a4ad9b99e0032e5215648">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-ide722a93a386645fd95f7331272a49476"></div> <pre style="display: none;" data-diff-for="diff-ide722a93a386645fd95f7331272a49476">commit 4114d55fdb744943184a1b480c94da7d77cfc80d
+<div id="diff-id082a6aaad52a4ad9b99e0032e5215648"></div> <pre style="display: none;" data-diff-for="diff-id082a6aaad52a4ad9b99e0032e5215648">commit 4114d55fdb744943184a1b480c94da7d77cfc80d
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Tue Oct 15 17:02:48 2019 +0800
 
@@ -1407,7 +1407,7 @@ index 0b9f3b9..83b94ce 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="ide722a93a386645fd95f7331272a49476" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id082a6aaad52a4ad9b99e0032e5215648" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -1730,9 +1730,9 @@ Here is what our updated flow will look like after we're done with this step:
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idbed1786d1bdb4f708fe329cffb9e245d">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id56216ff9ac124018acbe900c0f045e79">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idbed1786d1bdb4f708fe329cffb9e245d"></div> <pre style="display: none;" data-diff-for="diff-idbed1786d1bdb4f708fe329cffb9e245d">commit def5ea473552142257ef1b5a047ba98dd01749c2
+<div id="diff-id56216ff9ac124018acbe900c0f045e79"></div> <pre style="display: none;" data-diff-for="diff-id56216ff9ac124018acbe900c0f045e79">commit def5ea473552142257ef1b5a047ba98dd01749c2
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Tue Oct 15 17:15:47 2019 +0800
 
@@ -1775,7 +1775,7 @@ index 83b94ce..47a3b0f 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idbed1786d1bdb4f708fe329cffb9e245d" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id56216ff9ac124018acbe900c0f045e79" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -2139,9 +2139,9 @@ To do this, we will integrate our Account Applications service with our applicat
 
 ### Make these changes
 
-➡️ Step 1. Replace `account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#idd14d89d3c90c424bb0e7eebebbc93484">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#id79def16462e748b491ae95de2e767b05">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idd14d89d3c90c424bb0e7eebebbc93484"></div> <pre style="display: none;" data-diff-for="diff-idd14d89d3c90c424bb0e7eebebbc93484">commit 509c5f4da832d190d3285f30d91fd29c3253b6fb
+<div id="diff-id79def16462e748b491ae95de2e767b05"></div> <pre style="display: none;" data-diff-for="diff-id79def16462e748b491ae95de2e767b05">commit 509c5f4da832d190d3285f30d91fd29c3253b6fb
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Thu Oct 31 14:41:42 2019 +0800
 
@@ -2189,7 +2189,7 @@ index ce94300..1f80e87 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idd14d89d3c90c424bb0e7eebebbc93484" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id79def16462e748b491ae95de2e767b05" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 const APPLICATION_PROCESSING_STEP_FUNCTION_ARN = process.env.APPLICATION_PROCESSING_STEP_FUNCTION_ARN
@@ -2236,9 +2236,9 @@ module.exports.handler = async(event) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id6db30d5e1ced4892937940a2dd550a37">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ida7b2928df740461a86fa57f39f04e69b">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id6db30d5e1ced4892937940a2dd550a37"></div> <pre style="display: none;" data-diff-for="diff-id6db30d5e1ced4892937940a2dd550a37">commit 55e4f1b3cf75014bbad84ac40e00a17e32969798
+<div id="diff-ida7b2928df740461a86fa57f39f04e69b"></div> <pre style="display: none;" data-diff-for="diff-ida7b2928df740461a86fa57f39f04e69b">commit 55e4f1b3cf75014bbad84ac40e00a17e32969798
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Tue Oct 15 17:16:45 2019 +0800
 
@@ -2289,7 +2289,7 @@ index 47a3b0f..eec141d 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id6db30d5e1ced4892937940a2dd550a37" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="ida7b2928df740461a86fa57f39f04e69b" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -2662,9 +2662,9 @@ We’ll need to make a few updates to our workflow in order for this to work.
 
 ### Make these changes
 
-➡️ Step 1. Replace `account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#id6dc0ffc42e204cc981a34acc79b3ec9d">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#id949352a1e04144c6ab66968432a29d12">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id6dc0ffc42e204cc981a34acc79b3ec9d"></div> <pre style="display: none;" data-diff-for="diff-id6dc0ffc42e204cc981a34acc79b3ec9d">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
+<div id="diff-id949352a1e04144c6ab66968432a29d12"></div> <pre style="display: none;" data-diff-for="diff-id949352a1e04144c6ab66968432a29d12">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 10:58:50 2019 +0800
 
@@ -2694,7 +2694,7 @@ index 3e700d5..8bbdcb1 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id6dc0ffc42e204cc981a34acc79b3ec9d" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id949352a1e04144c6ab66968432a29d12" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -2747,9 +2747,9 @@ module.exports.handler = async(event) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Create `account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#id056d1f76d66249e2aeb38ad74b4025eb">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Create `account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#id0ac9e28fae0e4c04ba5ece58db232957">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id056d1f76d66249e2aeb38ad74b4025eb"></div> <pre style="display: none;" data-diff-for="diff-id056d1f76d66249e2aeb38ad74b4025eb">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
+<div id="diff-id0ac9e28fae0e4c04ba5ece58db232957"></div> <pre style="display: none;" data-diff-for="diff-id0ac9e28fae0e4c04ba5ece58db232957">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 10:58:50 2019 +0800
 
@@ -2812,7 +2812,7 @@ index 0000000..74b3186
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id056d1f76d66249e2aeb38ad74b4025eb" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id0ac9e28fae0e4c04ba5ece58db232957" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -2862,9 +2862,9 @@ module.exports.handler = async(event) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id98479c36818a44cf9612ffdda669aa74">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ida208f8d6b6cd4e30aee2e786ebc46100">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id98479c36818a44cf9612ffdda669aa74"></div> <pre style="display: none;" data-diff-for="diff-id98479c36818a44cf9612ffdda669aa74">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
+<div id="diff-ida208f8d6b6cd4e30aee2e786ebc46100"></div> <pre style="display: none;" data-diff-for="diff-ida208f8d6b6cd4e30aee2e786ebc46100">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 10:58:50 2019 +0800
 
@@ -2969,7 +2969,7 @@ index eec141d..acc14c6 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id98479c36818a44cf9612ffdda669aa74" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="ida208f8d6b6cd4e30aee2e786ebc46100" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -3399,9 +3399,9 @@ Until now, we’ve left the Approve Application state empty, using the Pass stat
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id1c901f397bea4ddbb413ea765171b7cd">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idc323babe3e3b4ab9b46ee3d180b2d50b">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id1c901f397bea4ddbb413ea765171b7cd"></div> <pre style="display: none;" data-diff-for="diff-id1c901f397bea4ddbb413ea765171b7cd">commit 77603cdb8730955713c45470065e8c1b619fff93
+<div id="diff-idc323babe3e3b4ab9b46ee3d180b2d50b"></div> <pre style="display: none;" data-diff-for="diff-idc323babe3e3b4ab9b46ee3d180b2d50b">commit 77603cdb8730955713c45470065e8c1b619fff93
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:09:15 2019 +0800
 
@@ -3458,7 +3458,7 @@ index acc14c6..4010aa8 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id1c901f397bea4ddbb413ea765171b7cd" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idc323babe3e3b4ab9b46ee3d180b2d50b" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -3882,9 +3882,9 @@ The [developer guide identifies the types of transient Lambda service errors tha
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id7df8086422964020996a9723a05ce227">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ida4a92078102e471ca3033fa4e6e30123">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id7df8086422964020996a9723a05ce227"></div> <pre style="display: none;" data-diff-for="diff-id7df8086422964020996a9723a05ce227">commit 43adfda72ed4228c5818e3b7b2c334dea6cdb340
+<div id="diff-ida4a92078102e471ca3033fa4e6e30123"></div> <pre style="display: none;" data-diff-for="diff-ida4a92078102e471ca3033fa4e6e30123">commit 43adfda72ed4228c5818e3b7b2c334dea6cdb340
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:19:09 2019 +0800
 
@@ -3947,7 +3947,7 @@ index 4010aa8..f28884a 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id7df8086422964020996a9723a05ce227" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="ida4a92078102e471ca3033fa4e6e30123" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -4371,9 +4371,9 @@ To show this in action, we’ll update our Data Checking Lambda, telling it to t
 
 ### Make these changes
 
-➡️ Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#idda142ae468294f8788d211c7868eed5c">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#idef8cfdf0bd934647938ac23b3532e5ee">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idda142ae468294f8788d211c7868eed5c"></div> <pre style="display: none;" data-diff-for="diff-idda142ae468294f8788d211c7868eed5c">commit 599d75abec2f61a2459bb36eaec4d4e0d7bcbc4d
+<div id="diff-idef8cfdf0bd934647938ac23b3532e5ee"></div> <pre style="display: none;" data-diff-for="diff-idef8cfdf0bd934647938ac23b3532e5ee">commit 599d75abec2f61a2459bb36eaec4d4e0d7bcbc4d
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Fri Oct 25 17:13:06 2019 +0800
 
@@ -4401,7 +4401,7 @@ index a6ee7f0..ff12893 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idda142ae468294f8788d211c7868eed5c" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="idef8cfdf0bd934647938ac23b3532e5ee" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -4445,9 +4445,9 @@ module.exports.handler = (event, context, callback) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idbf6c7a483b0d4424a699459136f0030f">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ide8f29182c10e4ab0b106be77e729a968">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idbf6c7a483b0d4424a699459136f0030f"></div> <pre style="display: none;" data-diff-for="diff-idbf6c7a483b0d4424a699459136f0030f">commit afebf4c40193cc6a39c685ac9a15b27f9438a52b
+<div id="diff-ide8f29182c10e4ab0b106be77e729a968"></div> <pre style="display: none;" data-diff-for="diff-ide8f29182c10e4ab0b106be77e729a968">commit afebf4c40193cc6a39c685ac9a15b27f9438a52b
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:37:27 2019 +0800
 
@@ -4498,7 +4498,7 @@ index f28884a..47f7742 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idbf6c7a483b0d4424a699459136f0030f" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="ide8f29182c10e4ab0b106be77e729a968" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -4967,9 +4967,9 @@ Step Functions has a `Parallel` state type which, unsurprisingly, lets a state m
 
 Let's refactor our state machine to  perform the name and address checks in parallel:
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id010290b7e26c4ad88b09996a6abbb632">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id67a1cbfa06e7422db89439b91ed6e4f3">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id010290b7e26c4ad88b09996a6abbb632"></div> <pre style="display: none;" data-diff-for="diff-id010290b7e26c4ad88b09996a6abbb632">commit 8f6d5e019d11e6805e4124fb30cdd6a03b41a681
+<div id="diff-id67a1cbfa06e7422db89439b91ed6e4f3"></div> <pre style="display: none;" data-diff-for="diff-id67a1cbfa06e7422db89439b91ed6e4f3">commit 8f6d5e019d11e6805e4124fb30cdd6a03b41a681
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:49:55 2019 +0800
 
@@ -5108,7 +5108,7 @@ index 47f7742..c463339 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id010290b7e26c4ad88b09996a6abbb632" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id67a1cbfa06e7422db89439b91ed6e4f3" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -5598,7 +5598,7 @@ Thanks for choosing to spend your valuable time working through this material.
 Did you know that Step Functions can do more than just orchestrate Lambda functions together?<br/><br/>See the points below for some other exciting capabilities that we didn't cover in this workshop.
 {{% /notice %}}
 
-**[Activities](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-activities.html)** are an AWS Step Functions feature that **enables you to have a task in your state machine where the work is performed by a worker that can be hosted anywhere**, including Amazon Elastic Compute Cloud (Amazon EC2), Amazon Elastic Container Service (Amazon ECS), mobile devices, or anywhere else you can have a process poll the AWS Step Functions API over HTTPS.
+**[Activities](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-activities.html)** are an AWS Step Functions feature that **enables you to have a task in your state machine where the work is performed by a worker that can be hosted anywhere**, including Amazon Elastic Compute Cloud (Amazon EC2), Amazon Elastic Container Service (Amazon ECS), mobile devices, or anywhere that you can have a process poll the AWS Step Functions API over HTTPS.
 
 **The [Map](https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-map-state.html) state can be used to run a set of steps for each element of an input array.** While the Parallel state executes multiple branches of steps using the same input, a Map state will execute the same steps for multiple entries of an array in the state input.
 
