@@ -23,7 +23,7 @@ const showFileAtSha = (sha, path) => {
 const templatize = (str, match) => {
     const CLIPBOARD_BUTTON_TAG_TEMPLATE = '<span class="clipBtn clipboard" data-clipboard-target="#__TARGET_ID__">this content</span> (click the gray button to copy to clipboard). ' // trailing space important
     const CLIPBOARD_PRE_TAG_TEMPLATE = '{{< safehtml >}}\n<textarea id="__TARGET_ID__" style="position: relative; left: -1000px; width: 1px; height: 1px;">__FILE_CONTENT__</textarea>\n{{< /safehtml >}}'
-    const DIFF_HTML_TEMPLATE = '{{< expand "Click to view diff" >}} {{< safehtml >}}\n<div id="diff-__TARGET_ID__"></div> <pre style="display: none;" data-diff-for="diff-__TARGET_ID__">__DIFF_CONTENT__</pre>\n{{< /safehtml >}} {{< /expand >}}'
+    const DIFF_HTML_TEMPLATE = '{{< expand "Click to view diff" >}} {{< safehtml >}}\n<div id="diff-__TARGET_ID__"></div> <script type="text/template" data-diff-for="diff-__TARGET_ID__">__DIFF_CONTENT__</script>\n{{< /safehtml >}} {{< /expand >}}'
 
     const diffContent = getUnifiedDiff(match.groups.sha, match.groups.file)
     const fileContent = showFileAtSha(match.groups.sha, match.groups.file)
@@ -46,7 +46,6 @@ const nextMatch = (str) => {
     const buttonMatches = Array.from(str.matchAll(buttonRegex))
     return buttonMatches[0]
 }
-
 
 const main = () => {
     // templatePath="../source_content/test_index.md"
