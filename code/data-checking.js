@@ -3,7 +3,13 @@
 const checkName = (data) => {
     const { name } = data
 
-    const flagged = (name.indexOf('evil') !== -1)
+    if (name.includes("UNPROCESSABLE_DATA")) {
+        const simulatedError = new Error(`Simulated error: Name '${name}' is not possible to check.`)
+        simulatedError.name = 'UnprocessableDataException'
+        throw simulatedError
+    }
+
+    const flagged = name.includes('evil')
     return { flagged }
 }
 
@@ -32,4 +38,3 @@ module.exports.handler = (event, context, callback) => {
         callback(ex)
     }
 };
-
