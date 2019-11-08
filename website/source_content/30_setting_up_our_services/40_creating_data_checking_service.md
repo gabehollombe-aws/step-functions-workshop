@@ -20,7 +20,7 @@ Also, for the sake of keeping our code simple, we’ll implement our name and ad
 
 ### Make these changes
 
-➡️ Step 1. Create `workshop-dir/data-checking.js` with ___CLIPBOARD_BUTTON 4b2da0cd48c78a59727400820bef2bdebeb29744:code/data-checking.js|
+➡️ Step 1. Create `workshop-dir/data-checking.js` with ___CLIPBOARD_BUTTON e876cc5b865e13312cc324cea45ab3ece5e1c5c1:code/data-checking.js|
 
 ➡️ Step 2. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 03eee8d58ad56817b84197e45c12f2ce83ae8d52:serverless.yml|
 

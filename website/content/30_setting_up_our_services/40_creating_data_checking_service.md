@@ -20,67 +20,59 @@ Also, for the sake of keeping our code simple, we’ll implement our name and ad
 
 ### Make these changes
 
-➡️ Step 1. Create `workshop-dir/data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id4911d18ccdb044148ba6e830bb4dfc3e">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Create `workshop-dir/data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id3817222e9a134cc299f151a3fad52a73">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id4911d18ccdb044148ba6e830bb4dfc3e"></div> <pre style="display: none;" data-diff-for="diff-id4911d18ccdb044148ba6e830bb4dfc3e">commit 4b2da0cd48c78a59727400820bef2bdebeb29744
+<div id="diff-id3817222e9a134cc299f151a3fad52a73"></div> <pre style="display: none;" data-diff-for="diff-id3817222e9a134cc299f151a3fad52a73">commit e876cc5b865e13312cc324cea45ab3ece5e1c5c1
 Author: Gabe Hollombe <gabe@avantbard.com>
-Date:   Fri Oct 25 17:08:19 2019 +0800
+Date:   Fri Nov 8 11:20:31 2019 +0800
 
-    revised v1 of data-checking.js
+    data-checking.js v1
 
 diff --git a/code/data-checking.js b/code/data-checking.js
-index 053e284..a6ee7f0 100644
---- a/code/data-checking.js
+new file mode 100644
+index 0000000..9dbdaf6
+--- /dev/null
 +++ b/code/data-checking.js
-@@ -3,35 +3,32 @@
- const checkName = (data) => {
-     const { name } = data
- 
--    if (name.includes("UNPROCESSABLE_DATA")) {
--        const simulatedError = new Error(`Simulated error: Name '${name}' is not possible to check.`)
--        simulatedError.name = 'UnprocessableDataException'
--        throw simulatedError
--    }
--
--    const flagged = name.includes('evil')
+@@ -0,0 +1,35 @@
++'use strict';
++
++const checkName = (data) => {
++    const { name } = data
++
 +    const flagged = (name.indexOf('evil') !== -1)
-     return { flagged }
- }
- 
- const checkAddress = (data) => {
-     const { address } = data
++    return { flagged }
++}
 +
-     const flagged = (address.match(/(\d+ \w+)|(\w+ \d+)/g) === null)
-     return { flagged }
- }
- 
++const checkAddress = (data) => {
++    const { address } = data
 +
- const commandHandlers = {
-     'CHECK_NAME': checkName,
-     'CHECK_ADDRESS': checkAddress,
- }
- 
--module.exports.handler = (event) => {
++    const flagged = (address.match(/(\d+ \w+)|(\w+ \d+)/g) === null)
++    return { flagged }
++}
++
++
++const commandHandlers = {
++    'CHECK_NAME': checkName,
++    'CHECK_ADDRESS': checkAddress,
++}
++
 +module.exports.handler = (event, context, callback) => {
-     try {
-         const { command, data } = event
++    try {
++        const { command, data } = event
 +
-         const result = commandHandlers[command](data)
--        return result
++        const result = commandHandlers[command](data)
 +        callback(null, result)
-     } catch (ex) {
-         console.error(ex)
-         console.info('event', JSON.stringify(event))
--        throw ex
++    } catch (ex) {
++        console.error(ex)
++        console.info('event', JSON.stringify(event))
 +        callback(ex)
-     }
--};
-\ No newline at end of file
++    }
 +};
++
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id4911d18ccdb044148ba6e830bb4dfc3e" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id3817222e9a134cc299f151a3fad52a73" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -115,12 +107,13 @@ module.exports.handler = (event, context, callback) => {
     }
 };
 
+
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idff6c4c2322ce444cad64c4bc79d396f6">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id74ab3797458846c98fd716ea0749e4f5">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idff6c4c2322ce444cad64c4bc79d396f6"></div> <pre style="display: none;" data-diff-for="diff-idff6c4c2322ce444cad64c4bc79d396f6">commit 03eee8d58ad56817b84197e45c12f2ce83ae8d52
+<div id="diff-id74ab3797458846c98fd716ea0749e4f5"></div> <pre style="display: none;" data-diff-for="diff-id74ab3797458846c98fd716ea0749e4f5">commit 03eee8d58ad56817b84197e45c12f2ce83ae8d52
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Mon Oct 14 16:45:44 2019 +0800
 
@@ -166,7 +159,7 @@ index 2869132..07bc6d3 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idff6c4c2322ce444cad64c4bc79d396f6" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id74ab3797458846c98fd716ea0749e4f5" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

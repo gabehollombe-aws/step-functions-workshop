@@ -18,9 +18,9 @@ Until now, we’ve left the Approve Application state empty, using the Pass stat
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ida47fc8c81cde4ba6b4d80373dbb5156e">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idcda69baf0f8d423691d5bfd403a1373d">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-ida47fc8c81cde4ba6b4d80373dbb5156e"></div> <pre style="display: none;" data-diff-for="diff-ida47fc8c81cde4ba6b4d80373dbb5156e">commit 77603cdb8730955713c45470065e8c1b619fff93
+<div id="diff-idcda69baf0f8d423691d5bfd403a1373d"></div> <pre style="display: none;" data-diff-for="diff-idcda69baf0f8d423691d5bfd403a1373d">commit 77603cdb8730955713c45470065e8c1b619fff93
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:09:15 2019 +0800
 
@@ -77,7 +77,7 @@ index acc14c6..4010aa8 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="ida47fc8c81cde4ba6b4d80373dbb5156e" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idcda69baf0f8d423691d5bfd403a1373d" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

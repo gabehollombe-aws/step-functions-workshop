@@ -33,9 +33,9 @@ The developer guide identifies the [types of transient Lambda service errors](ht
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idc6c3f5cfcdad438189a9b1902f3aab5e">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id3724890c35904b27aff48e02310a3c36">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idc6c3f5cfcdad438189a9b1902f3aab5e"></div> <pre style="display: none;" data-diff-for="diff-idc6c3f5cfcdad438189a9b1902f3aab5e">commit 43adfda72ed4228c5818e3b7b2c334dea6cdb340
+<div id="diff-id3724890c35904b27aff48e02310a3c36"></div> <pre style="display: none;" data-diff-for="diff-id3724890c35904b27aff48e02310a3c36">commit 43adfda72ed4228c5818e3b7b2c334dea6cdb340
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:19:09 2019 +0800
 
@@ -98,7 +98,7 @@ index 4010aa8..f28884a 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idc6c3f5cfcdad438189a9b1902f3aab5e" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id3724890c35904b27aff48e02310a3c36" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -522,16 +522,16 @@ To show this in action, we’ll update our Data Checking Lambda, telling it to t
 
 ### Make these changes
 
-➡️ Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id5705b3b2623e4212801012f716bbeee4">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#id69b12ea735724221b10f609e591d879a">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id5705b3b2623e4212801012f716bbeee4"></div> <pre style="display: none;" data-diff-for="diff-id5705b3b2623e4212801012f716bbeee4">commit 599d75abec2f61a2459bb36eaec4d4e0d7bcbc4d
+<div id="diff-id69b12ea735724221b10f609e591d879a"></div> <pre style="display: none;" data-diff-for="diff-id69b12ea735724221b10f609e591d879a">commit de0c16350f24b069e52895f60c94dc110e81e39b
 Author: Gabe Hollombe <gabe@avantbard.com>
-Date:   Fri Oct 25 17:13:06 2019 +0800
+Date:   Fri Nov 8 11:20:55 2019 +0800
 
-    updated data-checking.js v2
+    data-checking.js v2
 
 diff --git a/code/data-checking.js b/code/data-checking.js
-index a6ee7f0..ff12893 100644
+index 9dbdaf6..ff12893 100644
 --- a/code/data-checking.js
 +++ b/code/data-checking.js
 @@ -3,7 +3,13 @@
@@ -549,10 +549,15 @@ index a6ee7f0..ff12893 100644
      return { flagged }
  }
  
+@@ -32,4 +38,3 @@ module.exports.handler = (event, context, callback) => {
+         callback(ex)
+     }
+ };
+-
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id5705b3b2623e4212801012f716bbeee4" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id69b12ea735724221b10f609e591d879a" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -596,9 +601,9 @@ module.exports.handler = (event, context, callback) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id1dc7a189fe324777a0c02e66c113f124">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id0bd5041459fb4d9481379086c63fc9b2">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id1dc7a189fe324777a0c02e66c113f124"></div> <pre style="display: none;" data-diff-for="diff-id1dc7a189fe324777a0c02e66c113f124">commit afebf4c40193cc6a39c685ac9a15b27f9438a52b
+<div id="diff-id0bd5041459fb4d9481379086c63fc9b2"></div> <pre style="display: none;" data-diff-for="diff-id0bd5041459fb4d9481379086c63fc9b2">commit afebf4c40193cc6a39c685ac9a15b27f9438a52b
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:37:27 2019 +0800
 
@@ -649,7 +654,7 @@ index f28884a..47f7742 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id1dc7a189fe324777a0c02e66c113f124" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id0bd5041459fb4d9481379086c63fc9b2" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

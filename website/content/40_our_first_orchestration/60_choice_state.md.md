@@ -21,9 +21,9 @@ Here is what our updated flow will look like after we're done with this step:
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id47f68042978c42fcb035702259354045">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idde56cdedfe1a456fa9d884d125697c3f">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id47f68042978c42fcb035702259354045"></div> <pre style="display: none;" data-diff-for="diff-id47f68042978c42fcb035702259354045">commit def5ea473552142257ef1b5a047ba98dd01749c2
+<div id="diff-idde56cdedfe1a456fa9d884d125697c3f"></div> <pre style="display: none;" data-diff-for="diff-idde56cdedfe1a456fa9d884d125697c3f">commit def5ea473552142257ef1b5a047ba98dd01749c2
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Tue Oct 15 17:15:47 2019 +0800
 
@@ -66,7 +66,7 @@ index 83b94ce..47a3b0f 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id47f68042978c42fcb035702259354045" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idde56cdedfe1a456fa9d884d125697c3f" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

@@ -1,8 +1,8 @@
 Foo
 
-Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id77e74af9d91c4ab29d529631ede77733">this content</span> (click the gray button to copy to clipboard). 
+Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idfcfe11d670064da89679c51da9b2c30e">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id77e74af9d91c4ab29d529631ede77733"></div> <pre style="display: none;" data-diff-for="diff-id77e74af9d91c4ab29d529631ede77733">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
+<div id="diff-idfcfe11d670064da89679c51da9b2c30e"></div> <pre style="display: none;" data-diff-for="diff-idfcfe11d670064da89679c51da9b2c30e">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 10:58:50 2019 +0800
 
@@ -107,7 +107,7 @@ index eec141d..acc14c6 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id77e74af9d91c4ab29d529631ede77733" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idfcfe11d670064da89679c51da9b2c30e" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

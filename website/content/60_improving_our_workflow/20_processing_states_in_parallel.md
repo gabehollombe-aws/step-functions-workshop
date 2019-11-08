@@ -19,9 +19,9 @@ Step Functions has a `Parallel` state type which, unsurprisingly, lets a state m
 
 Let's refactor our state machine to  perform the name and address checks in parallel:
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id740ff5c039204c9cb1eb573086af8040">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ide8c8abf5c86d47cda1563f3f0c69c59d">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id740ff5c039204c9cb1eb573086af8040"></div> <pre style="display: none;" data-diff-for="diff-id740ff5c039204c9cb1eb573086af8040">commit 8f6d5e019d11e6805e4124fb30cdd6a03b41a681
+<div id="diff-ide8c8abf5c86d47cda1563f3f0c69c59d"></div> <pre style="display: none;" data-diff-for="diff-ide8c8abf5c86d47cda1563f3f0c69c59d">commit 8f6d5e019d11e6805e4124fb30cdd6a03b41a681
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:49:55 2019 +0800
 
@@ -160,7 +160,7 @@ index 47f7742..c463339 100644
 </pre>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id740ff5c039204c9cb1eb573086af8040" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="ide8c8abf5c86d47cda1563f3f0c69c59d" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

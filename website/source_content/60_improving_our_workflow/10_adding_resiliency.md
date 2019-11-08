@@ -62,7 +62,7 @@ To show this in action, we’ll update our Data Checking Lambda, telling it to t
 
 ### Make these changes
 
-➡️ Step 1. Replace `data-checking.js` with ___CLIPBOARD_BUTTON 599d75abec2f61a2459bb36eaec4d4e0d7bcbc4d:code/data-checking.js|
+➡️ Step 1. Replace `data-checking.js` with ___CLIPBOARD_BUTTON de0c16350f24b069e52895f60c94dc110e81e39b:code/data-checking.js|
 
 ➡️ Step 2. Replace `serverless.yml` with ___CLIPBOARD_BUTTON afebf4c40193cc6a39c685ac9a15b27f9438a52b:serverless.yml|
     
