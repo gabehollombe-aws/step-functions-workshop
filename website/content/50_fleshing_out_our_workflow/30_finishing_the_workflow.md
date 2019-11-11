@@ -6,7 +6,7 @@ weight = 30
 
 ## Approving and rejecting account applications
 
-Until now, we’ve left the Approve Application state empty, using the Pass state a kind of placeholder reminding us to implement the step later. And we just added another placeholder state for Reject Application, too.  Let’s finish our workflow by replacing these Pass states with Task states that invoke appropriate Lambda functions.
+Until now, we’ve left the Approve Application state empty, using the Pass state as a kind of placeholder reminding us to implement the step later. And we just added another placeholder state for Reject Application, too.  Let’s finish our workflow by replacing these Pass states with Task states that invoke appropriate Lambda functions.
 
 
 ### In this step, we will
@@ -18,9 +18,9 @@ Until now, we’ve left the Approve Application state empty, using the Pass stat
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idcda69baf0f8d423691d5bfd403a1373d">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id39f24ba9f80847058b5f170111e69a45">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idcda69baf0f8d423691d5bfd403a1373d"></div> <pre style="display: none;" data-diff-for="diff-idcda69baf0f8d423691d5bfd403a1373d">commit 77603cdb8730955713c45470065e8c1b619fff93
+<div id="diff-id39f24ba9f80847058b5f170111e69a45"></div> <script type="text/template" data-diff-for="diff-id39f24ba9f80847058b5f170111e69a45">commit 77603cdb8730955713c45470065e8c1b619fff93
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:09:15 2019 +0800
 
@@ -74,10 +74,10 @@ index acc14c6..4010aa8 100644
 +              approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
              }
 \ No newline at end of file
-</pre>
+</script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idcda69baf0f8d423691d5bfd403a1373d" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id39f24ba9f80847058b5f170111e69a45" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

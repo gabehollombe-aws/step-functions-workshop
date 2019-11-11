@@ -21,9 +21,9 @@ So, to fix our current issue, we need to add a `ResultPath` statement, instructi
 Below is a new version of our serverless.yml file that contains updated Check Name and Check Address states, using the ResultPath property to merge their outputs into helpfully-named keys that we can be used later on.
 
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id14f663b34a7646269434b5fbc047a177">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id59d15419b27d43a9890c5d4cb1cc2867">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id14f663b34a7646269434b5fbc047a177"></div> <pre style="display: none;" data-diff-for="diff-id14f663b34a7646269434b5fbc047a177">commit 4114d55fdb744943184a1b480c94da7d77cfc80d
+<div id="diff-id59d15419b27d43a9890c5d4cb1cc2867"></div> <script type="text/template" data-diff-for="diff-id59d15419b27d43a9890c5d4cb1cc2867">commit 4114d55fdb744943184a1b480c94da7d77cfc80d
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Tue Oct 15 17:02:48 2019 +0800
 
@@ -49,10 +49,10 @@ index 0b9f3b9..83b94ce 100644
                          "Next": "Approve Application"
                      },
                      "Approve Application": {
-</pre>
+</script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id14f663b34a7646269434b5fbc047a177" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id59d15419b27d43a9890c5d4cb1cc2867" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

@@ -19,9 +19,9 @@ Step Functions has a `Parallel` state type which, unsurprisingly, lets a state m
 
 Let's refactor our state machine to  perform the name and address checks in parallel:
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ide8c8abf5c86d47cda1563f3f0c69c59d">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id370f5a4687dd4fa8b8681071d2f160b7">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-ide8c8abf5c86d47cda1563f3f0c69c59d"></div> <pre style="display: none;" data-diff-for="diff-ide8c8abf5c86d47cda1563f3f0c69c59d">commit 8f6d5e019d11e6805e4124fb30cdd6a03b41a681
+<div id="diff-id370f5a4687dd4fa8b8681071d2f160b7"></div> <script type="text/template" data-diff-for="diff-id370f5a4687dd4fa8b8681071d2f160b7">commit 8f6d5e019d11e6805e4124fb30cdd6a03b41a681
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:49:55 2019 +0800
 
@@ -157,10 +157,10 @@ index 47f7742..c463339 100644
                      "Flag Application As Unprocessable": {
                        "Type": "Task",
                        "Resource": "arn:aws:states:::lambda:invoke",
-</pre>
+</script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="ide8c8abf5c86d47cda1563f3f0c69c59d" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id370f5a4687dd4fa8b8681071d2f160b7" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
