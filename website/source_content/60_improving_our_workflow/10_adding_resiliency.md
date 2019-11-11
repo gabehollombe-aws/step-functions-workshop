@@ -4,7 +4,7 @@ chapter = false
 weight = 10
 +++
 
-Until now, we haven’t taken the time to add any resiliency into our state machine. What happens if some of our Lambda function calls result in a timeout, or if they experience some other sort of transient error? What if they throw an exception? Let’s address these what-ifs now and leverage the built in retry and error handling capabilities of AWS Step Functions.
+Until now, we haven’t taken the time to add any resiliency into our state machine. What happens if some of our Lambda function calls result in a timeout, or if they experience some other sort of transient error? What if they throw an exception? Or, imagine that one of our Lambda functions was calling a third-party service. That external call could fail or timeout as well. Let’s address these what-ifs now and leverage the built in retry and error handling capabilities of AWS Step Functions.
 
 So, what kind of errors can occur? Here’s what the Step Functions developer guide has to say:
 
