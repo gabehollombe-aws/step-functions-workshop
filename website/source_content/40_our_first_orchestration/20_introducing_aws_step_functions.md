@@ -1,5 +1,5 @@
 +++
-title = "Introducting AWS Step Functions"
+title = "Introducing AWS Step Functions"
 chapter = false
 weight = 20
 +++
