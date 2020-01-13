@@ -27,7 +27,8 @@ const templatize = (str, match) => {
 
     const diffContent = getUnifiedDiff(match.groups.sha, match.groups.file)
     const fileContent = showFileAtSha(match.groups.sha, match.groups.file)
-    const id = "id" + uuid().replace(/-/g,"")
+    // Use a deterministic ID based on sha + file path (must start with 'id' to prevent SHAs starting with 0 from causing invalid ID values) to simplify diffs
+    const id = 'id'+(match.groups.sha + match.groups.file).replace(/[-\/\.]+/g,"")
     
     // Amazing, since JS treats '$' as a special character when doing replacements, we need to pass a function to replace to ignore escaping issues
     // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#Specifying_a_string_as_a_parameter
