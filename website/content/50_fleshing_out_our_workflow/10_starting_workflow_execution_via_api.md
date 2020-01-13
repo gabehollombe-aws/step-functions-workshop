@@ -18,9 +18,9 @@ To do this, we will integrate our Account Applications service with our applicat
 
 ### Make these changes
 
-➡️ Step 1. Replace `account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#id53f2709d529b477da4578591998c42b5">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#id509c5f4da832d190d3285f30d91fd29c3253b6fbcodeaccountapplicationssubmitjs">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id53f2709d529b477da4578591998c42b5"></div> <script type="text/template" data-diff-for="diff-id53f2709d529b477da4578591998c42b5">commit 509c5f4da832d190d3285f30d91fd29c3253b6fb
+<div id="diff-id509c5f4da832d190d3285f30d91fd29c3253b6fbcodeaccountapplicationssubmitjs"></div> <script type="text/template" data-diff-for="diff-id509c5f4da832d190d3285f30d91fd29c3253b6fbcodeaccountapplicationssubmitjs">commit 509c5f4da832d190d3285f30d91fd29c3253b6fb
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Thu Oct 31 14:41:42 2019 +0800
 
@@ -68,7 +68,7 @@ index ce94300..1f80e87 100644
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id53f2709d529b477da4578591998c42b5" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id509c5f4da832d190d3285f30d91fd29c3253b6fbcodeaccountapplicationssubmitjs" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 const APPLICATION_PROCESSING_STEP_FUNCTION_ARN = process.env.APPLICATION_PROCESSING_STEP_FUNCTION_ARN
@@ -115,9 +115,9 @@ module.exports.handler = async(event) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id4de3a1c15a824a3390f7659fd3aaef30">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id55e4f1b3cf75014bbad84ac40e00a17e32969798serverlessyml">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id4de3a1c15a824a3390f7659fd3aaef30"></div> <script type="text/template" data-diff-for="diff-id4de3a1c15a824a3390f7659fd3aaef30">commit 55e4f1b3cf75014bbad84ac40e00a17e32969798
+<div id="diff-id55e4f1b3cf75014bbad84ac40e00a17e32969798serverlessyml"></div> <script type="text/template" data-diff-for="diff-id55e4f1b3cf75014bbad84ac40e00a17e32969798serverlessyml">commit 55e4f1b3cf75014bbad84ac40e00a17e32969798
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Tue Oct 15 17:16:45 2019 +0800
 
@@ -168,7 +168,7 @@ index 47a3b0f..eec141d 100644
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id4de3a1c15a824a3390f7659fd3aaef30" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id55e4f1b3cf75014bbad84ac40e00a17e32969798serverlessyml" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

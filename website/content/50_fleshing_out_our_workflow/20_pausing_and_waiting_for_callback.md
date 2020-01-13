@@ -37,9 +37,9 @@ We’ll need to make a few updates to our workflow in order for this to work.
 
 ### Make these changes
 
-➡️ Step 1. Replace `account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#ide05e0f0592fd44dc9fb82b891b985bec">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsflagjs">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-ide05e0f0592fd44dc9fb82b891b985bec"></div> <script type="text/template" data-diff-for="diff-ide05e0f0592fd44dc9fb82b891b985bec">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
+<div id="diff-id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsflagjs"></div> <script type="text/template" data-diff-for="diff-id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsflagjs">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 10:58:50 2019 +0800
 
@@ -69,7 +69,7 @@ index 3e700d5..8bbdcb1 100644
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="ide05e0f0592fd44dc9fb82b891b985bec" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsflagjs" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -122,9 +122,9 @@ module.exports.handler = async(event) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Create `account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#id52361c76c45244958189c718f198276e">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Create `account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsreviewjs">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id52361c76c45244958189c718f198276e"></div> <script type="text/template" data-diff-for="diff-id52361c76c45244958189c718f198276e">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
+<div id="diff-id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsreviewjs"></div> <script type="text/template" data-diff-for="diff-id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsreviewjs">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 10:58:50 2019 +0800
 
@@ -187,7 +187,7 @@ index 0000000..74b3186
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id52361c76c45244958189c718f198276e" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsreviewjs" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
 const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
 
@@ -237,9 +237,9 @@ module.exports.handler = async(event) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idb68cded066dd45e69bd22047e755e9bc">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 3. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id278b0babefb143aafbbf1bb5c773a62fcd3f374fserverlessyml">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idb68cded066dd45e69bd22047e755e9bc"></div> <script type="text/template" data-diff-for="diff-idb68cded066dd45e69bd22047e755e9bc">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
+<div id="diff-id278b0babefb143aafbbf1bb5c773a62fcd3f374fserverlessyml"></div> <script type="text/template" data-diff-for="diff-id278b0babefb143aafbbf1bb5c773a62fcd3f374fserverlessyml">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 10:58:50 2019 +0800
 
@@ -344,7 +344,7 @@ index eec141d..acc14c6 100644
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idb68cded066dd45e69bd22047e755e9bc" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id278b0babefb143aafbbf1bb5c773a62fcd3f374fserverlessyml" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

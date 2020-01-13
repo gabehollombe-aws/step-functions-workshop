@@ -20,9 +20,9 @@ Before we migrate our step function definition over to our `serverless.yml` file
 
 ➡️ Step 2. Select the state machne that we manually defined earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
-➡️ Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id7246930711b5458b899e60c722a3cc75">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idc9b0e65eca70946d4da2fceaca4b26bfc6641a76serverlessyml">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id7246930711b5458b899e60c722a3cc75"></div> <script type="text/template" data-diff-for="diff-id7246930711b5458b899e60c722a3cc75">commit c9b0e65eca70946d4da2fceaca4b26bfc6641a76
+<div id="diff-idc9b0e65eca70946d4da2fceaca4b26bfc6641a76serverlessyml"></div> <script type="text/template" data-diff-for="diff-idc9b0e65eca70946d4da2fceaca4b26bfc6641a76serverlessyml">commit c9b0e65eca70946d4da2fceaca4b26bfc6641a76
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Tue Oct 15 16:13:21 2019 +0800
 
@@ -104,7 +104,7 @@ index 07bc6d3..0b9f3b9 100644
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id7246930711b5458b899e60c722a3cc75" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idc9b0e65eca70946d4da2fceaca4b26bfc6641a76serverlessyml" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

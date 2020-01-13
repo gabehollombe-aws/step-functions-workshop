@@ -4,7 +4,7 @@ chapter = false
 weight = 10
 +++
 
-Until now, we haven’t taken the time to add any resiliency into our state machine. What happens if some of our Lambda function calls result in a timeout, or if they experience some other sort of transient error? What if they throw an exception? Let’s address these what-ifs now and leverage the built in retry and error handling capabilities of AWS Step Functions.
+Until now, we haven’t taken the time to add any resiliency into our state machine. What happens if some of our Lambda function calls result in a timeout, or if they experience some other sort of transient error? What if they throw an exception? Or, imagine that one of our Lambda functions was calling a third-party service. That external call could fail or timeout as well. Let’s address these what-ifs now and leverage the built in retry and error handling capabilities of AWS Step Functions.
 
 So, what kind of errors can occur? Here’s what the Step Functions developer guide has to say:
 
@@ -33,9 +33,9 @@ The developer guide identifies the [types of transient Lambda service errors](ht
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id984640fdad7b4e3e98b0ee4cc19883e1">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id43adfda72ed4228c5818e3b7b2c334dea6cdb340serverlessyml">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id984640fdad7b4e3e98b0ee4cc19883e1"></div> <script type="text/template" data-diff-for="diff-id984640fdad7b4e3e98b0ee4cc19883e1">commit 43adfda72ed4228c5818e3b7b2c334dea6cdb340
+<div id="diff-id43adfda72ed4228c5818e3b7b2c334dea6cdb340serverlessyml"></div> <script type="text/template" data-diff-for="diff-id43adfda72ed4228c5818e3b7b2c334dea6cdb340serverlessyml">commit 43adfda72ed4228c5818e3b7b2c334dea6cdb340
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:19:09 2019 +0800
 
@@ -98,7 +98,7 @@ index 4010aa8..f28884a 100644
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id984640fdad7b4e3e98b0ee4cc19883e1" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id43adfda72ed4228c5818e3b7b2c334dea6cdb340serverlessyml" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars
@@ -522,9 +522,9 @@ To show this in action, we’ll update our Data Checking Lambda, telling it to t
 
 ### Make these changes
 
-➡️ Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#idddf2121d4e574fab93177ed802a55a31">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `data-checking.js` with <span class="clipBtn clipboard" data-clipboard-target="#idde0c16350f24b069e52895f60c94dc110e81e39bcodedatacheckingjs">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idddf2121d4e574fab93177ed802a55a31"></div> <script type="text/template" data-diff-for="diff-idddf2121d4e574fab93177ed802a55a31">commit de0c16350f24b069e52895f60c94dc110e81e39b
+<div id="diff-idde0c16350f24b069e52895f60c94dc110e81e39bcodedatacheckingjs"></div> <script type="text/template" data-diff-for="diff-idde0c16350f24b069e52895f60c94dc110e81e39bcodedatacheckingjs">commit de0c16350f24b069e52895f60c94dc110e81e39b
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Fri Nov 8 11:20:55 2019 +0800
 
@@ -557,7 +557,7 @@ index 9dbdaf6..ff12893 100644
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idddf2121d4e574fab93177ed802a55a31" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="idde0c16350f24b069e52895f60c94dc110e81e39bcodedatacheckingjs" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 
 const checkName = (data) => {
     const { name } = data
@@ -601,9 +601,9 @@ module.exports.handler = (event, context, callback) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id3acf27e4f6124fc29a3d0225a553d0a1">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idafebf4c40193cc6a39c685ac9a15b27f9438a52bserverlessyml">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id3acf27e4f6124fc29a3d0225a553d0a1"></div> <script type="text/template" data-diff-for="diff-id3acf27e4f6124fc29a3d0225a553d0a1">commit afebf4c40193cc6a39c685ac9a15b27f9438a52b
+<div id="diff-idafebf4c40193cc6a39c685ac9a15b27f9438a52bserverlessyml"></div> <script type="text/template" data-diff-for="diff-idafebf4c40193cc6a39c685ac9a15b27f9438a52bserverlessyml">commit afebf4c40193cc6a39c685ac9a15b27f9438a52b
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Wed Oct 16 11:37:27 2019 +0800
 
@@ -654,7 +654,7 @@ index f28884a..47f7742 100644
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id3acf27e4f6124fc29a3d0225a553d0a1" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="idafebf4c40193cc6a39c685ac9a15b27f9438a52bserverlessyml" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
 
 plugins:
   - serverless-cf-vars

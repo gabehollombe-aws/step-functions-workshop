@@ -24,32 +24,8 @@ To start, we’ll create several functions that, when taken collectively, could 
 # Install the Serverless Framework CLI
 npm install -g serverless
 
-# Make a directory for all our source code for this workshop
-mkdir workshop-dir
-cd workshop-dir
-
-# Initialize a new Serverless Framework project in this directory
-serverless create --template aws-nodejs
-
-# Remove some boilerplate files
-rm handler.js
-rm serverless.yml
-
-# Create a directory for all the Account Applications service Lambda functions
-mkdir account-applications
-pushd account-applications
-
-# Bootstrap our initial service with a few files we'll extract from a zip archive
-git clone https://github.com/gabehollombe-aws/step-functions-workshop.git
-pushd step-functions-workshop
-git checkout c186b8f24783bcaf4914c329bc456831ea0fd0f3
-mv account-applications/* ..
-mv serverless.yml ../..
-popd
-rm -rf step-functions-workshop
-
-# Back to workshop-dir
-popd
+# Bootstrap our initial account-applications service into ./workshop-dir/account-applications
+serverless create --template-url https://github.com/gabehollombe-aws/step-functions-workshop/tree/master/serverless_template --path workshop-dir
 
 # Install dependencies
 npm init --yes
