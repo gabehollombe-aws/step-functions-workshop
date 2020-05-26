@@ -29,7 +29,7 @@ serverless create --template-url https://github.com/gabehollombe-aws/step-functi
 
 # Install dependencies
 npm init --yes
-npm install --save serverless-cf-vars uuid
+npm install --save serverless-cf-vars uuid@3.3.3
     
 ```
 

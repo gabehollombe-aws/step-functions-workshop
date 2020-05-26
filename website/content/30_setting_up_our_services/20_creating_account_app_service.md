@@ -24,12 +24,12 @@ To start, we’ll create several functions that, when taken collectively, could 
 # Install the Serverless Framework CLI
 npm install -g serverless
 
-# Bootstrap our initial account-applications service from a template
-serverless create --template-url https://github.com/gabehollombe-aws/step-functions-workshop/tree/custom_sls_template/serverless_template --path workshop-dir
+# Bootstrap our initial account-applications service into ./workshop-dir/account-applications
+serverless create --template-url https://github.com/gabehollombe-aws/step-functions-workshop/tree/master/serverless_template --path workshop-dir
 
 # Install dependencies
 npm init --yes
-npm install --save serverless-cf-vars uuid
+npm install --save serverless-cf-vars uuid@3.3.3
     
 ```
 
