@@ -63,7 +63,7 @@ Resources:
         Variables:
           ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
-        - DynamoDBWritePolicy:
+        - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
 
   DataCheckingFunction:
@@ -99,7 +99,7 @@ Resources:
         Variables:
           ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
-        - DynamoDBWritePolicy:
+        - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
 
   RejectApplicationFunction:
@@ -113,7 +113,7 @@ Resources:
         Variables:
           ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
-        - DynamoDBWritePolicy:
+        - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
 
   ReviewApplicationFunction:
@@ -128,7 +128,7 @@ Resources:
         Variables:
           ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
-        - DynamoDBWritePolicy:
+        - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
 
   SubmitApplicationFunction:
@@ -147,12 +147,6 @@ Resources:
             TableName: !Ref ApplicationsTable
         - StepFunctionsExecutionPolicy:
             StateMachineName: !GetAtt ApplicationProcessingStateMachine.Name
-      Events:
-        HttpApiEvent:
-          Type: HttpApi
-          Properties:
-            Path: /application
-            Method: POST
 
   ApplicationsTable:
     Type: 'AWS::DynamoDB::Table'
