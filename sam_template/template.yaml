@@ -28,7 +28,7 @@ Resources:
         Variables:
           ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
-        - DynamoDBReadPolicy:
+        - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
 
   FlagApplicationFunction:
