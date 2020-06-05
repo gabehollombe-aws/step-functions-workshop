@@ -9,11 +9,9 @@ To start, we’ll create several functions that, when taken collectively, could 
 
 ### In this step, we will:
 
-- Install the Serverless CLI tool, initialize a new project, and install a few dependencies from NPM
+- Install the AWS SAM CLI, initialize a new project, and install a few dependencies from NPM
 
-- Instead of creating a bunch of files by hand, we'll download a first version of our Account Applications service, comprised of several AWS Lambda functions. We'll use Node.js as the language for all of the Lambda functions in this workshop, but if you're not comfortable with Node.JS or JavaScript, don't worry; the code is really simple and you should be able to follow along without any issues.
-
-- Set up a v1 of the `serverless.yml` file, which is how we tell the Serverless Framework about all of the cloud resources that our system will use, including the AWS Lambda functions that implement each action in our API, an Amazon DynamoDB table to store the state of each application, and the necessary AWS IAM roles and permissions to ensure our Lambda functions can operate successfully and securely.
+- Download a first version of our Account Applications service written in the AWS SAM framework (instead of creating a lot of initial files by hand), comprised of several AWS Lambda functions and an Amazon Dynamo DB table to store system state. We'll use Node.js as the language for all of the Lambda functions in this workshop. If you're not comfortable with Node.JS or JavaScript, don't worry; the code is really simple and you should be able to follow along without any issues.
 
 
 ### Make these changes
@@ -21,38 +19,56 @@ To start, we’ll create several functions that, when taken collectively, could 
 ➡️ Step 1. In your Cloud9 workspace's terminal command line, run these commands to handle all of the housekeeping of getting our first version of the Account Applications service deployed:
 
 ```bash
-# Install the Serverless Framework CLI
-npm install -g serverless
+# Install Homebrew
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
+# Then get brew into our $PATH
+test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
+test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile
+echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
+
+# Install the AWS SAM CLI
+brew tap aws/tap
+brew install aws-sam-cli
 
 # Bootstrap our initial account-applications service into ./workshop-dir/account-applications
-serverless create --template-url https://github.com/gabehollombe-aws/step-functions-workshop/tree/master/serverless_template --path workshop-dir
+git clone https://github.com/gabehollombe-aws/step-functions-workshop.git          
+sam init --location step-functions-workshop/sam_template -o workshop-dir
 
-# Install dependencies
-npm init --yes
-npm install --save serverless-cf-vars uuid@3.3.3
-    
+# Change to our new directory
+cd workshop-dir
 ```
 
-➡️ Step 2. Use the Serverless Framework command to deploy our Lambda functions and Dynamo DB table. 
+➡️ Step 2. Use the SAM CLI to build our Lambda functions in preparation for a deploy. 
 
 From the terminal, run:
 
 ```bash
-sls deploy
+sam package && sam deploy
 ```
 
-{{% notice warning %}}
-By default, the Serverless Framework will deploy resources into the `us-east-1` region. When using the AWS Web Console during this workshop, please ensure you're in the `N. Virginia` (us-east-1) region.<br/><br/>If you want to override this default region setting, you can do so by specifying a region argument to the `sls deploy` command. See [the Serverless Framework CLI deploy command documentation](https://serverless.com/framework/docs/providers/aws/cli-reference/deploy/) for more details.
-{{% /notice %}}
+➡️ Step 3. Use the SAM CLI to deploy our Lambda functions and DynamoDB table
+
+From the terminal, run the following command and respond to the interactive prompts in a similar fashion. Then wait a few minutes for the deploy to finish.
+
+```bash
+sam deploy --guided
+
+# Stack Name [sam-app]: step-functions-workshop
+# AWS Region [us-east-1]: us-east-1
+# Confirm changes before deploy [y/N]: N
+# Allow SAM CLI IAM role creation [Y/n]: Y
+# Save arguments to samconfig.toml [Y/n]: Y
+```
 
 {{% notice note %}}
-Take a few moments to look at some of the files we just created in `workshop-dir` to understand what we deployed.
+While you're waitin for the deploy to finish, take a few moments to look at some of the files we just created in `workshop-dir` to understand what we deployed.
 <br/><br/>
 Here are some important files worth looking at:
 <br/><br/>
-`account-applications/submit.js`<br/>This implements our SubmitApplication Lambda function. There are similar files for `find`, `flag`, `reject`, and `approve` as well.<br/><br/>
-`account-applications/AccountApplications.js`<br/>This is a common file that provides CRUD style operations for our Account Application data type. It's used by the various `account-applications/*.js` Lambda functions.<br/><br/>
-`serverless.yml`<br/>This is the file that the Serverless Framework looks at to determine what we want resources we want to cloud create and deploy as part of our solution. If you're familiar with AWS CloudFormation, the structure of this file will look pretty familiar to you. Notice we are defining separate roles for each Lambda function, and each role is built up of custom shared policies we define in the file as well.
+`functions/account-applications/submit.js`<br/>This implements our SubmitApplication Lambda function. There are similar files for `find`, `flag`, `reject`, and `approve` as well.<br/><br/>
+`functions/account-applications/AccountApplications.js`<br/>This is a common file that provides CRUD style operations for our Account Application data type. It's used by the various `functions/account-applications/*.js` Lambda functions.<br/><br/>
+`template.yml`<br/>This is the file that AWS SAM looks at to determine what we want resources we want to cloud create and deploy as part of our solution. If you're familiar with AWS CloudFormation, the structure of this file will look pretty familiar to you, because AWS SAM is just a set of conveniences built on top of CloudFormation.
 {{% /notice %}}
 
 
