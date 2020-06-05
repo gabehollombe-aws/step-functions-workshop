@@ -52,6 +52,20 @@ Resources:
         - LambdaInvokePolicy:
             FunctionName: !Ref RejectApplicationFunction
 
+  ApproveApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-ApproveApplication
+      CodeUri: functions/account-applications/
+      Handler: approve.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref ApplicationsTable
+
   DataCheckingFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -59,6 +73,63 @@ Resources:
       CodeUri: functions/data-checking/
       Handler: data-checking.handler
       Runtime: nodejs12.x
+
+  FindApplicationsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-FindApplications
+      CodeUri: functions/account-applications/
+      Handler: find.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ApplicationsTable
+
+  FlagApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-FlagApplication
+      CodeUri: functions/account-applications/
+      Handler: flag.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref ApplicationsTable
+
+  RejectApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-RejectApplication
+      CodeUri: functions/account-applications/
+      Handler: reject.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref ApplicationsTable
+
+  ReviewApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-ReviewApplication
+      CodeUri: functions/account-applications/
+      Handler: review.handler
+      Runtime: nodejs12.x
+      Role: !GetAtt ReviewRole.Arn
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref ApplicationsTable
 
   SubmitApplicationFunction:
     Type: AWS::Serverless::Function
@@ -82,62 +153,6 @@ Resources:
           Properties:
             Path: /application
             Method: POST
-
-  FlagApplicationFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: sfn-workshop-FlagApplication
-      CodeUri: functions/account-applications/
-      Handler: flag.handler
-      Runtime: nodejs12.x
-      Policies:
-        - DynamoDBWritePolicy:
-            TableName: !Ref ApplicationsTable
-
-  ReviewApplicationFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: sfn-workshop-ReviewApplication
-      CodeUri: functions/account-applications/
-      Handler: review.handler
-      Runtime: nodejs12.x
-      Role: !GetAtt ReviewRole.Arn
-      Policies:
-        - DynamoDBWritePolicy:
-            TableName: !Ref ApplicationsTable
-
-  FindApplicationsFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: sfn-workshop-FindApplications
-      CodeUri: functions/account-applications/
-      Handler: find.handler
-      Runtime: nodejs12.x
-      Policies:
-        - DynamoDBReadPolicy:
-            TableName: !Ref ApplicationsTable
-
-  RejectApplicationFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: sfn-workshop-RejectApplication
-      CodeUri: functions/account-applications/
-      Handler: reject.handler
-      Runtime: nodejs12.x
-      Policies:
-        - DynamoDBWritePolicy:
-            TableName: !Ref ApplicationsTable
-
-  ApproveApplicationFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: sfn-workshop-ApproveApplication
-      CodeUri: functions/account-applications/
-      Handler: approve.handler
-      Runtime: nodejs12.x
-      Policies:
-        - DynamoDBWritePolicy:
-            TableName: !Ref ApplicationsTable
 
   ApplicationsTable:
     Type: 'AWS::DynamoDB::Table'

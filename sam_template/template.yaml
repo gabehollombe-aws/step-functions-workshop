@@ -10,6 +10,9 @@ Resources:
       CodeUri: functions/account-applications/
       Handler: approve.handler
       Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBWritePolicy:
             TableName: !Ref ApplicationsTable
@@ -21,6 +24,9 @@ Resources:
       CodeUri: functions/account-applications/
       Handler: find.handler
       Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref ApplicationsTable
@@ -32,6 +38,9 @@ Resources:
       CodeUri: functions/account-applications/
       Handler: flag.handler
       Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBWritePolicy:
             TableName: !Ref ApplicationsTable
@@ -43,6 +52,9 @@ Resources:
       CodeUri: functions/account-applications/
       Handler: reject.handler
       Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBWritePolicy:
             TableName: !Ref ApplicationsTable
