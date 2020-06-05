@@ -1,0 +1,9 @@
+{
+  "name": "account-applications",
+  "version": "1.0.0",
+  "description": "A set of Lambda functions that operate on Account Applications",
+  "license": "MIT",
+  "dependencies": {
+    "uuid": "^3.3.3"
+  }
+}
