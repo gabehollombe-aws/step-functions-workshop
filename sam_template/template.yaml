@@ -106,3 +106,25 @@ Resources:
                       KeyType: HASH
               Projection:
                   ProjectionType: ALL
+Outputs:
+  SubmitApplicationFunctionArn:
+    Description: "Submit Application Function ARN"
+    Value: !GetAtt SubmitApplicationFunction.Arn
+  FlagApplicationFunctionArn:
+    Description: "Flag Application Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  FindApplicationsFunctionArn:
+    Description: "Find Applications Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  ApproveApplicationFunctionArn:
+    Description: "Approve Application Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  RejectApplicationFunctionArn:
+    Description: "Reject Application Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  ReviewApplicationFunctionArn:
+    Description: "Review Application Function ARN"
+    Value: !GetAtt ReviewApplicationFunction.Arn
+  DataCheckingFunctionArn:
+    Description: "Data Checking Function ARN"
+    Value: !GetAtt DataCheckingFunction.Arn
