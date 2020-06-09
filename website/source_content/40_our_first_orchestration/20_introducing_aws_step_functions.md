@@ -50,13 +50,13 @@ To start out, let’s just try to model the steps involved to check a name, chec
 }
 ```
 
-➡️ Step 1. Click the refresh icon and you should see a diagram matching the one above. This is really helpful for making sure we’re connecting our states together in the right way.
+➡️ Step 6. Click the refresh icon and you should see a diagram matching the one above. This is really helpful for making sure we’re connecting our states together in the right way.
 
-➡️ Step 2. Click ‘Next’ to continue
+➡️ Step 7. Click ‘Next’ to continue
 
-➡️ Step 3. We need to specify an IAM role for the Step Function to assume when it executes. For now we can just start with the default role. Select ‘Create an IAM role for me’ and enter a name for the role like ‘Process_New_Account_Applications_Role’
+➡️ Step 8. We need to specify an IAM role for the Step Function to assume when it executes. For now we can just start with the default role. Select ‘Create an IAM role for me’ and enter a name for the role like ‘Process_New_Account_Applications_Role’
 
-➡️ Step 4. Click ‘Create state machine’
+➡️ Step 9. Click ‘Create state machine’
 
 
 {{% notice info %}}

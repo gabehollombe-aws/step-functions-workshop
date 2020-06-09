@@ -55,10 +55,12 @@ The state machine description we use below assumes that the state machine will r
 ➡️ Step 3. Back on your terminal, run:
 
 ```
-sls info --verbose | grep DataCheckingLambdaFunctionQualifiedArn | cut -d ' ' -f 2
+REGION=$(grep region samconfig.toml | awk -F\= '{gsub(/"/, "", $2); gsub(/ /, "", $2); print $2}')
+STACK_NAME=$(grep stack_name samconfig.toml | awk -F\= '{gsub(/"/, "", $2); gsub(/ /, "", $2); print $2}')
+aws cloudformation describe-stacks --region $REGION --stack-name $STACK_NAME --query 'Stacks[0].Outputs[?OutputKey==`DataCheckingFunctionArn`].OutputValue' --output text                
 ```
 
-This shows the ARN of the Data Checking Lambda.
+This command pulls values out of the `samconfig.toml` file (which remembers things like the region and stack name we're using SAM to deploy to) and shows the ARN of the Data Checking Lambda we deployed.
    
 ➡️ Step 4. Copy the ARN to your clipboard.
 

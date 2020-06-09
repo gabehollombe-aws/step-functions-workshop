@@ -4,28 +4,38 @@ chapter = false
 weight = 40
 +++
 
-Rather than continue to work in the web console and make these fixes by hand, we’ll return to our `serverless.yml` file to define our state machine alongside the other resources used in this workshop, and we’ll take care to also set up the appropriate permissions for this state machine to execute successfully.
+Rather than continue to work in the web console and make these fixes by hand, we’ll return to our `template.yml` file to define our state machine alongside the other resources used in this workshop, and we’ll take care to also set up the appropriate permissions for this state machine to execute successfully.
 
 ### In this step, we will
 
-* Define our new AWS Step Functions state machine inside `serverless.yml`
+* Define our new AWS Step Functions state machine inside `template.yml`
 
 * Add a new IAM role for our state machine to assume when it executes. The role grants permission for the state machine to invoke our Data Checking Lambda function.
 
 ### Make these changes
 
-Before we migrate our step function definition over to our `serverless.yml` file, we should delete the function we’ve been interacting with in the Step Functions web console so that we don’t get confused when a similar state machine is deployed as part of our Serverless stack deployment.
+Before we migrate our step function definition over to our `template.yml` file, we should delete the state machine we’ve been interacting with in the Step Functions web console so that we don’t get confused when a similar state machine is deployed as part of our Serverless stack deployment.
 
 ➡️ Step 1. In the left sidebar of the Step Functions web console, click ‘State machines’
 
 ➡️ Step 2. Select the state machne that we manually defined earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
-➡️ Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with ___CLIPBOARD_BUTTON c9b0e65eca70946d4da2fceaca4b26bfc6641a76:serverless.yml|
+➡️ Step 3. Now, let’s re-define our state machine inside our `template.yaml` file. Replace `template.yml` with ___CLIPBOARD_BUTTON 1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1:code/variants/template.yml/1-fixing-permissions__template.yaml|
 
-➡️ Step 4. Run:
+➡️ Step 4. From inside `workshop-dir` run:
+```bash
+mkdir -p statemachine && pushd statemachine && touch account-application-workflow.asl.json && popd
+```
+
+This will create a `statemachine/account-application-workflow.asl.json` inside `workshop-dir`.
+
+➡️ Step 5. Replace `statemachine/account-application-workflow.asl.json` with ___CLIPBOARD_BUTTON 1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1:code/variants/statemachine/1-first-version__account-application-workflow.asl.json|
+
+
+➡️ Step 6. Redeploy our application:
 
 ```bash
-sls deploy
+sam build && sam deploy
 ```
 
 

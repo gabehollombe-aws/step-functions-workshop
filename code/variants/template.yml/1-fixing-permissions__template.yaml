@@ -1,38 +1,8 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  sfn-sam-template
-
-  Sample SAM Template for sfn-sam-template
+Description: Template for step-functions-workshop
 
 Resources:
-  StepFunctionsTaskStatusPolicy:
-    Type: 'AWS::IAM::ManagedPolicy'
-    Properties:
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          -
-            Effect: "Allow"
-            Action:
-              - "states:SendTaskSuccess"
-              - "states:SendTaskFailure"
-            Resource: !Ref ApplicationProcessingStateMachine
-
-  ReviewRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - lambda.amazonaws.com
-            Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - !Ref StepFunctionsTaskStatusPolicy
-
   ApplicationProcessingStateMachine:
     Type: AWS::Serverless::StateMachine
     Properties:
@@ -90,7 +60,7 @@ Resources:
         Variables:
           ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
-        - DynamoDBCrudPolicy:
+        - DynamoDBWritePolicy:
             TableName: !Ref ApplicationsTable
 
   RejectApplicationFunction:
@@ -104,22 +74,7 @@ Resources:
         Variables:
           ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ApplicationsTable
-
-  ReviewApplicationFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: sfn-workshop-ReviewApplication
-      CodeUri: functions/account-applications/
-      Handler: review.handler
-      Runtime: nodejs12.x
-      Role: !GetAtt ReviewRole.Arn
-      Environment:
-        Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-      Policies:
-        - DynamoDBCrudPolicy:
+        - DynamoDBWritePolicy:
             TableName: !Ref ApplicationsTable
 
   SubmitApplicationFunction:
@@ -131,13 +86,10 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          APPLICATION_PROCESSING_STEP_FUNCTION_ARN: !Ref ApplicationProcessingStateMachine
           ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
-        - StepFunctionsExecutionPolicy:
-            StateMachineName: !GetAtt ApplicationProcessingStateMachine.Name
 
   ApplicationsTable:
     Type: 'AWS::DynamoDB::Table'
@@ -164,26 +116,22 @@ Resources:
                       KeyType: HASH
               Projection:
                   ProjectionType: ALL
-
 Outputs:
-  ApplicationProcessingStateMachineArn:
-    Description: "Application Processing state machine ARN"
-    Value: !Ref ApplicationProcessingStateMachine
   SubmitApplicationFunctionArn:
-    Description: "Submit Application Funciton ARN"
+    Description: "Submit Application Function ARN"
     Value: !GetAtt SubmitApplicationFunction.Arn
   FlagApplicationFunctionArn:
-    Description: "Flag Application Funciton ARN"
+    Description: "Flag Application Function ARN"
     Value: !GetAtt FlagApplicationFunction.Arn
   FindApplicationsFunctionArn:
-    Description: "Find Applications Funciton ARN"
+    Description: "Find Applications Function ARN"
     Value: !GetAtt FlagApplicationFunction.Arn
   ApproveApplicationFunctionArn:
-    Description: "Approve Applications Funciton ARN"
+    Description: "Approve Application Function ARN"
     Value: !GetAtt FlagApplicationFunction.Arn
   RejectApplicationFunctionArn:
-    Description: "Reject Applications Funciton ARN"
+    Description: "Reject Application Function ARN"
     Value: !GetAtt FlagApplicationFunction.Arn
   DataCheckingFunctionArn:
-    Description: "Data Checking Funciton ARN"
+    Description: "Data Checking Function ARN"
     Value: !GetAtt DataCheckingFunction.Arn

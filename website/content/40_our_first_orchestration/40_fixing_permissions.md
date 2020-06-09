@@ -4,387 +4,412 @@ chapter = false
 weight = 40
 +++
 
-Rather than continue to work in the web console and make these fixes by hand, we’ll return to our `serverless.yml` file to define our state machine alongside the other resources used in this workshop, and we’ll take care to also set up the appropriate permissions for this state machine to execute successfully.
+Rather than continue to work in the web console and make these fixes by hand, we’ll return to our `template.yml` file to define our state machine alongside the other resources used in this workshop, and we’ll take care to also set up the appropriate permissions for this state machine to execute successfully.
 
 ### In this step, we will
 
-* Define our new AWS Step Functions state machine inside `serverless.yml`
+* Define our new AWS Step Functions state machine inside `template.yml`
 
 * Add a new IAM role for our state machine to assume when it executes. The role grants permission for the state machine to invoke our Data Checking Lambda function.
 
 ### Make these changes
 
-Before we migrate our step function definition over to our `serverless.yml` file, we should delete the function we’ve been interacting with in the Step Functions web console so that we don’t get confused when a similar state machine is deployed as part of our Serverless stack deployment.
+Before we migrate our step function definition over to our `template.yml` file, we should delete the state machine we’ve been interacting with in the Step Functions web console so that we don’t get confused when a similar state machine is deployed as part of our Serverless stack deployment.
 
 ➡️ Step 1. In the left sidebar of the Step Functions web console, click ‘State machines’
 
 ➡️ Step 2. Select the state machne that we manually defined earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
-➡️ Step 3. Now, let’s re-define our state machine inside our `serverless.yaml` file. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idc9b0e65eca70946d4da2fceaca4b26bfc6641a76serverlessyml">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 3. Now, let’s re-define our state machine inside our `template.yaml` file. Replace `template.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantstemplateyml1fixingpermissions__templateyaml">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-idc9b0e65eca70946d4da2fceaca4b26bfc6641a76serverlessyml"></div> <script type="text/template" data-diff-for="diff-idc9b0e65eca70946d4da2fceaca4b26bfc6641a76serverlessyml">commit c9b0e65eca70946d4da2fceaca4b26bfc6641a76
+<div id="diff-id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantstemplateyml1fixingpermissions__templateyaml"></div> <script type="text/template" data-diff-for="diff-id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantstemplateyml1fixingpermissions__templateyaml">commit 1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1
 Author: Gabe Hollombe <gabe@avantbard.com>
-Date:   Tue Oct 15 16:13:21 2019 +0800
+Date:   Tue Jun 9 13:55:58 2020 +0800
 
-    Add StepFunction simplified workflow to serverless.yml
+    progress porting to SAM
 
-diff --git a/serverless.yml b/serverless.yml
-index 07bc6d3..0b9f3b9 100644
---- a/serverless.yml
-+++ b/serverless.yml
-@@ -210,4 +210,65 @@ resources:
-                         AttributeName: state
-                         KeyType: HASH
-                 Projection:
--                    ProjectionType: ALL
-\ No newline at end of file
-+                    ProjectionType: ALL
+diff --git a/code/variants/template.yml/1-fixing-permissions__template.yaml b/code/variants/template.yml/1-fixing-permissions__template.yaml
+new file mode 100644
+index 0000000..1261b13
+--- /dev/null
++++ b/code/variants/template.yml/1-fixing-permissions__template.yaml
+@@ -0,0 +1,137 @@
++AWSTemplateFormatVersion: "2010-09-09"
++Transform: AWS::Serverless-2016-10-31
++Description: Template for step-functions-workshop
 +
-+    StepFunctionRole:
-+      Type: 'AWS::IAM::Role'
-+      Properties:
-+        AssumeRolePolicyDocument:
-+            Version: '2012-10-17'
-+            Statement:
-+                -
-+                  Effect: Allow
-+                  Principal:
-+                      Service: 'states.amazonaws.com'
-+                  Action: 'sts:AssumeRole'
-+        Policies:
-+            -
-+              PolicyName: lambda
-+              PolicyDocument:
-+                Statement:
++Resources:
++  ApplicationProcessingStateMachine:
++    Type: AWS::Serverless::StateMachine
++    Properties:
++      DefinitionUri: statemachine/account-application-workflow.asl.json
++      DefinitionSubstitutions:
++        DataCheckingFunctionArn: !GetAtt DataCheckingFunction.Arn
++      Policies:
++        - LambdaInvokePolicy:
++            FunctionName: !Ref DataCheckingFunction
++
++  ApproveApplicationFunction:
++    Type: AWS::Serverless::Function
++    Properties:
++      FunctionName: sfn-workshop-ApproveApplication
++      CodeUri: functions/account-applications/
++      Handler: approve.handler
++      Runtime: nodejs12.x
++      Environment:
++        Variables:
++          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
++      Policies:
++        - DynamoDBCrudPolicy:
++            TableName: !Ref ApplicationsTable
++
++  DataCheckingFunction:
++    Type: AWS::Serverless::Function
++    Properties:
++      FunctionName: sfn-workshop-DataChecking
++      CodeUri: functions/data-checking/
++      Handler: data-checking.handler
++      Runtime: nodejs12.x
++
++  FindApplicationsFunction:
++    Type: AWS::Serverless::Function
++    Properties:
++      FunctionName: sfn-workshop-FindApplications
++      CodeUri: functions/account-applications/
++      Handler: find.handler
++      Runtime: nodejs12.x
++      Environment:
++        Variables:
++          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
++      Policies:
++        - DynamoDBCrudPolicy:
++            TableName: !Ref ApplicationsTable
++
++  FlagApplicationFunction:
++    Type: AWS::Serverless::Function
++    Properties:
++      FunctionName: sfn-workshop-FlagApplication
++      CodeUri: functions/account-applications/
++      Handler: flag.handler
++      Runtime: nodejs12.x
++      Environment:
++        Variables:
++          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
++      Policies:
++        - DynamoDBWritePolicy:
++            TableName: !Ref ApplicationsTable
++
++  RejectApplicationFunction:
++    Type: AWS::Serverless::Function
++    Properties:
++      FunctionName: sfn-workshop-RejectApplication
++      CodeUri: functions/account-applications/
++      Handler: reject.handler
++      Runtime: nodejs12.x
++      Environment:
++        Variables:
++          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
++      Policies:
++        - DynamoDBWritePolicy:
++            TableName: !Ref ApplicationsTable
++
++  SubmitApplicationFunction:
++    Type: AWS::Serverless::Function
++    Properties:
++      FunctionName: sfn-workshop-SubmitApplication
++      CodeUri: functions/account-applications/
++      Handler: submit.handler
++      Runtime: nodejs12.x
++      Environment:
++        Variables:
++          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
++      Policies:
++        - DynamoDBCrudPolicy:
++            TableName: !Ref ApplicationsTable
++
++  ApplicationsTable:
++    Type: 'AWS::DynamoDB::Table'
++    Properties:
++      TableName: !Sub StepFunctionWorkshop-AccountApplications-${AWS::StackName}
++      AttributeDefinitions:
++        -
++          AttributeName: id
++          AttributeType: S
++        -
++          AttributeName: state
++          AttributeType: S
++      KeySchema:
++        -
++          AttributeName: id
++          KeyType: HASH
++      BillingMode: PAY_PER_REQUEST
++      GlobalSecondaryIndexes:
++          -
++              IndexName: state
++              KeySchema:
 +                  -
-+                    Effect: Allow
-+                    Action: 'lambda:InvokeFunction'
-+                    Resource:
-+                        - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-+
-+    ProcessApplicationsStateMachine:
-+      Type: AWS::StepFunctions::StateMachine
-+      Properties:
-+        StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
-+        RoleArn: !GetAtt StepFunctionRole.Arn
-+        DefinitionString:
-+          !Sub
-+            - |-
-+              {
-+                "StartAt": "Check Name",
-+                "States": {
-+                    "Check Name": {
-+                        "Type": "Task",
-+                        "Parameters": {
-+                            "command": "CHECK_NAME",
-+                            "data": { "name.$": "$.application.name" }
-+                        },
-+                        "Resource": "#{dataCheckingLambdaArn}",
-+                        "Next": "Check Address"
-+                    },
-+                    "Check Address": {
-+                        "Type": "Task",
-+                        "Parameters": {
-+                            "command": "CHECK_ADDRESS",
-+                            "data": { "address.$": "$.application.address" }
-+                        },
-+                        "Resource": "#{dataCheckingLambdaArn}",
-+                        "Next": "Approve Application"
-+                    },
-+                    "Approve Application": {
-+                        "Type": "Pass",
-+                        "End": true
-+                    }
-+                }
-+              }
-+            - {
-+              dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-+            }
++                      AttributeName: state
++                      KeyType: HASH
++              Projection:
++                  ProjectionType: ALL
++Outputs:
++  SubmitApplicationFunctionArn:
++    Description: "Submit Application Function ARN"
++    Value: !GetAtt SubmitApplicationFunction.Arn
++  FlagApplicationFunctionArn:
++    Description: "Flag Application Function ARN"
++    Value: !GetAtt FlagApplicationFunction.Arn
++  FindApplicationsFunctionArn:
++    Description: "Find Applications Function ARN"
++    Value: !GetAtt FlagApplicationFunction.Arn
++  ApproveApplicationFunctionArn:
++    Description: "Approve Application Function ARN"
++    Value: !GetAtt FlagApplicationFunction.Arn
++  RejectApplicationFunctionArn:
++    Description: "Reject Application Function ARN"
++    Value: !GetAtt FlagApplicationFunction.Arn
++  DataCheckingFunctionArn:
++    Description: "Data Checking Function ARN"
++    Value: !GetAtt DataCheckingFunction.Arn
 \ No newline at end of file
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idc9b0e65eca70946d4da2fceaca4b26bfc6641a76serverlessyml" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
+<textarea id="id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantstemplateyml1fixingpermissions__templateyaml" style="position: relative; left: -1000px; width: 1px; height: 1px;">AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Template for step-functions-workshop
 
-plugins:
-  - serverless-cf-vars
+Resources:
+  ApplicationProcessingStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      DefinitionUri: statemachine/account-application-workflow.asl.json
+      DefinitionSubstitutions:
+        DataCheckingFunctionArn: !GetAtt DataCheckingFunction.Arn
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref DataCheckingFunction
 
-custom:
-  applicationsTable: '${self:service}__account_applications__${self:provider.stage}'
+  ApproveApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-ApproveApplication
+      CodeUri: functions/account-applications/
+      Handler: approve.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApplicationsTable
 
-provider:
-  name: aws
-  runtime: nodejs10.x
-  memorySize: 128
-  stage: dev
+  DataCheckingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-DataChecking
+      CodeUri: functions/data-checking/
+      Handler: data-checking.handler
+      Runtime: nodejs12.x
 
-functions:
-  SubmitApplication:
-    name: ${self:service}__account_applications__submit__${self:provider.stage}
-    handler: account-applications/submit.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: SubmitRole
+  FindApplicationsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-FindApplications
+      CodeUri: functions/account-applications/
+      Handler: find.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApplicationsTable
 
-  FlagApplication:
-    name: ${self:service}__account_applications__flag__${self:provider.stage}
-    handler: account-applications/flag.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: FlagRole
+  FlagApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-FlagApplication
+      CodeUri: functions/account-applications/
+      Handler: flag.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref ApplicationsTable
 
-  FindApplications:
-    name: ${self:service}__account_applications__find__${self:provider.stage}
-    handler: account-applications/find.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: FindRole
+  RejectApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-RejectApplication
+      CodeUri: functions/account-applications/
+      Handler: reject.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref ApplicationsTable
 
-  RejectApplication:
-    name: ${self:service}__account_applications__reject__${self:provider.stage}
-    handler: account-applications/reject.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: RejectRole
+  SubmitApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-SubmitApplication
+      CodeUri: functions/account-applications/
+      Handler: submit.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApplicationsTable
 
-  ApproveApplication:
-    name: ${self:service}__account_applications__approve__${self:provider.stage}
-    handler: account-applications/approve.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: ApproveRole
-
-  DataChecking:
-    name: ${self:service}__data_checking__${self:provider.stage}
-    handler: data-checking.handler
-    role: DataCheckingRole
-
-resources:
-  Resources:
-    LambdaLoggingPolicy:
-      Type: 'AWS::IAM::ManagedPolicy'
-      Properties:
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
-              Resource:
-                - 'Fn::Join':
-                  - ':'
+  ApplicationsTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: !Sub StepFunctionWorkshop-AccountApplications-${AWS::StackName}
+      AttributeDefinitions:
+        -
+          AttributeName: id
+          AttributeType: S
+        -
+          AttributeName: state
+          AttributeType: S
+      KeySchema:
+        -
+          AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+          -
+              IndexName: state
+              KeySchema:
                   -
-                    - 'arn:aws:logs'
-                    - Ref: 'AWS::Region'
-                    - Ref: 'AWS::AccountId'
-                    - 'log-group:/aws/lambda/*:*:*'
-
-    DynamoPolicy:
-      Type: 'AWS::IAM::ManagedPolicy'
-      Properties:
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: "Allow"
-              Action:
-                - "dynamodb:*"
-              Resource:
-                - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                - 'Fn::Join':
-                    - '/'
-                    -
-                        - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                        - '*'
-
-    SubmitRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    FlagRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    RejectRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    ApproveRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    FindRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    DataCheckingRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-
-    ApplicationsDynamoDBTable:
-      Type: 'AWS::DynamoDB::Table'
-      Properties:
-        TableName: ${self:custom.applicationsTable}
-        AttributeDefinitions:
-          -
-            AttributeName: id
-            AttributeType: S
-          -
-            AttributeName: state
-            AttributeType: S
-        KeySchema:
-          -
-            AttributeName: id
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-        GlobalSecondaryIndexes:
-            -
-                IndexName: state
-                KeySchema:
-                    -
-                        AttributeName: state
-                        KeyType: HASH
-                Projection:
-                    ProjectionType: ALL
-
-    StepFunctionRole:
-      Type: 'AWS::IAM::Role'
-      Properties:
-        AssumeRolePolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-                -
-                  Effect: Allow
-                  Principal:
-                      Service: 'states.amazonaws.com'
-                  Action: 'sts:AssumeRole'
-        Policies:
-            -
-              PolicyName: lambda
-              PolicyDocument:
-                Statement:
-                  -
-                    Effect: Allow
-                    Action: 'lambda:InvokeFunction'
-                    Resource:
-                        - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-
-    ProcessApplicationsStateMachine:
-      Type: AWS::StepFunctions::StateMachine
-      Properties:
-        StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
-        RoleArn: !GetAtt StepFunctionRole.Arn
-        DefinitionString:
-          !Sub
-            - |-
-              {
-                "StartAt": "Check Name",
-                "States": {
-                    "Check Name": {
-                        "Type": "Task",
-                        "Parameters": {
-                            "command": "CHECK_NAME",
-                            "data": { "name.$": "$.application.name" }
-                        },
-                        "Resource": "#{dataCheckingLambdaArn}",
-                        "Next": "Check Address"
-                    },
-                    "Check Address": {
-                        "Type": "Task",
-                        "Parameters": {
-                            "command": "CHECK_ADDRESS",
-                            "data": { "address.$": "$.application.address" }
-                        },
-                        "Resource": "#{dataCheckingLambdaArn}",
-                        "Next": "Approve Application"
-                    },
-                    "Approve Application": {
-                        "Type": "Pass",
-                        "End": true
-                    }
-                }
-              }
-            - {
-              dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-            }
+                      AttributeName: state
+                      KeyType: HASH
+              Projection:
+                  ProjectionType: ALL
+Outputs:
+  SubmitApplicationFunctionArn:
+    Description: "Submit Application Function ARN"
+    Value: !GetAtt SubmitApplicationFunction.Arn
+  FlagApplicationFunctionArn:
+    Description: "Flag Application Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  FindApplicationsFunctionArn:
+    Description: "Find Applications Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  ApproveApplicationFunctionArn:
+    Description: "Approve Application Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  RejectApplicationFunctionArn:
+    Description: "Reject Application Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  DataCheckingFunctionArn:
+    Description: "Data Checking Function ARN"
+    Value: !GetAtt DataCheckingFunction.Arn
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 4. Run:
+➡️ Step 4. From inside `workshop-dir` run:
+```bash
+mkdir -p statemachine && pushd statemachine && touch account-application-workflow.asl.json && popd
+```
+
+This will create a `statemachine/account-application-workflow.asl.json` inside `workshop-dir`.
+
+➡️ Step 5. Replace `statemachine/account-application-workflow.asl.json` with <span class="clipBtn clipboard" data-clipboard-target="#id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantsstatemachine1firstversion__accountapplicationworkflowasljson">this content</span> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantsstatemachine1firstversion__accountapplicationworkflowasljson"></div> <script type="text/template" data-diff-for="diff-id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantsstatemachine1firstversion__accountapplicationworkflowasljson">commit 1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1
+Author: Gabe Hollombe <gabe@avantbard.com>
+Date:   Tue Jun 9 13:55:58 2020 +0800
+
+    progress porting to SAM
+
+diff --git a/code/variants/statemachine/1-first-version__account-application-workflow.asl.json b/code/variants/statemachine/1-first-version__account-application-workflow.asl.json
+new file mode 100644
+index 0000000..4ba4a1a
+--- /dev/null
++++ b/code/variants/statemachine/1-first-version__account-application-workflow.asl.json
+@@ -0,0 +1,31 @@
++    {
++        "StartAt": "Check Name",
++        "States": {
++            "Check Name": {
++                "Type": "Task",
++                "Parameters": {
++                    "command": "CHECK_NAME",
++                    "data": {
++                        "name.$": "$.application.name"
++                    }
++                },
++                "Resource": "${DataCheckingLambdaArn}",
++                "Next": "Check Address"
++            },
++            "Check Address": {
++                "Type": "Task",
++                "Parameters": {
++                    "command": "CHECK_ADDRESS",
++                    "data": {
++                        "address.$": "$.application.address"
++                    }
++                },
++                "Resource": "${DataCheckingLambdaArn}",
++                "Next": "Approve Application"
++            },
++            "Approve Application": {
++                "Type": "Pass",
++                "End": true
++            }
++        }
++    }
+\ No newline at end of file
+</script>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<textarea id="id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantsstatemachine1firstversion__accountapplicationworkflowasljson" style="position: relative; left: -1000px; width: 1px; height: 1px;">    {
+        "StartAt": "Check Name",
+        "States": {
+            "Check Name": {
+                "Type": "Task",
+                "Parameters": {
+                    "command": "CHECK_NAME",
+                    "data": {
+                        "name.$": "$.application.name"
+                    }
+                },
+                "Resource": "${DataCheckingLambdaArn}",
+                "Next": "Check Address"
+            },
+            "Check Address": {
+                "Type": "Task",
+                "Parameters": {
+                    "command": "CHECK_ADDRESS",
+                    "data": {
+                        "address.$": "$.application.address"
+                    }
+                },
+                "Resource": "${DataCheckingLambdaArn}",
+                "Next": "Approve Application"
+            },
+            "Approve Application": {
+                "Type": "Pass",
+                "End": true
+            }
+        }
+    }
+</textarea>
+{{< /safehtml >}}
+
+
+➡️ Step 6. Redeploy our application:
 
 ```bash
-sls deploy
+sam build && sam deploy
 ```
 
 

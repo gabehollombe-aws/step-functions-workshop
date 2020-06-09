@@ -1,5 +1,5 @@
 +++
-title = "Creating the Account Applications service"
+title = "Creating the example services"
 chapter = false
 weight = 20
 +++
@@ -12,6 +12,8 @@ To start, we’ll create several functions that, when taken collectively, could 
 - Install the AWS SAM CLI, initialize a new project, and install a few dependencies from NPM
 
 - Download a first version of our Account Applications service written in the AWS SAM framework (instead of creating a lot of initial files by hand), comprised of several AWS Lambda functions and an Amazon Dynamo DB table to store system state. We'll use Node.js as the language for all of the Lambda functions in this workshop. If you're not comfortable with Node.JS or JavaScript, don't worry; the code is really simple and you should be able to follow along without any issues.
+
+- Download a simple Data Checking service which we can use as part of our orchestration to simulate checking account application information for things like valid names and addresses.
 
 
 ### Make these changes
@@ -31,7 +33,7 @@ echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
 brew tap aws/tap
 brew install aws-sam-cli
 
-# Bootstrap our initial account-applications service into ./workshop-dir/account-applications
+# Bootstrap our initial services into ./workshop-dir/functions/
 git clone https://github.com/gabehollombe-aws/step-functions-workshop.git          
 sam init --location step-functions-workshop/sam_template -o workshop-dir
 
@@ -66,12 +68,21 @@ While you're waitin for the deploy to finish, take a few moments to look at some
 <br/><br/>
 Here are some important files worth looking at:
 <br/><br/>
-`functions/account-applications/submit.js`<br/>This implements our SubmitApplication Lambda function. There are similar files for `find`, `flag`, `reject`, and `approve` as well.<br/><br/>
-`functions/account-applications/AccountApplications.js`<br/>This is a common file that provides CRUD style operations for our Account Application data type. It's used by the various `functions/account-applications/*.js` Lambda functions.<br/><br/>
+`functions/account-applications/submit.js`
+<br/>
+This implements our SubmitApplication Lambda function. There are similar files for `find`, `flag`, `reject`, and `approve` as well.
+<br/><br/>
+`functions/account-applications/AccountApplications.js`
+<br/>
+This is a common file that provides CRUD style operations for our Account Application data type. It's used by the various `functions/account-applications/*.js` Lambda functions.
+<br/><br/>
+`functions/data-checking/data-checking.js`
+<br/>
+This implements our DataChecking Lambda function. It contains code to handle requests to check a name and an address against some simple validation rules.
+<br/><br/>
 `template.yml`<br/>This is the file that AWS SAM looks at to determine what we want resources we want to cloud create and deploy as part of our solution. If you're familiar with AWS CloudFormation, the structure of this file will look pretty familiar to you, because AWS SAM is just a set of conveniences built on top of CloudFormation.
 {{% /notice %}}
 
 
-Now we have a fully-deployed Lambda function that can handle all of the steps involved to move an application from SUBMITTED, to FLAGGED, to APPROVED or REJECTED. 
+Now we have fully-deployed Lambda functions that can handle all of the steps involved to move an application from SUBMITTED, to FLAGGED, to APPROVED or REJECTED. And, we also have a stand-alone data checking Lambda function which we'll use later in our orchestration.
 
-Let’s take a moment to manually interact with each of these functions to understand the surface area of our first version of the Account Application Service API.
