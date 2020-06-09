@@ -17,6 +17,14 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
 
+  DataCheckingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-DataChecking
+      CodeUri: functions/data-checking/
+      Handler: data-checking.handler
+      Runtime: nodejs12.x
+
   FindApplicationsFunction:
     Type: AWS::Serverless::Function
     Properties:
