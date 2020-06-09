@@ -20,7 +20,7 @@ Before we migrate our step function definition over to our `template.yml` file, 
 
 ➡️ Step 2. Select the state machne that we manually defined earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
-➡️ Step 3. Now, let’s re-define our state machine inside our `template.yaml` file. Replace `template.yml` with ___CLIPBOARD_BUTTON 1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1:code/variants/template.yml/1-fixing-permissions__template.yaml|
+➡️ Step 3. Now, let’s re-define our state machine inside our `template.yaml` file. Replace `template.yml` with ___CLIPBOARD_BUTTON a0d7df16df74104c36cb221ee8f4f61bab25ef76:code/variants/template.yml/1-fixing-permissions__template.yaml|
 
 ➡️ Step 4. From inside `workshop-dir` run:
 ```bash
@@ -29,7 +29,7 @@ mkdir -p statemachine && pushd statemachine && touch account-application-workflo
 
 This will create a `statemachine/account-application-workflow.asl.json` inside `workshop-dir`.
 
-➡️ Step 5. Replace `statemachine/account-application-workflow.asl.json` with ___CLIPBOARD_BUTTON 1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1:code/variants/statemachine/1-first-version__account-application-workflow.asl.json|
+➡️ Step 5. Replace `statemachine/account-application-workflow.asl.json` with ___CLIPBOARD_BUTTON a0d7df16df74104c36cb221ee8f4f61bab25ef76:code/variants/statemachine/1-first-version__account-application-workflow.asl.json|
 
 
 ➡️ Step 6. Redeploy our application:
@@ -41,7 +41,7 @@ sam build && sam deploy
 
 ### Try it out
 
-➡️ Step 1. Head back to the Step Functions web console and look for a state machine named `StepFunctionsWorkshop__process_account_applications__dev` and click it. This is the re-deployed version of our state machine. The new version of our state machine hasn’t changed, except that we granted its IAM role permissions to invoke our Data Checking lambda. Let’s try executing it again with some sample input to see what happens.
+➡️ Step 1. Head back to the Step Functions web console and look for a state machine named `ApplicationProcessingStateMachine-xxxxxxxxxxxx` and click it (note: the x's shown here are placehodlers for a suffix unique to your deployment). This is the re-deployed version of our state machine. The new version of our state machine hasn’t changed, except that we granted its IAM role permissions to invoke our Data Checking lambda. Let’s try executing it again with some sample input to see what happens.
 
 ➡️ Step 2. Click ‘Start execution’
 

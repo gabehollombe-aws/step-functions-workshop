@@ -20,9 +20,9 @@ Before we migrate our step function definition over to our `template.yml` file, 
 
 ➡️ Step 2. Select the state machne that we manually defined earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
-➡️ Step 3. Now, let’s re-define our state machine inside our `template.yaml` file. Replace `template.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantstemplateyml1fixingpermissions__templateyaml">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 3. Now, let’s re-define our state machine inside our `template.yaml` file. Replace `template.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantstemplateyml1fixingpermissions__templateyaml">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantstemplateyml1fixingpermissions__templateyaml"></div> <script type="text/template" data-diff-for="diff-id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantstemplateyml1fixingpermissions__templateyaml">commit 1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1
+<div id="diff-ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantstemplateyml1fixingpermissions__templateyaml"></div> <script type="text/template" data-diff-for="diff-ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantstemplateyml1fixingpermissions__templateyaml">commit a0d7df16df74104c36cb221ee8f4f61bab25ef76
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Tue Jun 9 13:55:58 2020 +0800
 
@@ -175,7 +175,7 @@ index 0000000..1261b13
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantstemplateyml1fixingpermissions__templateyaml" style="position: relative; left: -1000px; width: 1px; height: 1px;">AWSTemplateFormatVersion: "2010-09-09"
+<textarea id="ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantstemplateyml1fixingpermissions__templateyaml" style="position: relative; left: -1000px; width: 1px; height: 1px;">AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: Template for step-functions-workshop
 
@@ -322,9 +322,9 @@ mkdir -p statemachine && pushd statemachine && touch account-application-workflo
 
 This will create a `statemachine/account-application-workflow.asl.json` inside `workshop-dir`.
 
-➡️ Step 5. Replace `statemachine/account-application-workflow.asl.json` with <span class="clipBtn clipboard" data-clipboard-target="#id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantsstatemachine1firstversion__accountapplicationworkflowasljson">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 5. Replace `statemachine/account-application-workflow.asl.json` with <span class="clipBtn clipboard" data-clipboard-target="#ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantsstatemachine1firstversion__accountapplicationworkflowasljson">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantsstatemachine1firstversion__accountapplicationworkflowasljson"></div> <script type="text/template" data-diff-for="diff-id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantsstatemachine1firstversion__accountapplicationworkflowasljson">commit 1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1
+<div id="diff-ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantsstatemachine1firstversion__accountapplicationworkflowasljson"></div> <script type="text/template" data-diff-for="diff-ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantsstatemachine1firstversion__accountapplicationworkflowasljson">commit a0d7df16df74104c36cb221ee8f4f61bab25ef76
 Author: Gabe Hollombe <gabe@avantbard.com>
 Date:   Tue Jun 9 13:55:58 2020 +0800
 
@@ -332,7 +332,7 @@ Date:   Tue Jun 9 13:55:58 2020 +0800
 
 diff --git a/code/variants/statemachine/1-first-version__account-application-workflow.asl.json b/code/variants/statemachine/1-first-version__account-application-workflow.asl.json
 new file mode 100644
-index 0000000..4ba4a1a
+index 0000000..ebc80ed
 --- /dev/null
 +++ b/code/variants/statemachine/1-first-version__account-application-workflow.asl.json
 @@ -0,0 +1,31 @@
@@ -347,7 +347,7 @@ index 0000000..4ba4a1a
 +                        "name.$": "$.application.name"
 +                    }
 +                },
-+                "Resource": "${DataCheckingLambdaArn}",
++                "Resource": "${DataCheckingFunctionArn}",
 +                "Next": "Check Address"
 +            },
 +            "Check Address": {
@@ -358,7 +358,7 @@ index 0000000..4ba4a1a
 +                        "address.$": "$.application.address"
 +                    }
 +                },
-+                "Resource": "${DataCheckingLambdaArn}",
++                "Resource": "${DataCheckingFunctionArn}",
 +                "Next": "Approve Application"
 +            },
 +            "Approve Application": {
@@ -371,7 +371,7 @@ index 0000000..4ba4a1a
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id1dea1a636c7b56dc581384fdd0f8d7b8bf5faec1codevariantsstatemachine1firstversion__accountapplicationworkflowasljson" style="position: relative; left: -1000px; width: 1px; height: 1px;">    {
+<textarea id="ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantsstatemachine1firstversion__accountapplicationworkflowasljson" style="position: relative; left: -1000px; width: 1px; height: 1px;">    {
         "StartAt": "Check Name",
         "States": {
             "Check Name": {
@@ -382,7 +382,7 @@ index 0000000..4ba4a1a
                         "name.$": "$.application.name"
                     }
                 },
-                "Resource": "${DataCheckingLambdaArn}",
+                "Resource": "${DataCheckingFunctionArn}",
                 "Next": "Check Address"
             },
             "Check Address": {
@@ -393,7 +393,7 @@ index 0000000..4ba4a1a
                         "address.$": "$.application.address"
                     }
                 },
-                "Resource": "${DataCheckingLambdaArn}",
+                "Resource": "${DataCheckingFunctionArn}",
                 "Next": "Approve Application"
             },
             "Approve Application": {
@@ -415,7 +415,7 @@ sam build && sam deploy
 
 ### Try it out
 
-➡️ Step 1. Head back to the Step Functions web console and look for a state machine named `StepFunctionsWorkshop__process_account_applications__dev` and click it. This is the re-deployed version of our state machine. The new version of our state machine hasn’t changed, except that we granted its IAM role permissions to invoke our Data Checking lambda. Let’s try executing it again with some sample input to see what happens.
+➡️ Step 1. Head back to the Step Functions web console and look for a state machine named `ApplicationProcessingStateMachine-xxxxxxxxxxxx` and click it (note: the x's shown here are placehodlers for a suffix unique to your deployment). This is the re-deployed version of our state machine. The new version of our state machine hasn’t changed, except that we granted its IAM role permissions to invoke our Data Checking lambda. Let’s try executing it again with some sample input to see what happens.
 
 ➡️ Step 2. Click ‘Start execution’
 
