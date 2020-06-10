@@ -13,17 +13,19 @@ Until now, we’ve left the Approve Application state empty, using the Pass stat
 
 * Update our state machine, changing the Approve Application and Reject Application states from placeholder Pass state types to Task types that invoke the appropriate Lambda functions in the Data Checking service
 
-* Grant additional permissions to the IAM role that the step function executes under, so that it can invoke the necessary Lambda functions from the Account Applications service
+* Grant additional permissions to the IAM role that the step function executes under so that it can invoke the necessary Lambda functions from the Account Applications service
 
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 77603cdb8730955713c45470065e8c1b619fff93:serverless.yml|
+➡️ Step 1. Replace `statemachine/account-application-workflow.asl.json` with ___CLIPBOARD_BUTTON code/variants/statemachine/4-integrate-callback-from-review__account-application-workflow.asl.json&code/variants/statemachine/5-add-approve-reject__account-application-workflow.asl.json|
 
-➡️ Step 2. Run:
+➡️ Step 2. Replace `template.yaml` with ___CLIPBOARD_BUTTON code/variants/template.yml/3-add-review-application__template.yaml&code/variants/template.yml/4-pass-approve-reject-to-sfn__template.yaml|
+
+➡️ Step 3. Run:
 
 ```bash
-sls deploy
+sam build && sam deploy
 ```
 
 

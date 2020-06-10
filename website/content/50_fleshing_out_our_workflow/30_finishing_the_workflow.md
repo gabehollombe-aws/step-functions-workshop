@@ -13,456 +13,326 @@ Until now, we’ve left the Approve Application state empty, using the Pass stat
 
 * Update our state machine, changing the Approve Application and Reject Application states from placeholder Pass state types to Task types that invoke the appropriate Lambda functions in the Data Checking service
 
-* Grant additional permissions to the IAM role that the step function executes under, so that it can invoke the necessary Lambda functions from the Account Applications service
+* Grant additional permissions to the IAM role that the step function executes under so that it can invoke the necessary Lambda functions from the Account Applications service
 
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id77603cdb8730955713c45470065e8c1b619fff93serverlessyml">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `statemachine/account-application-workflow.asl.json` with <span class="clipBtn clipboard" data-clipboard-target="#idcodevariantsstatemachine4integratecallbackfromreview__accountapplicationworkflowasljsoncodevariantsstatemachine5addapprovereject__accountapplicationworkflowasljson">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id77603cdb8730955713c45470065e8c1b619fff93serverlessyml"></div> <script type="text/template" data-diff-for="diff-id77603cdb8730955713c45470065e8c1b619fff93serverlessyml">commit 77603cdb8730955713c45470065e8c1b619fff93
-Author: Gabe Hollombe <gabe@avantbard.com>
-Date:   Wed Oct 16 11:09:15 2019 +0800
-
-    Implement Approve Application and Reject Application task states
-
-diff --git a/serverless.yml b/serverless.yml
-index acc14c6..4010aa8 100644
---- a/serverless.yml
-+++ b/serverless.yml
-@@ -275,6 +275,8 @@ resources:
-                     Resource:
-                         - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-                         - Fn::GetAtt: [FlagApplicationLambdaFunction, Arn]
-+                        - Fn::GetAtt: [ApproveApplicationLambdaFunction, Arn]
-+                        - Fn::GetAtt: [RejectApplicationLambdaFunction, Arn]
- 
-     ProcessApplicationsStateMachine:
-       Type: AWS::StepFunctions::StateMachine
-@@ -351,17 +353,27 @@ resources:
-                             }
-                         ]
-                     },
--                    "Reject Application": {
--                         "Type": "Pass",
--                         "End": true
-+                     "Reject Application": {
-+                        "Type": "Task",
-+                        "Parameters": {
-+                            "id.$": "$.application.id"
-+                        },
-+                        "Resource": "#{rejectApplicationLambdaArn}",
-+                        "End": true
-                      },
--                    "Approve Application": {
--                        "Type": "Pass",
-+                     "Approve Application": {
-+                        "Type": "Task",
-+                        "Parameters": {
-+                            "id.$": "$.application.id"
-+                        },
-+                        "Resource": "#{approveApplicationLambdaArn}",
-                         "End": true
--                    }
-+                     }
-                 }
-               }
-             - {
-               dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-               flagApplicationLambdaName: !Ref FlagApplicationLambdaFunction,
-+              rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
-+              approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
+<div id="diff-idcodevariantsstatemachine4integratecallbackfromreview__accountapplicationworkflowasljsoncodevariantsstatemachine5addapprovereject__accountapplicationworkflowasljson"></div> <script type="text/template" data-diff-for="diff-idcodevariantsstatemachine4integratecallbackfromreview__accountapplicationworkflowasljsoncodevariantsstatemachine5addapprovereject__accountapplicationworkflowasljson">diff --git a/code/variants/statemachine/4-integrate-callback-from-review__account-application-workflow.asl.json b/code/variants/statemachine/5-add-approve-reject__account-application-workflow.asl.json
+index cec16f9..e62d97a 100644
+--- a/code/variants/statemachine/4-integrate-callback-from-review__account-application-workflow.asl.json
++++ b/code/variants/statemachine/5-add-approve-reject__account-application-workflow.asl.json
+@@ -71,11 +71,19 @@
+                 ]
+             },
+             "Reject Application": {
+-                "Type": "Pass",
++                "Type": "Task",
++                "Parameters": {
++                    "id.$": "$.application.id"
++                },
++                "Resource": "${RejectApplicationFunctionArn}",
+                 "End": true
+             },
+             "Approve Application": {
+-                "Type": "Pass",
++                "Type": "Task",
++                "Parameters": {
++                    "id.$": "$.application.id"
++                },
++                "Resource": "${ApproveApplicationFunctionArn}",
+                 "End": true
              }
-\ No newline at end of file
+         }
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id77603cdb8730955713c45470065e8c1b619fff93serverlessyml" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
-
-plugins:
-  - serverless-cf-vars
-
-custom:
-  applicationsTable: '${self:service}__account_applications__${self:provider.stage}'
-
-provider:
-  name: aws
-  runtime: nodejs10.x
-  memorySize: 128
-  stage: dev
-
-functions:
-  SubmitApplication:
-    name: ${self:service}__account_applications__submit__${self:provider.stage}
-    handler: account-applications/submit.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-      APPLICATION_PROCESSING_STEP_FUNCTION_ARN: { Ref: "ProcessApplicationsStateMachine" }
-    role: SubmitRole
-
-  FlagApplication:
-    name: ${self:service}__account_applications__flag__${self:provider.stage}
-    handler: account-applications/flag.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: FlagRole
-
-  ReviewApplication:
-    name: ${self:service}__account_applications__review__${self:provider.stage}
-    handler: account-applications/review.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: ReviewRole
-
-  FindApplications:
-    name: ${self:service}__account_applications__find__${self:provider.stage}
-    handler: account-applications/find.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: FindRole
-
-  RejectApplication:
-    name: ${self:service}__account_applications__reject__${self:provider.stage}
-    handler: account-applications/reject.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: RejectRole
-
-  ApproveApplication:
-    name: ${self:service}__account_applications__approve__${self:provider.stage}
-    handler: account-applications/approve.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: ApproveRole
-
-  DataChecking:
-    name: ${self:service}__data_checking__${self:provider.stage}
-    handler: data-checking.handler
-    role: DataCheckingRole
-
-resources:
-  Resources:
-    LambdaLoggingPolicy:
-      Type: 'AWS::IAM::ManagedPolicy'
-      Properties:
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
-              Resource:
-                - 'Fn::Join':
-                  - ':'
-                  -
-                    - 'arn:aws:logs'
-                    - Ref: 'AWS::Region'
-                    - Ref: 'AWS::AccountId'
-                    - 'log-group:/aws/lambda/*:*:*'
-
-    DynamoPolicy:
-      Type: 'AWS::IAM::ManagedPolicy'
-      Properties:
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: "Allow"
-              Action:
-                - "dynamodb:*"
-              Resource:
-                - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                - 'Fn::Join':
-                    - '/'
-                    -
-                        - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                        - '*'
-
-    StepFunctionsPolicy:
-      Type: 'AWS::IAM::ManagedPolicy'
-      Properties:
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            -
-              Effect: "Allow"
-              Action:
-                - "states:StartExecution"
-                - "states:SendTaskSuccess"
-                - "states:SendTaskFailure"
-              Resource:
-                - { Ref: ProcessApplicationsStateMachine }
-
-    SubmitRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-          - { Ref: StepFunctionsPolicy }
-
-    FlagRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    ReviewRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-          - { Ref: StepFunctionsPolicy }
-
-    RejectRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    ApproveRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    FindRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    DataCheckingRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-
-    ApplicationsDynamoDBTable:
-      Type: 'AWS::DynamoDB::Table'
-      Properties:
-        TableName: ${self:custom.applicationsTable}
-        AttributeDefinitions:
-          -
-            AttributeName: id
-            AttributeType: S
-          -
-            AttributeName: state
-            AttributeType: S
-        KeySchema:
-          -
-            AttributeName: id
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-        GlobalSecondaryIndexes:
-            -
-                IndexName: state
-                KeySchema:
-                    -
-                        AttributeName: state
-                        KeyType: HASH
-                Projection:
-                    ProjectionType: ALL
-
-    StepFunctionRole:
-      Type: 'AWS::IAM::Role'
-      Properties:
-        AssumeRolePolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-                -
-                  Effect: Allow
-                  Principal:
-                      Service: 'states.amazonaws.com'
-                  Action: 'sts:AssumeRole'
-        Policies:
-            -
-              PolicyName: lambda
-              PolicyDocument:
-                Statement:
-                  -
-                    Effect: Allow
-                    Action: 'lambda:InvokeFunction'
-                    Resource:
-                        - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-                        - Fn::GetAtt: [FlagApplicationLambdaFunction, Arn]
-                        - Fn::GetAtt: [ApproveApplicationLambdaFunction, Arn]
-                        - Fn::GetAtt: [RejectApplicationLambdaFunction, Arn]
-
-    ProcessApplicationsStateMachine:
-      Type: AWS::StepFunctions::StateMachine
-      Properties:
-        StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
-        RoleArn: !GetAtt StepFunctionRole.Arn
-        DefinitionString:
-          !Sub
-            - |-
-              {
-                "StartAt": "Check Name",
-                "States": {
-                    "Check Name": {
-                        "Type": "Task",
-                        "Parameters": {
-                            "command": "CHECK_NAME",
-                            "data": { "name.$": "$.application.name" }
-                        },
-                        "Resource": "#{dataCheckingLambdaArn}",
-                        "ResultPath": "$.checks.name",
-                        "Next": "Check Address"
+<textarea id="idcodevariantsstatemachine4integratecallbackfromreview__accountapplicationworkflowasljsoncodevariantsstatemachine5addapprovereject__accountapplicationworkflowasljson" style="position: relative; left: -1000px; width: 1px; height: 1px;">    {
+        "StartAt": "Check Name",
+        "States": {
+            "Check Name": {
+                "Type": "Task",
+                "Parameters": {
+                    "command": "CHECK_NAME",
+                    "data": {
+                        "name.$": "$.application.name"
+                    }
+                },
+                "Resource": "${DataCheckingFunctionArn}",
+                "ResultPath": "$.checks.name",
+                "Next": "Check Address"
+            },
+            "Check Address": {
+                "Type": "Task",
+                "Parameters": {
+                    "command": "CHECK_ADDRESS",
+                    "data": {
+                        "address.$": "$.application.address"
+                    }
+                },
+                "Resource": "${DataCheckingFunctionArn}",
+                "ResultPath": "$.checks.address",
+                "Next": "Review Required?"
+            },
+            "Review Required?": {
+                "Type": "Choice",
+                "Choices": [
+                    {
+                        "Variable": "$.checks.name.flagged",
+                        "BooleanEquals": true,
+                        "Next": "Pending Review"
                     },
-                    "Check Address": {
-                        "Type": "Task",
-                        "Parameters": {
-                            "command": "CHECK_ADDRESS",
-                            "data": { "address.$": "$.application.address" }
-                        },
-                        "Resource": "#{dataCheckingLambdaArn}",
-                        "ResultPath": "$.checks.address",
-                        "Next": "Review Required?"
+                    {
+                        "Variable": "$.checks.address.flagged",
+                        "BooleanEquals": true,
+                        "Next": "Pending Review"
+                    }
+                ],
+                "Default": "Approve Application"
+            },
+            "Pending Review": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+                "Parameters": {
+                    "FunctionName": "${FlagApplicationFunctionName}",
+                    "Payload": {
+                        "id.$": "$.application.id",
+                        "flagType": "REVIEW",
+                        "taskToken.$": "$$.Task.Token"
+                    }
+                },
+                "ResultPath": "$.review",
+                "Next": "Review Approved?"
+            },
+            "Review Approved?": {
+                "Type": "Choice",
+                "Choices": [
+                    {
+                        "Variable": "$.review.decision",
+                        "StringEquals": "APPROVE",
+                        "Next": "Approve Application"
                     },
-                    "Review Required?": {
-                        "Type": "Choice",
-                        "Choices": [
-                          {
-                            "Variable": "$.checks.name.flagged",
-                            "BooleanEquals": true,
-                            "Next": "Pending Review"
-                          },
-                          {
-                            "Variable": "$.checks.address.flagged",
-                            "BooleanEquals": true,
-                            "Next": "Pending Review"
-                          }
-                        ],
-                        "Default": "Approve Application"
-                    },
-                    "Pending Review": {
-                      "Type": "Task",
-                      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
-                      "Parameters": {
-                          "FunctionName": "#{flagApplicationLambdaName}",
-                          "Payload": {
-                              "id.$": "$.application.id",
-                              "flagType": "REVIEW",
-                              "taskToken.$": "$$.Task.Token"
-                          }
-                      },
-                      "ResultPath": "$.review",
-                      "Next": "Review Approved?"
-                    },
-                    "Review Approved?": {
-                        "Type": "Choice",
-                        "Choices": [{
-                                "Variable": "$.review.decision",
-                                "StringEquals": "APPROVE",
-                                "Next": "Approve Application"
-                            },
-                            {
-                                "Variable": "$.review.decision",
-                                "StringEquals": "REJECT",
-                                "Next": "Reject Application"
-                            }
-                        ]
-                    },
-                     "Reject Application": {
-                        "Type": "Task",
-                        "Parameters": {
-                            "id.$": "$.application.id"
-                        },
-                        "Resource": "#{rejectApplicationLambdaArn}",
-                        "End": true
-                     },
-                     "Approve Application": {
-                        "Type": "Task",
-                        "Parameters": {
-                            "id.$": "$.application.id"
-                        },
-                        "Resource": "#{approveApplicationLambdaArn}",
-                        "End": true
-                     }
-                }
-              }
-            - {
-              dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
-              flagApplicationLambdaName: !Ref FlagApplicationLambdaFunction,
-              rejectApplicationLambdaArn: !GetAtt [RejectApplicationLambdaFunction, Arn],
-              approveApplicationLambdaArn: !GetAtt [ApproveApplicationLambdaFunction, Arn],
+                    {
+                        "Variable": "$.review.decision",
+                        "StringEquals": "REJECT",
+                        "Next": "Reject Application"
+                    }
+                ]
+            },
+            "Reject Application": {
+                "Type": "Task",
+                "Parameters": {
+                    "id.$": "$.application.id"
+                },
+                "Resource": "${RejectApplicationFunctionArn}",
+                "End": true
+            },
+            "Approve Application": {
+                "Type": "Task",
+                "Parameters": {
+                    "id.$": "$.application.id"
+                },
+                "Resource": "${ApproveApplicationFunctionArn}",
+                "End": true
             }
+        }
+    }
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Run:
+➡️ Step 2. Replace `template.yaml` with <span class="clipBtn clipboard" data-clipboard-target="#idcodevariantstemplateyml3addreviewapplication__templateyamlcodevariantstemplateyml4passapproverejecttosfn__templateyaml">this content</span> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-idcodevariantstemplateyml3addreviewapplication__templateyamlcodevariantstemplateyml4passapproverejecttosfn__templateyaml"></div> <script type="text/template" data-diff-for="diff-idcodevariantstemplateyml3addreviewapplication__templateyamlcodevariantstemplateyml4passapproverejecttosfn__templateyaml">diff --git a/code/variants/template.yml/3-add-review-application__template.yaml b/code/variants/template.yml/4-pass-approve-reject-to-sfn__template.yaml
+index 497d8c4..0687a1a 100644
+--- a/code/variants/template.yml/3-add-review-application__template.yaml
++++ b/code/variants/template.yml/4-pass-approve-reject-to-sfn__template.yaml
+@@ -10,6 +10,8 @@ Resources:
+       DefinitionSubstitutions:
+         DataCheckingFunctionArn: !GetAtt DataCheckingFunction.Arn
+         FlagApplicationFunctionName: !Ref FlagApplicationFunction
++        ApproveApplicationFunctionArn: !GetAtt ApproveApplicationFunction.Arn
++        RejectApplicationFunctionArn: !GetAtt RejectApplicationFunction.Arn
+       Policies:
+         - LambdaInvokePolicy:
+             FunctionName: !Ref DataCheckingFunction
+</script>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<textarea id="idcodevariantstemplateyml3addreviewapplication__templateyamlcodevariantstemplateyml4passapproverejecttosfn__templateyaml" style="position: relative; left: -1000px; width: 1px; height: 1px;">AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Template for step-functions-workshop
+
+Resources:
+  ApplicationProcessingStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      DefinitionUri: statemachine/account-application-workflow.asl.json
+      DefinitionSubstitutions:
+        DataCheckingFunctionArn: !GetAtt DataCheckingFunction.Arn
+        FlagApplicationFunctionName: !Ref FlagApplicationFunction
+        ApproveApplicationFunctionArn: !GetAtt ApproveApplicationFunction.Arn
+        RejectApplicationFunctionArn: !GetAtt RejectApplicationFunction.Arn
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref DataCheckingFunction
+        - LambdaInvokePolicy:
+            FunctionName: !Ref FlagApplicationFunction
+
+  ApproveApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-ApproveApplication
+      CodeUri: functions/account-applications/
+      Handler: approve.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApplicationsTable
+
+  DataCheckingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-DataChecking
+      CodeUri: functions/data-checking/
+      Handler: data-checking.handler
+      Runtime: nodejs12.x
+
+  FindApplicationsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-FindApplications
+      CodeUri: functions/account-applications/
+      Handler: find.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApplicationsTable
+
+  FlagApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-FlagApplication
+      CodeUri: functions/account-applications/
+      Handler: flag.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApplicationsTable
+
+  RejectApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-RejectApplication
+      CodeUri: functions/account-applications/
+      Handler: reject.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApplicationsTable
+
+  ReviewApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-ReviewApplication
+      CodeUri: functions/account-applications/
+      Handler: review.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApplicationsTable
+        - Statement:
+          - Sid: AllowCallbacksToStateMachinePolicy
+            Effect: "Allow"
+            Action:
+              - "states:SendTaskSuccess"
+              - "states:SendTaskFailure"
+            Resource: !Ref ApplicationProcessingStateMachine
+
+  SubmitApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-SubmitApplication
+      CodeUri: functions/account-applications/
+      Handler: submit.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATION_PROCESSING_STEP_FUNCTION_ARN: !Ref ApplicationProcessingStateMachine
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApplicationsTable
+        - StepFunctionsExecutionPolicy:
+            StateMachineName: !GetAtt ApplicationProcessingStateMachine.Name
+
+  ApplicationsTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: !Sub StepFunctionWorkshop-AccountApplications-${AWS::StackName}
+      AttributeDefinitions:
+        -
+          AttributeName: id
+          AttributeType: S
+        -
+          AttributeName: state
+          AttributeType: S
+      KeySchema:
+        -
+          AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+          -
+              IndexName: state
+              KeySchema:
+                  -
+                      AttributeName: state
+                      KeyType: HASH
+              Projection:
+                  ProjectionType: ALL
+Outputs:
+  SubmitApplicationFunctionArn:
+    Description: "Submit Application Function ARN"
+    Value: !GetAtt SubmitApplicationFunction.Arn
+  FlagApplicationFunctionArn:
+    Description: "Flag Application Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  FindApplicationsFunctionArn:
+    Description: "Find Applications Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  ApproveApplicationFunctionArn:
+    Description: "Approve Application Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  RejectApplicationFunctionArn:
+    Description: "Reject Application Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  DataCheckingFunctionArn:
+    Description: "Data Checking Function ARN"
+    Value: !GetAtt DataCheckingFunction.Arn
+</textarea>
+{{< /safehtml >}}
+
+➡️ Step 3. Run:
 
 ```bash
-sls deploy
+sam build && sam deploy
 ```
 
 
