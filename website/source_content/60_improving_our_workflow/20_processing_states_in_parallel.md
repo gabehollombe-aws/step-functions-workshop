@@ -19,12 +19,12 @@ Step Functions has a `Parallel` state type which, unsurprisingly, lets a state m
 
 Let's refactor our state machine to  perform the name and address checks in parallel:
 
-➡️ Step 1. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 8f6d5e019d11e6805e4124fb30cdd6a03b41a681:serverless.yml|
+➡️ Step 1. Replace `statemachine/account-application-workflow.asl.json` with ___CLIPBOARD_BUTTON code/variants/statemachine/7-add-catch__account-application-workflow.asl.json&code/variants/statemachine/8-parallel-steps__account-application-workflow.asl.json|
 
 ➡️ Step 2. Run:
 
 ```bash
-sls deploy
+sam build && sam deploy
 ```
 
 ### Try it out
@@ -34,7 +34,7 @@ Now you can try a few types of application submissions to see how they each exec
 ➡️ Step 1. Submit a valid application and see it auto approve after checking the data fields in parallel. Run:
 
 ```bash
-sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "123 Enterprise Street" }'
+aws lambda invoke --function-name sfn-workshop-SubmitApplication --payload '{ "name": "Spock", "address": "123 Enterprise Street" }' /dev/stdout 
 ```
 
 Here is what a valid application execution flow looks like:
@@ -44,7 +44,7 @@ Here is what a valid application execution flow looks like:
 ➡️ Step 2. Submit an application with an invalid name or address (or both) and see the parallel checks result in the workflow routing to wait for a review. Run:
 
 ```bash
-sls invoke -f SubmitApplication --data='{ "name": "Gabe", "address": "ABadAddress" }'
+aws lambda invoke --function-name sfn-workshop-SubmitApplication --payload '{ "name": "Spock", "address": "ABadAddress" }' /dev/stdout 
 ```
 
 Here is what an invalid application execution flow looks like:
@@ -54,7 +54,7 @@ Here is what an invalid application execution flow looks like:
 ➡️ Step 3. Submit an application with our test unprocessable name to see the parallel data checking state throw the error and route to the state to flag an application as unprocessable. Run: 
 
 ```bash
-sls invoke -f SubmitApplication --data='{ "name": "UNPROCESSABLE_DATA", "address": "123 Street" }'
+aws lambda invoke --function-name sfn-workshop-SubmitApplication --payload '{ "name": "UNPROCESSABLE_DATA", "address": "123 Street" }' /dev/stdout 
 ```
 
 Here is what an unprocessable application execution flow looks like:

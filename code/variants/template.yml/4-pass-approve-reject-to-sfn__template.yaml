@@ -17,6 +17,10 @@ Resources:
             FunctionName: !Ref DataCheckingFunction
         - LambdaInvokePolicy:
             FunctionName: !Ref FlagApplicationFunction
+        - LambdaInvokePolicy:
+            FunctionName: !Ref ApproveApplicationFunction
+        - LambdaInvokePolicy:
+            FunctionName: !Ref RejectApplicationFunction
 
   ApproveApplicationFunction:
     Type: AWS::Serverless::Function
