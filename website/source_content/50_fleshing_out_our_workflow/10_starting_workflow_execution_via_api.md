@@ -14,18 +14,18 @@ To do this, we will integrate our Account Applications service with our applicat
 
 * Update the SubmitApplication Lambda function to execute our Step Functions state machine when a new application is submitted, passing the relevant applicant details into the state machine’s input
 
-* Create a new IAM policy that allows executing and interacting with our state machine, and attached this policy to the role used by the SubmitApplication Lambda function
+* Grant the SubmitApplication Lambda function permission to start the execution of our state machine
 
 ### Make these changes
 
-➡️ Step 1. Replace `account-applications/submit.js` with ___CLIPBOARD_BUTTON 509c5f4da832d190d3285f30d91fd29c3253b6fb:code/account-applications/submit.js|
+➡️ Step 1. Replace `functions/account-applications/submit.js` with ___CLIPBOARD_BUTTON 509c5f4da832d190d3285f30d91fd29c3253b6fb:code/account-applications/submit.js|
 
-➡️ Step 2. Replace `serverless.yml` with ___CLIPBOARD_BUTTON 55e4f1b3cf75014bbad84ac40e00a17e32969798:serverless.yml|
+➡️ Step 2. Replace `template.yml` with ___CLIPBOARD_BUTTON code/variants/template.yml/1-fixing-permissions__template.yaml&code/variants/template.yml/2-submit-executes-step-function__template.yaml|
 
 ➡️ Step 3. Run:
 
 ```bash
-sls deploy
+sam build && sam deploy
 ```
 
 
@@ -36,7 +36,7 @@ Now that we’ve integrated our Account Applications service with our processing
 ➡️ Step 1. Run:
 
 ```bash
-sls invoke -f SubmitApplication --data='{ "name": "Spock", "address": "AnInvalidAddress" }'
+aws lambda invoke --function-name sfn-workshop-SubmitApplication --payload '{ "name": "Spock", "address": "AnInvalidAddress" }' /dev/stdout 
 ```
 
 ➡️ Step 2. Go back to the step functions web console’s detail view for our state machine and look for a new execution at the top of the list. It should have a timestamp close to right now and it will contain a name that starts with ‘ApplicationID-’. If you click in to view the details of this execution, you should see it also take the Pending Review path, as we expect (because we submitted an invalid address), and you should also be able to see an `id` attribute on the application input passed in, and through, the state machine’s steps.
