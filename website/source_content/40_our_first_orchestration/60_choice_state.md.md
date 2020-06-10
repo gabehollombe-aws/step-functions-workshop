@@ -21,12 +21,12 @@ Here is what our updated flow will look like after we're done with this step:
 
 ### Make these changes
 
-➡️ Step 1. Replace `serverless.yml` with ___CLIPBOARD_BUTTON def5ea473552142257ef1b5a047ba98dd01749c2:serverless.yml|
+➡️ Step 1. Replace `statemachine/account-application-workflow.asl.json` with ___CLIPBOARD_BUTTON code/variants/statemachine/2-data-checking-result-paths__account-application-workflow.asl.json&code/variants/statemachine/3-add-review-required__account-application-workflow.asl.json|
 
 ➡️ Step 2. Run:
 
 ```bash
-sls deploy
+sam build && sam deploy
 ```
 
 We just added two new states to our workflow: ‘Review Required?’ and Pending Review.  The ‘Review Required?’ state examines its input (which is the output from the Check Address state) and runs through a series of checks. You can see that there’s an array of two choice rules in the state’s definition, each of which specifies what state name to go to next if its rule matches successfully. There is also a default state name specified to transition to in the event of no rule matches.  
@@ -50,7 +50,7 @@ Let’s try some executions to see our Choice state in action:
 
 ➡️ Step 3. Click ‘Start execution’. 
 
-    Notice how the ‘Review Required?’ state transitions to the Approve Application state. That’s because our name and our address both contained valid values.  
+Notice how the ‘Review Required?’ state transitions to the Approve Application state. That’s because our name and our address both contained valid values.  
 
 ➡️ Step 4. Try another execution with this invalid application (flagged for an evil name):
 
@@ -65,4 +65,4 @@ Notice how this time, because we passed in a troublesome name (remember, our nam
 Once again, notice how we route to the Pending Review state gain, this time because we passed in a troublesome address (our address checking logic will flag anything that does not match the number(s)-space-letter(s) pattern)
 
 
-Thanks to the Choice state, we are now routing our workflow the way we want. But, we still have placeholder Pass states for our Approve Application and Pending Review steps. We’ll hold off on implementing the Approve Application step until later in the workshop (since we already know how to integrate with a Lambda function call from a step function). Instead, we’ll keep our learning momentum going and learn how to implement our Pending Review state. 
+Thanks to the Choice state, we are now routing our workflow the way we want. But, we still have placeholder Pass states for our Approve Application and Pending Review steps. We’ll hold off on implementing the Approve Application step until later in the workshop (we already know how to integrate with a Lambda function, so that's not such an interesting next step to do just yet). Instead, we’ll keep our learning momentum going and learn how to implement our Pending Review state. 
