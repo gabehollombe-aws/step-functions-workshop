@@ -145,10 +145,10 @@ index cec16f9..e62d97a 100644
 ➡️ Step 2. Replace `template.yaml` with <span class="clipBtn clipboard" data-clipboard-target="#idcodevariantstemplateyml3addreviewapplication__templateyamlcodevariantstemplateyml4passapproverejecttosfn__templateyaml">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
 <div id="diff-idcodevariantstemplateyml3addreviewapplication__templateyamlcodevariantstemplateyml4passapproverejecttosfn__templateyaml"></div> <script type="text/template" data-diff-for="diff-idcodevariantstemplateyml3addreviewapplication__templateyamlcodevariantstemplateyml4passapproverejecttosfn__templateyaml">diff --git a/code/variants/template.yml/3-add-review-application__template.yaml b/code/variants/template.yml/4-pass-approve-reject-to-sfn__template.yaml
-index 497d8c4..0687a1a 100644
+index 497d8c4..4d7e0f2 100644
 --- a/code/variants/template.yml/3-add-review-application__template.yaml
 +++ b/code/variants/template.yml/4-pass-approve-reject-to-sfn__template.yaml
-@@ -10,6 +10,8 @@ Resources:
+@@ -10,11 +10,17 @@ Resources:
        DefinitionSubstitutions:
          DataCheckingFunctionArn: !GetAtt DataCheckingFunction.Arn
          FlagApplicationFunctionName: !Ref FlagApplicationFunction
@@ -157,6 +157,15 @@ index 497d8c4..0687a1a 100644
        Policies:
          - LambdaInvokePolicy:
              FunctionName: !Ref DataCheckingFunction
+         - LambdaInvokePolicy:
+             FunctionName: !Ref FlagApplicationFunction
++        - LambdaInvokePolicy:
++            FunctionName: !Ref ApproveApplicationFunction
++        - LambdaInvokePolicy:
++            FunctionName: !Ref RejectApplicationFunction
+ 
+   ApproveApplicationFunction:
+     Type: AWS::Serverless::Function
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
@@ -179,6 +188,10 @@ Resources:
             FunctionName: !Ref DataCheckingFunction
         - LambdaInvokePolicy:
             FunctionName: !Ref FlagApplicationFunction
+        - LambdaInvokePolicy:
+            FunctionName: !Ref ApproveApplicationFunction
+        - LambdaInvokePolicy:
+            FunctionName: !Ref RejectApplicationFunction
 
   ApproveApplicationFunction:
     Type: AWS::Serverless::Function

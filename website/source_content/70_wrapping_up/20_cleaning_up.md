@@ -10,11 +10,13 @@ If you want to clean up the resources you've deployed in this workshop, just fol
 
 ### Removing the resources we provisioned
 
-1. The Serverless Framework can remove everything it provisioned. From the Cloud9 terminal, run: 
+1. We can use the AWS CLI to delete the CloudFormation stack that AWS SAM created for our application. From the Cloud9 terminal, run: 
    
-    ```bash
-    sls remove
-    ```
+```bash
+REGION=$(grep region samconfig.toml | awk -F\= '{gsub(/"/, "", $2); gsub(/ /, "", $2); print $2}')
+STACK_NAME=$(grep stack_name samconfig.toml | awk -F\= '{gsub(/"/, "", $2); gsub(/ /, "", $2); print $2}')
+aws cloudformation delete-stack --region $REGION --stack-name $STACK_NAME
+```
 
 
 ### Deleting the Cloud9 workspace
