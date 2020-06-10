@@ -50,7 +50,7 @@ Resources:
         Variables:
           ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
-        - DynamoDBWritePolicy:
+        - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
 
   RejectApplicationFunction:
@@ -64,7 +64,7 @@ Resources:
         Variables:
           ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
-        - DynamoDBWritePolicy:
+        - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
 
   SubmitApplicationFunction:
