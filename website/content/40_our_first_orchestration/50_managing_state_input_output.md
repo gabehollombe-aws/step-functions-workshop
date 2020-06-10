@@ -14,327 +14,78 @@ So, to fix our current issue, we need to add a `ResultPath` statement, instructi
 
 ### In this step, we will
 
-* Add `ResultPath` properties to our Check Name and Check Address states inside our state machine defined in `serverless.yml`
+* Add `ResultPath` properties to our Check Name and Check Address states inside our state machine defined in `state-machine/account-application-workflow.asl`
 
 ### Make these changes
 
 Below is a new version of our serverless.yml file that contains updated Check Name and Check Address states, using the ResultPath property to merge their outputs into helpfully-named keys that we can be used later on.
 
 
-➡️ Step 1. Replace `serverless.yml` with <span class="clipBtn clipboard" data-clipboard-target="#id4114d55fdb744943184a1b480c94da7d77cfc80dserverlessyml">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `state-machine/account-application-workflow.asl` with <span class="clipBtn clipboard" data-clipboard-target="#idcodevariantsstatemachine1firstversion__accountapplicationworkflowasljsoncodevariantsstatemachine2datacheckingresultpaths__accountapplicationworkflowasljson">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id4114d55fdb744943184a1b480c94da7d77cfc80dserverlessyml"></div> <script type="text/template" data-diff-for="diff-id4114d55fdb744943184a1b480c94da7d77cfc80dserverlessyml">commit 4114d55fdb744943184a1b480c94da7d77cfc80d
-Author: Gabe Hollombe <gabe@avantbard.com>
-Date:   Tue Oct 15 17:02:48 2019 +0800
-
-    Add ResultPath to data checking steps
-
-diff --git a/serverless.yml b/serverless.yml
-index 0b9f3b9..83b94ce 100644
---- a/serverless.yml
-+++ b/serverless.yml
-@@ -252,6 +252,7 @@ resources:
-                             "data": { "name.$": "$.application.name" }
-                         },
-                         "Resource": "#{dataCheckingLambdaArn}",
-+                        "ResultPath": "$.checks.name",
-                         "Next": "Check Address"
-                     },
-                     "Check Address": {
-@@ -261,6 +262,7 @@ resources:
-                             "data": { "address.$": "$.application.address" }
-                         },
-                         "Resource": "#{dataCheckingLambdaArn}",
-+                        "ResultPath": "$.checks.address",
-                         "Next": "Approve Application"
-                     },
-                     "Approve Application": {
+<div id="diff-idcodevariantsstatemachine1firstversion__accountapplicationworkflowasljsoncodevariantsstatemachine2datacheckingresultpaths__accountapplicationworkflowasljson"></div> <script type="text/template" data-diff-for="diff-idcodevariantsstatemachine1firstversion__accountapplicationworkflowasljsoncodevariantsstatemachine2datacheckingresultpaths__accountapplicationworkflowasljson">diff --git a/code/variants/statemachine/1-first-version__account-application-workflow.asl.json b/code/variants/statemachine/2-data-checking-result-paths__account-application-workflow.asl.json
+index ebc80ed..b0f66af 100644
+--- a/code/variants/statemachine/1-first-version__account-application-workflow.asl.json
++++ b/code/variants/statemachine/2-data-checking-result-paths__account-application-workflow.asl.json
+@@ -10,6 +10,7 @@
+                     }
+                 },
+                 "Resource": "${DataCheckingFunctionArn}",
++                "ResultPath": "$.checks.name",
+                 "Next": "Check Address"
+             },
+             "Check Address": {
+@@ -21,6 +22,7 @@
+                     }
+                 },
+                 "Resource": "${DataCheckingFunctionArn}",
++                "ResultPath": "$.checks.address",
+                 "Next": "Approve Application"
+             },
+             "Approve Application": {
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id4114d55fdb744943184a1b480c94da7d77cfc80dserverlessyml" style="position: relative; left: -1000px; width: 1px; height: 1px;">service: StepFunctionsWorkshop
-
-plugins:
-  - serverless-cf-vars
-
-custom:
-  applicationsTable: '${self:service}__account_applications__${self:provider.stage}'
-
-provider:
-  name: aws
-  runtime: nodejs10.x
-  memorySize: 128
-  stage: dev
-
-functions:
-  SubmitApplication:
-    name: ${self:service}__account_applications__submit__${self:provider.stage}
-    handler: account-applications/submit.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: SubmitRole
-
-  FlagApplication:
-    name: ${self:service}__account_applications__flag__${self:provider.stage}
-    handler: account-applications/flag.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: FlagRole
-
-  FindApplications:
-    name: ${self:service}__account_applications__find__${self:provider.stage}
-    handler: account-applications/find.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: FindRole
-
-  RejectApplication:
-    name: ${self:service}__account_applications__reject__${self:provider.stage}
-    handler: account-applications/reject.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: RejectRole
-
-  ApproveApplication:
-    name: ${self:service}__account_applications__approve__${self:provider.stage}
-    handler: account-applications/approve.handler
-    environment:
-      REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
-    role: ApproveRole
-
-  DataChecking:
-    name: ${self:service}__data_checking__${self:provider.stage}
-    handler: data-checking.handler
-    role: DataCheckingRole
-
-resources:
-  Resources:
-    LambdaLoggingPolicy:
-      Type: 'AWS::IAM::ManagedPolicy'
-      Properties:
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
-              Resource:
-                - 'Fn::Join':
-                  - ':'
-                  -
-                    - 'arn:aws:logs'
-                    - Ref: 'AWS::Region'
-                    - Ref: 'AWS::AccountId'
-                    - 'log-group:/aws/lambda/*:*:*'
-
-    DynamoPolicy:
-      Type: 'AWS::IAM::ManagedPolicy'
-      Properties:
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: "Allow"
-              Action:
-                - "dynamodb:*"
-              Resource:
-                - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                - 'Fn::Join':
-                    - '/'
-                    -
-                        - { "Fn::GetAtt": ["ApplicationsDynamoDBTable", "Arn" ] }
-                        - '*'
-
-    SubmitRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    FlagRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    RejectRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    ApproveRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    FindRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-          - { Ref: DynamoPolicy }
-
-    DataCheckingRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - { Ref: LambdaLoggingPolicy }
-
-    ApplicationsDynamoDBTable:
-      Type: 'AWS::DynamoDB::Table'
-      Properties:
-        TableName: ${self:custom.applicationsTable}
-        AttributeDefinitions:
-          -
-            AttributeName: id
-            AttributeType: S
-          -
-            AttributeName: state
-            AttributeType: S
-        KeySchema:
-          -
-            AttributeName: id
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-        GlobalSecondaryIndexes:
-            -
-                IndexName: state
-                KeySchema:
-                    -
-                        AttributeName: state
-                        KeyType: HASH
-                Projection:
-                    ProjectionType: ALL
-
-    StepFunctionRole:
-      Type: 'AWS::IAM::Role'
-      Properties:
-        AssumeRolePolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-                -
-                  Effect: Allow
-                  Principal:
-                      Service: 'states.amazonaws.com'
-                  Action: 'sts:AssumeRole'
-        Policies:
-            -
-              PolicyName: lambda
-              PolicyDocument:
-                Statement:
-                  -
-                    Effect: Allow
-                    Action: 'lambda:InvokeFunction'
-                    Resource:
-                        - Fn::GetAtt: [DataCheckingLambdaFunction, Arn]
-
-    ProcessApplicationsStateMachine:
-      Type: AWS::StepFunctions::StateMachine
-      Properties:
-        StateMachineName: ${self:service}__process_account_applications__${self:provider.stage}
-        RoleArn: !GetAtt StepFunctionRole.Arn
-        DefinitionString:
-          !Sub
-            - |-
-              {
-                "StartAt": "Check Name",
-                "States": {
-                    "Check Name": {
-                        "Type": "Task",
-                        "Parameters": {
-                            "command": "CHECK_NAME",
-                            "data": { "name.$": "$.application.name" }
-                        },
-                        "Resource": "#{dataCheckingLambdaArn}",
-                        "ResultPath": "$.checks.name",
-                        "Next": "Check Address"
-                    },
-                    "Check Address": {
-                        "Type": "Task",
-                        "Parameters": {
-                            "command": "CHECK_ADDRESS",
-                            "data": { "address.$": "$.application.address" }
-                        },
-                        "Resource": "#{dataCheckingLambdaArn}",
-                        "ResultPath": "$.checks.address",
-                        "Next": "Approve Application"
-                    },
-                    "Approve Application": {
-                        "Type": "Pass",
-                        "End": true
+<textarea id="idcodevariantsstatemachine1firstversion__accountapplicationworkflowasljsoncodevariantsstatemachine2datacheckingresultpaths__accountapplicationworkflowasljson" style="position: relative; left: -1000px; width: 1px; height: 1px;">    {
+        "StartAt": "Check Name",
+        "States": {
+            "Check Name": {
+                "Type": "Task",
+                "Parameters": {
+                    "command": "CHECK_NAME",
+                    "data": {
+                        "name.$": "$.application.name"
                     }
-                }
-              }
-            - {
-              dataCheckingLambdaArn: !GetAtt [DataCheckingLambdaFunction, Arn],
+                },
+                "Resource": "${DataCheckingFunctionArn}",
+                "ResultPath": "$.checks.name",
+                "Next": "Check Address"
+            },
+            "Check Address": {
+                "Type": "Task",
+                "Parameters": {
+                    "command": "CHECK_ADDRESS",
+                    "data": {
+                        "address.$": "$.application.address"
+                    }
+                },
+                "Resource": "${DataCheckingFunctionArn}",
+                "ResultPath": "$.checks.address",
+                "Next": "Approve Application"
+            },
+            "Approve Application": {
+                "Type": "Pass",
+                "End": true
             }
+        }
+    }
 </textarea>
 {{< /safehtml >}}
 
 ➡️ Step 2. Run:
 
 ```bash
-sls deploy
+sam build && sam deploy
 ```
 
 ### Try it out
