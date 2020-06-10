@@ -4,23 +4,23 @@ chapter = false
 weight = 40
 +++
 
-Rather than continue to work in the web console and make these fixes by hand, we’ll return to our `template.yml` file to define our state machine alongside the other resources used in this workshop, and we’ll take care to also set up the appropriate permissions for this state machine to execute successfully.
+Rather than continue to work in the web console and make these fixes by hand, we’ll use the AWS SAM tooling to define our state machine alongside the other resources used in this workshop, and we’ll take care to also set up the appropriate permissions for this state machine to execute successfully.
 
 ### In this step, we will
 
-* Define our new AWS Step Functions state machine inside `template.yml`
+* Define our new AWS Step Functions state machine inside `template.yaml`
 
 * Add a new IAM role for our state machine to assume when it executes. The role grants permission for the state machine to invoke our Data Checking Lambda function.
 
 ### Make these changes
 
-Before we migrate our step function definition over to our `template.yml` file, we should delete the state machine we’ve been interacting with in the Step Functions web console so that we don’t get confused when a similar state machine is deployed as part of our Serverless stack deployment.
+Before we migrate our step function definition over to our `template.yaml` file, we should delete the state machine we’ve been interacting with in the Step Functions web console so that we don’t get confused when a similar state machine is deployed as part of our Serverless stack deployment.
 
 ➡️ Step 1. In the left sidebar of the Step Functions web console, click ‘State machines’
 
 ➡️ Step 2. Select the state machne that we manually defined earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
-➡️ Step 3. Now, let’s re-define our state machine inside our `template.yaml` file. Replace `template.yml` with <span class="clipBtn clipboard" data-clipboard-target="#ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantstemplateyml1fixingpermissions__templateyaml">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 3. Now, let’s re-define our state machine inside our `template.yaml` file. Replace `template.yaml` with <span class="clipBtn clipboard" data-clipboard-target="#ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantstemplateyml1fixingpermissions__templateyaml">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
 <div id="diff-ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantstemplateyml1fixingpermissions__templateyaml"></div> <script type="text/template" data-diff-for="diff-ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantstemplateyml1fixingpermissions__templateyaml">commit a0d7df16df74104c36cb221ee8f4f61bab25ef76
 Author: Gabe Hollombe <gabe@avantbard.com>

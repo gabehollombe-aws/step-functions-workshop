@@ -80,7 +80,7 @@ This is a common file that provides CRUD style operations for our Account Applic
 <br/>
 This implements our DataChecking Lambda function. It contains code to handle requests to check a name and an address against some simple validation rules.
 <br/><br/>
-`template.yml`<br/>This is the file that AWS SAM looks at to determine what we want resources we want to cloud create and deploy as part of our solution. If you're familiar with AWS CloudFormation, the structure of this file will look pretty familiar to you, because AWS SAM is just a set of conveniences built on top of CloudFormation.
+`template.yaml`<br/>This is the file that AWS SAM looks at to determine what we want resources we want to cloud create and deploy as part of our solution. If you're familiar with AWS CloudFormation, the structure of this file will look pretty familiar to you, because AWS SAM is just a set of conveniences built on top of CloudFormation.
 {{% /notice %}}
 
 

@@ -115,10 +115,10 @@ module.exports.handler = async(event) => {
 </textarea>
 {{< /safehtml >}}
 
-➡️ Step 2. Replace `template.yml` with <span class="clipBtn clipboard" data-clipboard-target="#idcodevariantstemplateyml1fixingpermissions__templateyamlcodevariantstemplateyml2submitexecutesstepfunction__templateyaml">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 2. Replace `template.yaml` with <span class="clipBtn clipboard" data-clipboard-target="#idcodevariantstemplateyml1fixingpermissions__templateyamlcodevariantstemplateyml2submitexecutesstepfunction__templateyaml">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
 <div id="diff-idcodevariantstemplateyml1fixingpermissions__templateyamlcodevariantstemplateyml2submitexecutesstepfunction__templateyaml"></div> <script type="text/template" data-diff-for="diff-idcodevariantstemplateyml1fixingpermissions__templateyamlcodevariantstemplateyml2submitexecutesstepfunction__templateyaml">diff --git a/code/variants/template.yml/1-fixing-permissions__template.yaml b/code/variants/template.yml/2-submit-executes-step-function__template.yaml
-index 1261b13..c077773 100644
+index cfd3d70..b3d19ae 100644
 --- a/code/variants/template.yml/1-fixing-permissions__template.yaml
 +++ b/code/variants/template.yml/2-submit-executes-step-function__template.yaml
 @@ -87,9 +87,12 @@ Resources:
@@ -199,7 +199,7 @@ Resources:
         Variables:
           ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
-        - DynamoDBWritePolicy:
+        - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
 
   RejectApplicationFunction:
@@ -213,7 +213,7 @@ Resources:
         Variables:
           ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
-        - DynamoDBWritePolicy:
+        - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
 
   SubmitApplicationFunction:
