@@ -1,6 +1,0 @@
-{
-  "name": "data-checking",
-  "version": "1.0.0",
-  "description": "An example Lambda function to act as a simple example data checking service",
-  "license": "MIT"
-}
