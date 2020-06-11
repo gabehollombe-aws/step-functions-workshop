@@ -24,94 +24,94 @@ Here is what our updated flow will look like after we're done with this step:
 ➡️ Step 1. Replace `statemachine/account-application-workflow.asl.json` with <span class="clipBtn clipboard" data-clipboard-target="#idcodevariantsstatemachine2datacheckingresultpaths__accountapplicationworkflowasljsoncodevariantsstatemachine3addreviewrequired__accountapplicationworkflowasljson">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
 <div id="diff-idcodevariantsstatemachine2datacheckingresultpaths__accountapplicationworkflowasljsoncodevariantsstatemachine3addreviewrequired__accountapplicationworkflowasljson"></div> <script type="text/template" data-diff-for="diff-idcodevariantsstatemachine2datacheckingresultpaths__accountapplicationworkflowasljsoncodevariantsstatemachine3addreviewrequired__accountapplicationworkflowasljson">diff --git a/code/variants/statemachine/2-data-checking-result-paths__account-application-workflow.asl.json b/code/variants/statemachine/3-add-review-required__account-application-workflow.asl.json
-index b0f66af..ab6c4e4 100644
+index f49f979..79596f9 100644
 --- a/code/variants/statemachine/2-data-checking-result-paths__account-application-workflow.asl.json
 +++ b/code/variants/statemachine/3-add-review-required__account-application-workflow.asl.json
 @@ -23,7 +23,27 @@
-                 },
-                 "Resource": "${DataCheckingFunctionArn}",
-                 "ResultPath": "$.checks.address",
--                "Next": "Approve Application"
-+                "Next": "Review Required?"
-+            },
-+            "Review Required?": {
-+                "Type": "Choice",
-+                "Choices": [
-+                    {
-+                        "Variable": "$.checks.name.flagged",
-+                        "BooleanEquals": true,
-+                        "Next": "Pending Review"
-+                    },
-+                    {
-+                        "Variable": "$.checks.address.flagged",
-+                        "BooleanEquals": true,
-+                        "Next": "Pending Review"
-+                    }
-+                ],
-+                "Default": "Approve Application"
-+            },
-+            "Pending Review": {
-+                "Type": "Pass",
-+                "End": true
              },
-             "Approve Application": {
-                 "Type": "Pass",
+             "Resource": "${DataCheckingFunctionArn}",
+             "ResultPath": "$.checks.address",
+-            "Next": "Approve Application"
++            "Next": "Review Required?"
++        },
++        "Review Required?": {
++            "Type": "Choice",
++            "Choices": [
++                {
++                    "Variable": "$.checks.name.flagged",
++                    "BooleanEquals": true,
++                    "Next": "Pending Review"
++                },
++                {
++                    "Variable": "$.checks.address.flagged",
++                    "BooleanEquals": true,
++                    "Next": "Pending Review"
++                }
++            ],
++            "Default": "Approve Application"
++        },
++        "Pending Review": {
++            "Type": "Pass",
++            "End": true
+         },
+         "Approve Application": {
+             "Type": "Pass",
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idcodevariantsstatemachine2datacheckingresultpaths__accountapplicationworkflowasljsoncodevariantsstatemachine3addreviewrequired__accountapplicationworkflowasljson" style="position: relative; left: -1000px; width: 1px; height: 1px;">    {
-        "StartAt": "Check Name",
-        "States": {
-            "Check Name": {
-                "Type": "Task",
-                "Parameters": {
-                    "command": "CHECK_NAME",
-                    "data": {
-                        "name.$": "$.application.name"
-                    }
+<textarea id="idcodevariantsstatemachine2datacheckingresultpaths__accountapplicationworkflowasljsoncodevariantsstatemachine3addreviewrequired__accountapplicationworkflowasljson" style="position: relative; left: -1000px; width: 1px; height: 1px;">{
+    "StartAt": "Check Name",
+    "States": {
+        "Check Name": {
+            "Type": "Task",
+            "Parameters": {
+                "command": "CHECK_NAME",
+                "data": {
+                    "name.$": "$.application.name"
+                }
+            },
+            "Resource": "${DataCheckingFunctionArn}",
+            "ResultPath": "$.checks.name",
+            "Next": "Check Address"
+        },
+        "Check Address": {
+            "Type": "Task",
+            "Parameters": {
+                "command": "CHECK_ADDRESS",
+                "data": {
+                    "address.$": "$.application.address"
+                }
+            },
+            "Resource": "${DataCheckingFunctionArn}",
+            "ResultPath": "$.checks.address",
+            "Next": "Review Required?"
+        },
+        "Review Required?": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.checks.name.flagged",
+                    "BooleanEquals": true,
+                    "Next": "Pending Review"
                 },
-                "Resource": "${DataCheckingFunctionArn}",
-                "ResultPath": "$.checks.name",
-                "Next": "Check Address"
-            },
-            "Check Address": {
-                "Type": "Task",
-                "Parameters": {
-                    "command": "CHECK_ADDRESS",
-                    "data": {
-                        "address.$": "$.application.address"
-                    }
-                },
-                "Resource": "${DataCheckingFunctionArn}",
-                "ResultPath": "$.checks.address",
-                "Next": "Review Required?"
-            },
-            "Review Required?": {
-                "Type": "Choice",
-                "Choices": [
-                    {
-                        "Variable": "$.checks.name.flagged",
-                        "BooleanEquals": true,
-                        "Next": "Pending Review"
-                    },
-                    {
-                        "Variable": "$.checks.address.flagged",
-                        "BooleanEquals": true,
-                        "Next": "Pending Review"
-                    }
-                ],
-                "Default": "Approve Application"
-            },
-            "Pending Review": {
-                "Type": "Pass",
-                "End": true
-            },
-            "Approve Application": {
-                "Type": "Pass",
-                "End": true
-            }
+                {
+                    "Variable": "$.checks.address.flagged",
+                    "BooleanEquals": true,
+                    "Next": "Pending Review"
+                }
+            ],
+            "Default": "Approve Application"
+        },
+        "Pending Review": {
+            "Type": "Pass",
+            "End": true
+        },
+        "Approve Application": {
+            "Type": "Pass",
+            "End": true
         }
     }
+}
 </textarea>
 {{< /safehtml >}}
 

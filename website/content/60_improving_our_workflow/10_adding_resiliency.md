@@ -38,237 +38,237 @@ The developer guide identifies the [types of transient Lambda service errors](ht
 ➡️ Step 1. Replace `statemachine/account-application-workflow.asl.json` with <span class="clipBtn clipboard" data-clipboard-target="#idcodevariantsstatemachine5addapprovereject__accountapplicationworkflowasljsoncodevariantsstatemachine6addretries__accountapplicationworkflowasljson">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
 <div id="diff-idcodevariantsstatemachine5addapprovereject__accountapplicationworkflowasljsoncodevariantsstatemachine6addretries__accountapplicationworkflowasljson"></div> <script type="text/template" data-diff-for="diff-idcodevariantsstatemachine5addapprovereject__accountapplicationworkflowasljsoncodevariantsstatemachine6addretries__accountapplicationworkflowasljson">diff --git a/code/variants/statemachine/5-add-approve-reject__account-application-workflow.asl.json b/code/variants/statemachine/6-add-retries__account-application-workflow.asl.json
-index e62d97a..7b5df59 100644
+index fe142b0..26bac8a 100644
 --- a/code/variants/statemachine/5-add-approve-reject__account-application-workflow.asl.json
 +++ b/code/variants/statemachine/6-add-retries__account-application-workflow.asl.json
 @@ -11,6 +11,16 @@
-                 },
-                 "Resource": "${DataCheckingFunctionArn}",
-                 "ResultPath": "$.checks.name",
-+                "Retry": [
-+                    {
-+                        "ErrorEquals": [
-+                            "Lambda.ServiceException",
-+                            "Lambda.AWSLambdaException",
-+                            "Lambda.SdkClientException",
-+                            "Lambda.TooManyRequestsException"
-+                        ]
-+                    }
-+                ],
-                 "Next": "Check Address"
              },
-             "Check Address": {
+             "Resource": "${DataCheckingFunctionArn}",
+             "ResultPath": "$.checks.name",
++            "Retry": [
++                {
++                    "ErrorEquals": [
++                        "Lambda.ServiceException",
++                        "Lambda.AWSLambdaException",
++                        "Lambda.SdkClientException",
++                        "Lambda.TooManyRequestsException"
++                    ]
++                }
++            ],
+             "Next": "Check Address"
+         },
+         "Check Address": {
 @@ -23,6 +33,16 @@
-                 },
-                 "Resource": "${DataCheckingFunctionArn}",
-                 "ResultPath": "$.checks.address",
-+                "Retry": [
-+                    {
-+                        "ErrorEquals": [
-+                            "Lambda.ServiceException",
-+                            "Lambda.AWSLambdaException",
-+                            "Lambda.SdkClientException",
-+                            "Lambda.TooManyRequestsException"
-+                        ]
-+                    }
-+                ],
-                 "Next": "Review Required?"
              },
-             "Review Required?": {
+             "Resource": "${DataCheckingFunctionArn}",
+             "ResultPath": "$.checks.address",
++            "Retry": [
++                {
++                    "ErrorEquals": [
++                        "Lambda.ServiceException",
++                        "Lambda.AWSLambdaException",
++                        "Lambda.SdkClientException",
++                        "Lambda.TooManyRequestsException"
++                    ]
++                }
++            ],
+             "Next": "Review Required?"
+         },
+         "Review Required?": {
 @@ -53,6 +73,16 @@
-                     }
-                 },
-                 "ResultPath": "$.review",
-+                "Retry": [
-+                    {
-+                        "ErrorEquals": [
-+                            "Lambda.ServiceException",
-+                            "Lambda.AWSLambdaException",
-+                            "Lambda.SdkClientException",
-+                            "Lambda.TooManyRequestsException"
-+                        ]
-+                    }
-+                ],
-                 "Next": "Review Approved?"
+                 }
              },
-             "Review Approved?": {
+             "ResultPath": "$.review",
++            "Retry": [
++                {
++                    "ErrorEquals": [
++                        "Lambda.ServiceException",
++                        "Lambda.AWSLambdaException",
++                        "Lambda.SdkClientException",
++                        "Lambda.TooManyRequestsException"
++                    ]
++                }
++            ],
+             "Next": "Review Approved?"
+         },
+         "Review Approved?": {
 @@ -76,6 +106,16 @@
-                     "id.$": "$.application.id"
-                 },
-                 "Resource": "${RejectApplicationFunctionArn}",
-+                "Retry": [
-+                    {
-+                        "ErrorEquals": [
-+                            "Lambda.ServiceException",
-+                            "Lambda.AWSLambdaException",
-+                            "Lambda.SdkClientException",
-+                            "Lambda.TooManyRequestsException"
-+                        ]
-+                    }
-+                ],
-                 "End": true
+                 "id.$": "$.application.id"
              },
-             "Approve Application": {
+             "Resource": "${RejectApplicationFunctionArn}",
++            "Retry": [
++                {
++                    "ErrorEquals": [
++                        "Lambda.ServiceException",
++                        "Lambda.AWSLambdaException",
++                        "Lambda.SdkClientException",
++                        "Lambda.TooManyRequestsException"
++                    ]
++                }
++            ],
+             "End": true
+         },
+         "Approve Application": {
 @@ -84,6 +124,16 @@
-                     "id.$": "$.application.id"
-                 },
-                 "Resource": "${ApproveApplicationFunctionArn}",
-+                "Retry": [
-+                    {
-+                        "ErrorEquals": [
-+                            "Lambda.ServiceException",
-+                            "Lambda.AWSLambdaException",
-+                            "Lambda.SdkClientException",
-+                            "Lambda.TooManyRequestsException"
-+                        ]
-+                    }
-+                ],
-                 "End": true
-             }
+                 "id.$": "$.application.id"
+             },
+             "Resource": "${ApproveApplicationFunctionArn}",
++            "Retry": [
++                {
++                    "ErrorEquals": [
++                        "Lambda.ServiceException",
++                        "Lambda.AWSLambdaException",
++                        "Lambda.SdkClientException",
++                        "Lambda.TooManyRequestsException"
++                    ]
++                }
++            ],
+             "End": true
          }
+     }
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idcodevariantsstatemachine5addapprovereject__accountapplicationworkflowasljsoncodevariantsstatemachine6addretries__accountapplicationworkflowasljson" style="position: relative; left: -1000px; width: 1px; height: 1px;">    {
-        "StartAt": "Check Name",
-        "States": {
-            "Check Name": {
-                "Type": "Task",
-                "Parameters": {
-                    "command": "CHECK_NAME",
-                    "data": {
-                        "name.$": "$.application.name"
-                    }
+<textarea id="idcodevariantsstatemachine5addapprovereject__accountapplicationworkflowasljsoncodevariantsstatemachine6addretries__accountapplicationworkflowasljson" style="position: relative; left: -1000px; width: 1px; height: 1px;">{
+    "StartAt": "Check Name",
+    "States": {
+        "Check Name": {
+            "Type": "Task",
+            "Parameters": {
+                "command": "CHECK_NAME",
+                "data": {
+                    "name.$": "$.application.name"
+                }
+            },
+            "Resource": "${DataCheckingFunctionArn}",
+            "ResultPath": "$.checks.name",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "Lambda.ServiceException",
+                        "Lambda.AWSLambdaException",
+                        "Lambda.SdkClientException",
+                        "Lambda.TooManyRequestsException"
+                    ]
+                }
+            ],
+            "Next": "Check Address"
+        },
+        "Check Address": {
+            "Type": "Task",
+            "Parameters": {
+                "command": "CHECK_ADDRESS",
+                "data": {
+                    "address.$": "$.application.address"
+                }
+            },
+            "Resource": "${DataCheckingFunctionArn}",
+            "ResultPath": "$.checks.address",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "Lambda.ServiceException",
+                        "Lambda.AWSLambdaException",
+                        "Lambda.SdkClientException",
+                        "Lambda.TooManyRequestsException"
+                    ]
+                }
+            ],
+            "Next": "Review Required?"
+        },
+        "Review Required?": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.checks.name.flagged",
+                    "BooleanEquals": true,
+                    "Next": "Pending Review"
                 },
-                "Resource": "${DataCheckingFunctionArn}",
-                "ResultPath": "$.checks.name",
-                "Retry": [
-                    {
-                        "ErrorEquals": [
-                            "Lambda.ServiceException",
-                            "Lambda.AWSLambdaException",
-                            "Lambda.SdkClientException",
-                            "Lambda.TooManyRequestsException"
-                        ]
-                    }
-                ],
-                "Next": "Check Address"
+                {
+                    "Variable": "$.checks.address.flagged",
+                    "BooleanEquals": true,
+                    "Next": "Pending Review"
+                }
+            ],
+            "Default": "Approve Application"
+        },
+        "Pending Review": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+            "Parameters": {
+                "FunctionName": "${FlagApplicationFunctionName}",
+                "Payload": {
+                    "id.$": "$.application.id",
+                    "flagType": "REVIEW",
+                    "taskToken.$": "$$.Task.Token"
+                }
             },
-            "Check Address": {
-                "Type": "Task",
-                "Parameters": {
-                    "command": "CHECK_ADDRESS",
-                    "data": {
-                        "address.$": "$.application.address"
-                    }
+            "ResultPath": "$.review",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "Lambda.ServiceException",
+                        "Lambda.AWSLambdaException",
+                        "Lambda.SdkClientException",
+                        "Lambda.TooManyRequestsException"
+                    ]
+                }
+            ],
+            "Next": "Review Approved?"
+        },
+        "Review Approved?": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.review.decision",
+                    "StringEquals": "APPROVE",
+                    "Next": "Approve Application"
                 },
-                "Resource": "${DataCheckingFunctionArn}",
-                "ResultPath": "$.checks.address",
-                "Retry": [
-                    {
-                        "ErrorEquals": [
-                            "Lambda.ServiceException",
-                            "Lambda.AWSLambdaException",
-                            "Lambda.SdkClientException",
-                            "Lambda.TooManyRequestsException"
-                        ]
-                    }
-                ],
-                "Next": "Review Required?"
+                {
+                    "Variable": "$.review.decision",
+                    "StringEquals": "REJECT",
+                    "Next": "Reject Application"
+                }
+            ]
+        },
+        "Reject Application": {
+            "Type": "Task",
+            "Parameters": {
+                "id.$": "$.application.id"
             },
-            "Review Required?": {
-                "Type": "Choice",
-                "Choices": [
-                    {
-                        "Variable": "$.checks.name.flagged",
-                        "BooleanEquals": true,
-                        "Next": "Pending Review"
-                    },
-                    {
-                        "Variable": "$.checks.address.flagged",
-                        "BooleanEquals": true,
-                        "Next": "Pending Review"
-                    }
-                ],
-                "Default": "Approve Application"
+            "Resource": "${RejectApplicationFunctionArn}",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "Lambda.ServiceException",
+                        "Lambda.AWSLambdaException",
+                        "Lambda.SdkClientException",
+                        "Lambda.TooManyRequestsException"
+                    ]
+                }
+            ],
+            "End": true
+        },
+        "Approve Application": {
+            "Type": "Task",
+            "Parameters": {
+                "id.$": "$.application.id"
             },
-            "Pending Review": {
-                "Type": "Task",
-                "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
-                "Parameters": {
-                    "FunctionName": "${FlagApplicationFunctionName}",
-                    "Payload": {
-                        "id.$": "$.application.id",
-                        "flagType": "REVIEW",
-                        "taskToken.$": "$$.Task.Token"
-                    }
-                },
-                "ResultPath": "$.review",
-                "Retry": [
-                    {
-                        "ErrorEquals": [
-                            "Lambda.ServiceException",
-                            "Lambda.AWSLambdaException",
-                            "Lambda.SdkClientException",
-                            "Lambda.TooManyRequestsException"
-                        ]
-                    }
-                ],
-                "Next": "Review Approved?"
-            },
-            "Review Approved?": {
-                "Type": "Choice",
-                "Choices": [
-                    {
-                        "Variable": "$.review.decision",
-                        "StringEquals": "APPROVE",
-                        "Next": "Approve Application"
-                    },
-                    {
-                        "Variable": "$.review.decision",
-                        "StringEquals": "REJECT",
-                        "Next": "Reject Application"
-                    }
-                ]
-            },
-            "Reject Application": {
-                "Type": "Task",
-                "Parameters": {
-                    "id.$": "$.application.id"
-                },
-                "Resource": "${RejectApplicationFunctionArn}",
-                "Retry": [
-                    {
-                        "ErrorEquals": [
-                            "Lambda.ServiceException",
-                            "Lambda.AWSLambdaException",
-                            "Lambda.SdkClientException",
-                            "Lambda.TooManyRequestsException"
-                        ]
-                    }
-                ],
-                "End": true
-            },
-            "Approve Application": {
-                "Type": "Task",
-                "Parameters": {
-                    "id.$": "$.application.id"
-                },
-                "Resource": "${ApproveApplicationFunctionArn}",
-                "Retry": [
-                    {
-                        "ErrorEquals": [
-                            "Lambda.ServiceException",
-                            "Lambda.AWSLambdaException",
-                            "Lambda.SdkClientException",
-                            "Lambda.TooManyRequestsException"
-                        ]
-                    }
-                ],
-                "End": true
-            }
+            "Resource": "${ApproveApplicationFunctionArn}",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "Lambda.ServiceException",
+                        "Lambda.AWSLambdaException",
+                        "Lambda.SdkClientException",
+                        "Lambda.TooManyRequestsException"
+                    ]
+                }
+            ],
+            "End": true
         }
     }
+}
 </textarea>
 {{< /safehtml >}}
 
@@ -303,233 +303,233 @@ To show this in action, we’ll leverage some test code in our Data Checking Lam
 ➡️ Step 1. Replace `statemachine/account-application-workflow.asl.json` with <span class="clipBtn clipboard" data-clipboard-target="#idcodevariantsstatemachine6addretries__accountapplicationworkflowasljsoncodevariantsstatemachine7addcatch__accountapplicationworkflowasljson">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
 <div id="diff-idcodevariantsstatemachine6addretries__accountapplicationworkflowasljsoncodevariantsstatemachine7addcatch__accountapplicationworkflowasljson"></div> <script type="text/template" data-diff-for="diff-idcodevariantsstatemachine6addretries__accountapplicationworkflowasljsoncodevariantsstatemachine7addcatch__accountapplicationworkflowasljson">diff --git a/code/variants/statemachine/6-add-retries__account-application-workflow.asl.json b/code/variants/statemachine/7-add-catch__account-application-workflow.asl.json
-index 7b5df59..56acf06 100644
+index 26bac8a..5009d78 100644
 --- a/code/variants/statemachine/6-add-retries__account-application-workflow.asl.json
 +++ b/code/variants/statemachine/7-add-catch__account-application-workflow.asl.json
 @@ -21,6 +21,15 @@
-                         ]
-                     }
-                 ],
-+                "Catch": [
-+                    {
-+                        "ErrorEquals": [
-+                            "UnprocessableDataException"
-+                        ],
-+                        "ResultPath": "$.error-info",
-+                        "Next": "Flag Application As Unprocessable"
-+                    }
-+                ],
-                 "Next": "Check Address"
-             },
-             "Check Address": {
+                     ]
+                 }
+             ],
++            "Catch": [
++                {
++                    "ErrorEquals": [
++                        "UnprocessableDataException"
++                    ],
++                    "ResultPath": "$.error-info",
++                    "Next": "Flag Application As Unprocessable"
++                }
++            ],
+             "Next": "Check Address"
+         },
+         "Check Address": {
 @@ -135,6 +144,30 @@
-                     }
-                 ],
-                 "End": true
+                 }
+             ],
+             "End": true
++        },
++        "Flag Application As Unprocessable": {
++            "Type": "Task",
++            "Resource": "arn:aws:states:::lambda:invoke",
++            "Parameters": {
++                "FunctionName": "${FlagApplicationFunctionName}",
++                "Payload": {
++                    "id.$": "$.application.id",
++                    "flagType": "UNPROCESSABLE_DATA",
++                    "errorInfo.$": "$.error-info"
++                }
 +            },
-+            "Flag Application As Unprocessable": {
-+                "Type": "Task",
-+                "Resource": "arn:aws:states:::lambda:invoke",
-+                "Parameters": {
-+                    "FunctionName": "${FlagApplicationFunctionName}",
-+                    "Payload": {
-+                        "id.$": "$.application.id",
-+                        "flagType": "UNPROCESSABLE_DATA",
-+                        "errorInfo.$": "$.error-info"
-+                    }
-+                },
-+                "ResultPath": "$.review",
-+                "Retry": [
-+                    {
-+                        "ErrorEquals": [
-+                            "Lambda.ServiceException",
-+                            "Lambda.AWSLambdaException",
-+                            "Lambda.SdkClientException",
-+                            "Lambda.TooManyRequestsException"
-+                        ]
-+                    }
-+                ],
-+                "End": true
-             }
++            "ResultPath": "$.review",
++            "Retry": [
++                {
++                    "ErrorEquals": [
++                        "Lambda.ServiceException",
++                        "Lambda.AWSLambdaException",
++                        "Lambda.SdkClientException",
++                        "Lambda.TooManyRequestsException"
++                    ]
++                }
++            ],
++            "End": true
          }
      }
+ }
 \ No newline at end of file
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idcodevariantsstatemachine6addretries__accountapplicationworkflowasljsoncodevariantsstatemachine7addcatch__accountapplicationworkflowasljson" style="position: relative; left: -1000px; width: 1px; height: 1px;">    {
-        "StartAt": "Check Name",
-        "States": {
-            "Check Name": {
-                "Type": "Task",
-                "Parameters": {
-                    "command": "CHECK_NAME",
-                    "data": {
-                        "name.$": "$.application.name"
-                    }
+<textarea id="idcodevariantsstatemachine6addretries__accountapplicationworkflowasljsoncodevariantsstatemachine7addcatch__accountapplicationworkflowasljson" style="position: relative; left: -1000px; width: 1px; height: 1px;">{
+    "StartAt": "Check Name",
+    "States": {
+        "Check Name": {
+            "Type": "Task",
+            "Parameters": {
+                "command": "CHECK_NAME",
+                "data": {
+                    "name.$": "$.application.name"
+                }
+            },
+            "Resource": "${DataCheckingFunctionArn}",
+            "ResultPath": "$.checks.name",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "Lambda.ServiceException",
+                        "Lambda.AWSLambdaException",
+                        "Lambda.SdkClientException",
+                        "Lambda.TooManyRequestsException"
+                    ]
+                }
+            ],
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "UnprocessableDataException"
+                    ],
+                    "ResultPath": "$.error-info",
+                    "Next": "Flag Application As Unprocessable"
+                }
+            ],
+            "Next": "Check Address"
+        },
+        "Check Address": {
+            "Type": "Task",
+            "Parameters": {
+                "command": "CHECK_ADDRESS",
+                "data": {
+                    "address.$": "$.application.address"
+                }
+            },
+            "Resource": "${DataCheckingFunctionArn}",
+            "ResultPath": "$.checks.address",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "Lambda.ServiceException",
+                        "Lambda.AWSLambdaException",
+                        "Lambda.SdkClientException",
+                        "Lambda.TooManyRequestsException"
+                    ]
+                }
+            ],
+            "Next": "Review Required?"
+        },
+        "Review Required?": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.checks.name.flagged",
+                    "BooleanEquals": true,
+                    "Next": "Pending Review"
                 },
-                "Resource": "${DataCheckingFunctionArn}",
-                "ResultPath": "$.checks.name",
-                "Retry": [
-                    {
-                        "ErrorEquals": [
-                            "Lambda.ServiceException",
-                            "Lambda.AWSLambdaException",
-                            "Lambda.SdkClientException",
-                            "Lambda.TooManyRequestsException"
-                        ]
-                    }
-                ],
-                "Catch": [
-                    {
-                        "ErrorEquals": [
-                            "UnprocessableDataException"
-                        ],
-                        "ResultPath": "$.error-info",
-                        "Next": "Flag Application As Unprocessable"
-                    }
-                ],
-                "Next": "Check Address"
+                {
+                    "Variable": "$.checks.address.flagged",
+                    "BooleanEquals": true,
+                    "Next": "Pending Review"
+                }
+            ],
+            "Default": "Approve Application"
+        },
+        "Pending Review": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+            "Parameters": {
+                "FunctionName": "${FlagApplicationFunctionName}",
+                "Payload": {
+                    "id.$": "$.application.id",
+                    "flagType": "REVIEW",
+                    "taskToken.$": "$$.Task.Token"
+                }
             },
-            "Check Address": {
-                "Type": "Task",
-                "Parameters": {
-                    "command": "CHECK_ADDRESS",
-                    "data": {
-                        "address.$": "$.application.address"
-                    }
+            "ResultPath": "$.review",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "Lambda.ServiceException",
+                        "Lambda.AWSLambdaException",
+                        "Lambda.SdkClientException",
+                        "Lambda.TooManyRequestsException"
+                    ]
+                }
+            ],
+            "Next": "Review Approved?"
+        },
+        "Review Approved?": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.review.decision",
+                    "StringEquals": "APPROVE",
+                    "Next": "Approve Application"
                 },
-                "Resource": "${DataCheckingFunctionArn}",
-                "ResultPath": "$.checks.address",
-                "Retry": [
-                    {
-                        "ErrorEquals": [
-                            "Lambda.ServiceException",
-                            "Lambda.AWSLambdaException",
-                            "Lambda.SdkClientException",
-                            "Lambda.TooManyRequestsException"
-                        ]
-                    }
-                ],
-                "Next": "Review Required?"
+                {
+                    "Variable": "$.review.decision",
+                    "StringEquals": "REJECT",
+                    "Next": "Reject Application"
+                }
+            ]
+        },
+        "Reject Application": {
+            "Type": "Task",
+            "Parameters": {
+                "id.$": "$.application.id"
             },
-            "Review Required?": {
-                "Type": "Choice",
-                "Choices": [
-                    {
-                        "Variable": "$.checks.name.flagged",
-                        "BooleanEquals": true,
-                        "Next": "Pending Review"
-                    },
-                    {
-                        "Variable": "$.checks.address.flagged",
-                        "BooleanEquals": true,
-                        "Next": "Pending Review"
-                    }
-                ],
-                "Default": "Approve Application"
+            "Resource": "${RejectApplicationFunctionArn}",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "Lambda.ServiceException",
+                        "Lambda.AWSLambdaException",
+                        "Lambda.SdkClientException",
+                        "Lambda.TooManyRequestsException"
+                    ]
+                }
+            ],
+            "End": true
+        },
+        "Approve Application": {
+            "Type": "Task",
+            "Parameters": {
+                "id.$": "$.application.id"
             },
-            "Pending Review": {
-                "Type": "Task",
-                "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
-                "Parameters": {
-                    "FunctionName": "${FlagApplicationFunctionName}",
-                    "Payload": {
-                        "id.$": "$.application.id",
-                        "flagType": "REVIEW",
-                        "taskToken.$": "$$.Task.Token"
-                    }
-                },
-                "ResultPath": "$.review",
-                "Retry": [
-                    {
-                        "ErrorEquals": [
-                            "Lambda.ServiceException",
-                            "Lambda.AWSLambdaException",
-                            "Lambda.SdkClientException",
-                            "Lambda.TooManyRequestsException"
-                        ]
-                    }
-                ],
-                "Next": "Review Approved?"
+            "Resource": "${ApproveApplicationFunctionArn}",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "Lambda.ServiceException",
+                        "Lambda.AWSLambdaException",
+                        "Lambda.SdkClientException",
+                        "Lambda.TooManyRequestsException"
+                    ]
+                }
+            ],
+            "End": true
+        },
+        "Flag Application As Unprocessable": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke",
+            "Parameters": {
+                "FunctionName": "${FlagApplicationFunctionName}",
+                "Payload": {
+                    "id.$": "$.application.id",
+                    "flagType": "UNPROCESSABLE_DATA",
+                    "errorInfo.$": "$.error-info"
+                }
             },
-            "Review Approved?": {
-                "Type": "Choice",
-                "Choices": [
-                    {
-                        "Variable": "$.review.decision",
-                        "StringEquals": "APPROVE",
-                        "Next": "Approve Application"
-                    },
-                    {
-                        "Variable": "$.review.decision",
-                        "StringEquals": "REJECT",
-                        "Next": "Reject Application"
-                    }
-                ]
-            },
-            "Reject Application": {
-                "Type": "Task",
-                "Parameters": {
-                    "id.$": "$.application.id"
-                },
-                "Resource": "${RejectApplicationFunctionArn}",
-                "Retry": [
-                    {
-                        "ErrorEquals": [
-                            "Lambda.ServiceException",
-                            "Lambda.AWSLambdaException",
-                            "Lambda.SdkClientException",
-                            "Lambda.TooManyRequestsException"
-                        ]
-                    }
-                ],
-                "End": true
-            },
-            "Approve Application": {
-                "Type": "Task",
-                "Parameters": {
-                    "id.$": "$.application.id"
-                },
-                "Resource": "${ApproveApplicationFunctionArn}",
-                "Retry": [
-                    {
-                        "ErrorEquals": [
-                            "Lambda.ServiceException",
-                            "Lambda.AWSLambdaException",
-                            "Lambda.SdkClientException",
-                            "Lambda.TooManyRequestsException"
-                        ]
-                    }
-                ],
-                "End": true
-            },
-            "Flag Application As Unprocessable": {
-                "Type": "Task",
-                "Resource": "arn:aws:states:::lambda:invoke",
-                "Parameters": {
-                    "FunctionName": "${FlagApplicationFunctionName}",
-                    "Payload": {
-                        "id.$": "$.application.id",
-                        "flagType": "UNPROCESSABLE_DATA",
-                        "errorInfo.$": "$.error-info"
-                    }
-                },
-                "ResultPath": "$.review",
-                "Retry": [
-                    {
-                        "ErrorEquals": [
-                            "Lambda.ServiceException",
-                            "Lambda.AWSLambdaException",
-                            "Lambda.SdkClientException",
-                            "Lambda.TooManyRequestsException"
-                        ]
-                    }
-                ],
-                "End": true
-            }
+            "ResultPath": "$.review",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "Lambda.ServiceException",
+                        "Lambda.AWSLambdaException",
+                        "Lambda.SdkClientException",
+                        "Lambda.TooManyRequestsException"
+                    ]
+                }
+            ],
+            "End": true
         }
     }
+}
 </textarea>
 {{< /safehtml >}}
 

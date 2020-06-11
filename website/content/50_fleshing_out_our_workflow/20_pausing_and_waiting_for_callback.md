@@ -464,130 +464,130 @@ Outputs:
 ➡️ Step 5. Replace `statemachine/account-application-workflow.asl.json` with <span class="clipBtn clipboard" data-clipboard-target="#idcodevariantsstatemachine3addreviewrequired__accountapplicationworkflowasljsoncodevariantsstatemachine4integratecallbackfromreview__accountapplicationworkflowasljson">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
 <div id="diff-idcodevariantsstatemachine3addreviewrequired__accountapplicationworkflowasljsoncodevariantsstatemachine4integratecallbackfromreview__accountapplicationworkflowasljson"></div> <script type="text/template" data-diff-for="diff-idcodevariantsstatemachine3addreviewrequired__accountapplicationworkflowasljsoncodevariantsstatemachine4integratecallbackfromreview__accountapplicationworkflowasljson">diff --git a/code/variants/statemachine/3-add-review-required__account-application-workflow.asl.json b/code/variants/statemachine/4-integrate-callback-from-review__account-application-workflow.asl.json
-index ab6c4e4..cec16f9 100644
+index 79596f9..b61bc94 100644
 --- a/code/variants/statemachine/3-add-review-required__account-application-workflow.asl.json
 +++ b/code/variants/statemachine/4-integrate-callback-from-review__account-application-workflow.asl.json
 @@ -42,6 +42,35 @@
-                 "Default": "Approve Application"
-             },
-             "Pending Review": {
-+                "Type": "Task",
-+                "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
-+                "Parameters": {
-+                    "FunctionName": "${FlagApplicationFunctionName}",
-+                    "Payload": {
-+                        "id.$": "$.application.id",
-+                        "flagType": "REVIEW",
-+                        "taskToken.$": "$$.Task.Token"
-+                    }
+             "Default": "Approve Application"
+         },
+         "Pending Review": {
++            "Type": "Task",
++            "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
++            "Parameters": {
++                "FunctionName": "${FlagApplicationFunctionName}",
++                "Payload": {
++                    "id.$": "$.application.id",
++                    "flagType": "REVIEW",
++                    "taskToken.$": "$$.Task.Token"
++                }
++            },
++            "ResultPath": "$.review",
++            "Next": "Review Approved?"
++        },
++        "Review Approved?": {
++            "Type": "Choice",
++            "Choices": [
++                {
++                    "Variable": "$.review.decision",
++                    "StringEquals": "APPROVE",
++                    "Next": "Approve Application"
 +                },
-+                "ResultPath": "$.review",
-+                "Next": "Review Approved?"
-+            },
-+            "Review Approved?": {
-+                "Type": "Choice",
-+                "Choices": [
-+                    {
-+                        "Variable": "$.review.decision",
-+                        "StringEquals": "APPROVE",
-+                        "Next": "Approve Application"
-+                    },
-+                    {
-+                        "Variable": "$.review.decision",
-+                        "StringEquals": "REJECT",
-+                        "Next": "Reject Application"
-+                    }
-+                ]
-+            },
-+            "Reject Application": {
-                 "Type": "Pass",
-                 "End": true
-             },
++                {
++                    "Variable": "$.review.decision",
++                    "StringEquals": "REJECT",
++                    "Next": "Reject Application"
++                }
++            ]
++        },
++        "Reject Application": {
+             "Type": "Pass",
+             "End": true
+         },
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idcodevariantsstatemachine3addreviewrequired__accountapplicationworkflowasljsoncodevariantsstatemachine4integratecallbackfromreview__accountapplicationworkflowasljson" style="position: relative; left: -1000px; width: 1px; height: 1px;">    {
-        "StartAt": "Check Name",
-        "States": {
-            "Check Name": {
-                "Type": "Task",
-                "Parameters": {
-                    "command": "CHECK_NAME",
-                    "data": {
-                        "name.$": "$.application.name"
-                    }
+<textarea id="idcodevariantsstatemachine3addreviewrequired__accountapplicationworkflowasljsoncodevariantsstatemachine4integratecallbackfromreview__accountapplicationworkflowasljson" style="position: relative; left: -1000px; width: 1px; height: 1px;">{
+    "StartAt": "Check Name",
+    "States": {
+        "Check Name": {
+            "Type": "Task",
+            "Parameters": {
+                "command": "CHECK_NAME",
+                "data": {
+                    "name.$": "$.application.name"
+                }
+            },
+            "Resource": "${DataCheckingFunctionArn}",
+            "ResultPath": "$.checks.name",
+            "Next": "Check Address"
+        },
+        "Check Address": {
+            "Type": "Task",
+            "Parameters": {
+                "command": "CHECK_ADDRESS",
+                "data": {
+                    "address.$": "$.application.address"
+                }
+            },
+            "Resource": "${DataCheckingFunctionArn}",
+            "ResultPath": "$.checks.address",
+            "Next": "Review Required?"
+        },
+        "Review Required?": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.checks.name.flagged",
+                    "BooleanEquals": true,
+                    "Next": "Pending Review"
                 },
-                "Resource": "${DataCheckingFunctionArn}",
-                "ResultPath": "$.checks.name",
-                "Next": "Check Address"
+                {
+                    "Variable": "$.checks.address.flagged",
+                    "BooleanEquals": true,
+                    "Next": "Pending Review"
+                }
+            ],
+            "Default": "Approve Application"
+        },
+        "Pending Review": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+            "Parameters": {
+                "FunctionName": "${FlagApplicationFunctionName}",
+                "Payload": {
+                    "id.$": "$.application.id",
+                    "flagType": "REVIEW",
+                    "taskToken.$": "$$.Task.Token"
+                }
             },
-            "Check Address": {
-                "Type": "Task",
-                "Parameters": {
-                    "command": "CHECK_ADDRESS",
-                    "data": {
-                        "address.$": "$.application.address"
-                    }
+            "ResultPath": "$.review",
+            "Next": "Review Approved?"
+        },
+        "Review Approved?": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.review.decision",
+                    "StringEquals": "APPROVE",
+                    "Next": "Approve Application"
                 },
-                "Resource": "${DataCheckingFunctionArn}",
-                "ResultPath": "$.checks.address",
-                "Next": "Review Required?"
-            },
-            "Review Required?": {
-                "Type": "Choice",
-                "Choices": [
-                    {
-                        "Variable": "$.checks.name.flagged",
-                        "BooleanEquals": true,
-                        "Next": "Pending Review"
-                    },
-                    {
-                        "Variable": "$.checks.address.flagged",
-                        "BooleanEquals": true,
-                        "Next": "Pending Review"
-                    }
-                ],
-                "Default": "Approve Application"
-            },
-            "Pending Review": {
-                "Type": "Task",
-                "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
-                "Parameters": {
-                    "FunctionName": "${FlagApplicationFunctionName}",
-                    "Payload": {
-                        "id.$": "$.application.id",
-                        "flagType": "REVIEW",
-                        "taskToken.$": "$$.Task.Token"
-                    }
-                },
-                "ResultPath": "$.review",
-                "Next": "Review Approved?"
-            },
-            "Review Approved?": {
-                "Type": "Choice",
-                "Choices": [
-                    {
-                        "Variable": "$.review.decision",
-                        "StringEquals": "APPROVE",
-                        "Next": "Approve Application"
-                    },
-                    {
-                        "Variable": "$.review.decision",
-                        "StringEquals": "REJECT",
-                        "Next": "Reject Application"
-                    }
-                ]
-            },
-            "Reject Application": {
-                "Type": "Pass",
-                "End": true
-            },
-            "Approve Application": {
-                "Type": "Pass",
-                "End": true
-            }
+                {
+                    "Variable": "$.review.decision",
+                    "StringEquals": "REJECT",
+                    "Next": "Reject Application"
+                }
+            ]
+        },
+        "Reject Application": {
+            "Type": "Pass",
+            "End": true
+        },
+        "Approve Application": {
+            "Type": "Pass",
+            "End": true
         }
     }
+}
 </textarea>
 {{< /safehtml >}}
 

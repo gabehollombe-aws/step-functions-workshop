@@ -24,61 +24,61 @@ Below is a new version of our serverless.yml file that contains updated Check Na
 ➡️ Step 1. Replace `state-machine/account-application-workflow.asl.json` with <span class="clipBtn clipboard" data-clipboard-target="#idcodevariantsstatemachine1firstversion__accountapplicationworkflowasljsoncodevariantsstatemachine2datacheckingresultpaths__accountapplicationworkflowasljson">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
 <div id="diff-idcodevariantsstatemachine1firstversion__accountapplicationworkflowasljsoncodevariantsstatemachine2datacheckingresultpaths__accountapplicationworkflowasljson"></div> <script type="text/template" data-diff-for="diff-idcodevariantsstatemachine1firstversion__accountapplicationworkflowasljsoncodevariantsstatemachine2datacheckingresultpaths__accountapplicationworkflowasljson">diff --git a/code/variants/statemachine/1-first-version__account-application-workflow.asl.json b/code/variants/statemachine/2-data-checking-result-paths__account-application-workflow.asl.json
-index ebc80ed..b0f66af 100644
+index f2b17f9..f49f979 100644
 --- a/code/variants/statemachine/1-first-version__account-application-workflow.asl.json
 +++ b/code/variants/statemachine/2-data-checking-result-paths__account-application-workflow.asl.json
 @@ -10,6 +10,7 @@
-                     }
-                 },
-                 "Resource": "${DataCheckingFunctionArn}",
-+                "ResultPath": "$.checks.name",
-                 "Next": "Check Address"
+                 }
              },
-             "Check Address": {
+             "Resource": "${DataCheckingFunctionArn}",
++            "ResultPath": "$.checks.name",
+             "Next": "Check Address"
+         },
+         "Check Address": {
 @@ -21,6 +22,7 @@
-                     }
-                 },
-                 "Resource": "${DataCheckingFunctionArn}",
-+                "ResultPath": "$.checks.address",
-                 "Next": "Approve Application"
+                 }
              },
-             "Approve Application": {
+             "Resource": "${DataCheckingFunctionArn}",
++            "ResultPath": "$.checks.address",
+             "Next": "Approve Application"
+         },
+         "Approve Application": {
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="idcodevariantsstatemachine1firstversion__accountapplicationworkflowasljsoncodevariantsstatemachine2datacheckingresultpaths__accountapplicationworkflowasljson" style="position: relative; left: -1000px; width: 1px; height: 1px;">    {
-        "StartAt": "Check Name",
-        "States": {
-            "Check Name": {
-                "Type": "Task",
-                "Parameters": {
-                    "command": "CHECK_NAME",
-                    "data": {
-                        "name.$": "$.application.name"
-                    }
-                },
-                "Resource": "${DataCheckingFunctionArn}",
-                "ResultPath": "$.checks.name",
-                "Next": "Check Address"
+<textarea id="idcodevariantsstatemachine1firstversion__accountapplicationworkflowasljsoncodevariantsstatemachine2datacheckingresultpaths__accountapplicationworkflowasljson" style="position: relative; left: -1000px; width: 1px; height: 1px;">{
+    "StartAt": "Check Name",
+    "States": {
+        "Check Name": {
+            "Type": "Task",
+            "Parameters": {
+                "command": "CHECK_NAME",
+                "data": {
+                    "name.$": "$.application.name"
+                }
             },
-            "Check Address": {
-                "Type": "Task",
-                "Parameters": {
-                    "command": "CHECK_ADDRESS",
-                    "data": {
-                        "address.$": "$.application.address"
-                    }
-                },
-                "Resource": "${DataCheckingFunctionArn}",
-                "ResultPath": "$.checks.address",
-                "Next": "Approve Application"
+            "Resource": "${DataCheckingFunctionArn}",
+            "ResultPath": "$.checks.name",
+            "Next": "Check Address"
+        },
+        "Check Address": {
+            "Type": "Task",
+            "Parameters": {
+                "command": "CHECK_ADDRESS",
+                "data": {
+                    "address.$": "$.application.address"
+                }
             },
-            "Approve Application": {
-                "Type": "Pass",
-                "End": true
-            }
+            "Resource": "${DataCheckingFunctionArn}",
+            "ResultPath": "$.checks.address",
+            "Next": "Approve Application"
+        },
+        "Approve Application": {
+            "Type": "Pass",
+            "End": true
         }
     }
+}
 </textarea>
 {{< /safehtml >}}
 

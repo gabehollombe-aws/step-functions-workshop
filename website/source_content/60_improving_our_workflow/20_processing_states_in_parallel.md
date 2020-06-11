@@ -24,7 +24,7 @@ Let's refactor our state machine to  perform the name and address checks in para
 ➡️ Step 2. Run:
 
 ```bash
-sam build && sam deploy
+sam deploy
 ```
 
 ### Try it out
