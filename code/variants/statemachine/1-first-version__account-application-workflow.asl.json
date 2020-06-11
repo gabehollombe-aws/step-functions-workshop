@@ -1,31 +1,31 @@
-    {
-        "StartAt": "Check Name",
-        "States": {
-            "Check Name": {
-                "Type": "Task",
-                "Parameters": {
-                    "command": "CHECK_NAME",
-                    "data": {
-                        "name.$": "$.application.name"
-                    }
-                },
-                "Resource": "${DataCheckingFunctionArn}",
-                "Next": "Check Address"
+{
+    "StartAt": "Check Name",
+    "States": {
+        "Check Name": {
+            "Type": "Task",
+            "Parameters": {
+                "command": "CHECK_NAME",
+                "data": {
+                    "name.$": "$.application.name"
+                }
             },
-            "Check Address": {
-                "Type": "Task",
-                "Parameters": {
-                    "command": "CHECK_ADDRESS",
-                    "data": {
-                        "address.$": "$.application.address"
-                    }
-                },
-                "Resource": "${DataCheckingFunctionArn}",
-                "Next": "Approve Application"
+            "Resource": "${DataCheckingFunctionArn}",
+            "Next": "Check Address"
+        },
+        "Check Address": {
+            "Type": "Task",
+            "Parameters": {
+                "command": "CHECK_ADDRESS",
+                "data": {
+                    "address.$": "$.application.address"
+                }
             },
-            "Approve Application": {
-                "Type": "Pass",
-                "End": true
-            }
+            "Resource": "${DataCheckingFunctionArn}",
+            "Next": "Approve Application"
+        },
+        "Approve Application": {
+            "Type": "Pass",
+            "End": true
         }
     }
+}

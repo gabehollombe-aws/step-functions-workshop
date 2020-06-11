@@ -8,7 +8,9 @@ Rather than continue to work in the web console and make these fixes by hand, we
 
 ### In this step, we will
 
-* Define our new AWS Step Functions state machine inside `template.yaml`
+* Define our new AWS Step Functions state machine inside a new file located at `statemachine/account-application-workflow.asl.json`
+
+* Update our SAM template file `template.yaml` to include a resource to deploy our new state machine
 
 * Add a new IAM role for our state machine to assume when it executes. The role grants permission for the state machine to invoke our Data Checking Lambda function.
 
@@ -20,309 +22,13 @@ Before we migrate our step function definition over to our `template.yaml` file,
 
 ➡️ Step 2. Select the state machne that we manually defined earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
-➡️ Step 3. Now, let’s re-define our state machine inside our `template.yaml` file. Replace `template.yaml` with <span class="clipBtn clipboard" data-clipboard-target="#ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantstemplateyml1fixingpermissions__templateyaml">this content</span> (click the gray button to copy to clipboard). 
-{{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantstemplateyml1fixingpermissions__templateyaml"></div> <script type="text/template" data-diff-for="diff-ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantstemplateyml1fixingpermissions__templateyaml">commit a0d7df16df74104c36cb221ee8f4f61bab25ef76
-Author: Gabe Hollombe <gabe@avantbard.com>
-Date:   Tue Jun 9 13:55:58 2020 +0800
-
-    progress porting to SAM
-
-diff --git a/code/variants/template.yml/1-fixing-permissions__template.yaml b/code/variants/template.yml/1-fixing-permissions__template.yaml
-new file mode 100644
-index 0000000..1261b13
---- /dev/null
-+++ b/code/variants/template.yml/1-fixing-permissions__template.yaml
-@@ -0,0 +1,137 @@
-+AWSTemplateFormatVersion: "2010-09-09"
-+Transform: AWS::Serverless-2016-10-31
-+Description: Template for step-functions-workshop
-+
-+Resources:
-+  ApplicationProcessingStateMachine:
-+    Type: AWS::Serverless::StateMachine
-+    Properties:
-+      DefinitionUri: statemachine/account-application-workflow.asl.json
-+      DefinitionSubstitutions:
-+        DataCheckingFunctionArn: !GetAtt DataCheckingFunction.Arn
-+      Policies:
-+        - LambdaInvokePolicy:
-+            FunctionName: !Ref DataCheckingFunction
-+
-+  ApproveApplicationFunction:
-+    Type: AWS::Serverless::Function
-+    Properties:
-+      FunctionName: sfn-workshop-ApproveApplication
-+      CodeUri: functions/account-applications/
-+      Handler: approve.handler
-+      Runtime: nodejs12.x
-+      Environment:
-+        Variables:
-+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-+      Policies:
-+        - DynamoDBCrudPolicy:
-+            TableName: !Ref ApplicationsTable
-+
-+  DataCheckingFunction:
-+    Type: AWS::Serverless::Function
-+    Properties:
-+      FunctionName: sfn-workshop-DataChecking
-+      CodeUri: functions/data-checking/
-+      Handler: data-checking.handler
-+      Runtime: nodejs12.x
-+
-+  FindApplicationsFunction:
-+    Type: AWS::Serverless::Function
-+    Properties:
-+      FunctionName: sfn-workshop-FindApplications
-+      CodeUri: functions/account-applications/
-+      Handler: find.handler
-+      Runtime: nodejs12.x
-+      Environment:
-+        Variables:
-+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-+      Policies:
-+        - DynamoDBCrudPolicy:
-+            TableName: !Ref ApplicationsTable
-+
-+  FlagApplicationFunction:
-+    Type: AWS::Serverless::Function
-+    Properties:
-+      FunctionName: sfn-workshop-FlagApplication
-+      CodeUri: functions/account-applications/
-+      Handler: flag.handler
-+      Runtime: nodejs12.x
-+      Environment:
-+        Variables:
-+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-+      Policies:
-+        - DynamoDBWritePolicy:
-+            TableName: !Ref ApplicationsTable
-+
-+  RejectApplicationFunction:
-+    Type: AWS::Serverless::Function
-+    Properties:
-+      FunctionName: sfn-workshop-RejectApplication
-+      CodeUri: functions/account-applications/
-+      Handler: reject.handler
-+      Runtime: nodejs12.x
-+      Environment:
-+        Variables:
-+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-+      Policies:
-+        - DynamoDBWritePolicy:
-+            TableName: !Ref ApplicationsTable
-+
-+  SubmitApplicationFunction:
-+    Type: AWS::Serverless::Function
-+    Properties:
-+      FunctionName: sfn-workshop-SubmitApplication
-+      CodeUri: functions/account-applications/
-+      Handler: submit.handler
-+      Runtime: nodejs12.x
-+      Environment:
-+        Variables:
-+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-+      Policies:
-+        - DynamoDBCrudPolicy:
-+            TableName: !Ref ApplicationsTable
-+
-+  ApplicationsTable:
-+    Type: 'AWS::DynamoDB::Table'
-+    Properties:
-+      TableName: !Sub StepFunctionWorkshop-AccountApplications-${AWS::StackName}
-+      AttributeDefinitions:
-+        -
-+          AttributeName: id
-+          AttributeType: S
-+        -
-+          AttributeName: state
-+          AttributeType: S
-+      KeySchema:
-+        -
-+          AttributeName: id
-+          KeyType: HASH
-+      BillingMode: PAY_PER_REQUEST
-+      GlobalSecondaryIndexes:
-+          -
-+              IndexName: state
-+              KeySchema:
-+                  -
-+                      AttributeName: state
-+                      KeyType: HASH
-+              Projection:
-+                  ProjectionType: ALL
-+Outputs:
-+  SubmitApplicationFunctionArn:
-+    Description: "Submit Application Function ARN"
-+    Value: !GetAtt SubmitApplicationFunction.Arn
-+  FlagApplicationFunctionArn:
-+    Description: "Flag Application Function ARN"
-+    Value: !GetAtt FlagApplicationFunction.Arn
-+  FindApplicationsFunctionArn:
-+    Description: "Find Applications Function ARN"
-+    Value: !GetAtt FlagApplicationFunction.Arn
-+  ApproveApplicationFunctionArn:
-+    Description: "Approve Application Function ARN"
-+    Value: !GetAtt FlagApplicationFunction.Arn
-+  RejectApplicationFunctionArn:
-+    Description: "Reject Application Function ARN"
-+    Value: !GetAtt FlagApplicationFunction.Arn
-+  DataCheckingFunctionArn:
-+    Description: "Data Checking Function ARN"
-+    Value: !GetAtt DataCheckingFunction.Arn
-\ No newline at end of file
-</script>
-{{< /safehtml >}} {{< /expand >}}
-{{< safehtml >}}
-<textarea id="ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantstemplateyml1fixingpermissions__templateyaml" style="position: relative; left: -1000px; width: 1px; height: 1px;">AWSTemplateFormatVersion: "2010-09-09"
-Transform: AWS::Serverless-2016-10-31
-Description: Template for step-functions-workshop
-
-Resources:
-  ApplicationProcessingStateMachine:
-    Type: AWS::Serverless::StateMachine
-    Properties:
-      DefinitionUri: statemachine/account-application-workflow.asl.json
-      DefinitionSubstitutions:
-        DataCheckingFunctionArn: !GetAtt DataCheckingFunction.Arn
-      Policies:
-        - LambdaInvokePolicy:
-            FunctionName: !Ref DataCheckingFunction
-
-  ApproveApplicationFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: sfn-workshop-ApproveApplication
-      CodeUri: functions/account-applications/
-      Handler: approve.handler
-      Runtime: nodejs12.x
-      Environment:
-        Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ApplicationsTable
-
-  DataCheckingFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: sfn-workshop-DataChecking
-      CodeUri: functions/data-checking/
-      Handler: data-checking.handler
-      Runtime: nodejs12.x
-
-  FindApplicationsFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: sfn-workshop-FindApplications
-      CodeUri: functions/account-applications/
-      Handler: find.handler
-      Runtime: nodejs12.x
-      Environment:
-        Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ApplicationsTable
-
-  FlagApplicationFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: sfn-workshop-FlagApplication
-      CodeUri: functions/account-applications/
-      Handler: flag.handler
-      Runtime: nodejs12.x
-      Environment:
-        Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-      Policies:
-        - DynamoDBWritePolicy:
-            TableName: !Ref ApplicationsTable
-
-  RejectApplicationFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: sfn-workshop-RejectApplication
-      CodeUri: functions/account-applications/
-      Handler: reject.handler
-      Runtime: nodejs12.x
-      Environment:
-        Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-      Policies:
-        - DynamoDBWritePolicy:
-            TableName: !Ref ApplicationsTable
-
-  SubmitApplicationFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: sfn-workshop-SubmitApplication
-      CodeUri: functions/account-applications/
-      Handler: submit.handler
-      Runtime: nodejs12.x
-      Environment:
-        Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ApplicationsTable
-
-  ApplicationsTable:
-    Type: 'AWS::DynamoDB::Table'
-    Properties:
-      TableName: !Sub StepFunctionWorkshop-AccountApplications-${AWS::StackName}
-      AttributeDefinitions:
-        -
-          AttributeName: id
-          AttributeType: S
-        -
-          AttributeName: state
-          AttributeType: S
-      KeySchema:
-        -
-          AttributeName: id
-          KeyType: HASH
-      BillingMode: PAY_PER_REQUEST
-      GlobalSecondaryIndexes:
-          -
-              IndexName: state
-              KeySchema:
-                  -
-                      AttributeName: state
-                      KeyType: HASH
-              Projection:
-                  ProjectionType: ALL
-Outputs:
-  SubmitApplicationFunctionArn:
-    Description: "Submit Application Function ARN"
-    Value: !GetAtt SubmitApplicationFunction.Arn
-  FlagApplicationFunctionArn:
-    Description: "Flag Application Function ARN"
-    Value: !GetAtt FlagApplicationFunction.Arn
-  FindApplicationsFunctionArn:
-    Description: "Find Applications Function ARN"
-    Value: !GetAtt FlagApplicationFunction.Arn
-  ApproveApplicationFunctionArn:
-    Description: "Approve Application Function ARN"
-    Value: !GetAtt FlagApplicationFunction.Arn
-  RejectApplicationFunctionArn:
-    Description: "Reject Application Function ARN"
-    Value: !GetAtt FlagApplicationFunction.Arn
-  DataCheckingFunctionArn:
-    Description: "Data Checking Function ARN"
-    Value: !GetAtt DataCheckingFunction.Arn
-</textarea>
-{{< /safehtml >}}
-
-➡️ Step 4. From inside `workshop-dir` run:
+➡️ Step 3. Now, we'll need to create a new file to hold our state machine definition in our filesystem. From inside `workshop-dir` run:
 ```bash
 mkdir -p statemachine && pushd statemachine && touch account-application-workflow.asl.json && popd
 ```
+This will create a blank `statemachine/account-application-workflow.asl.json` inside `workshop-dir`.
 
-This will create a `statemachine/account-application-workflow.asl.json` inside `workshop-dir`.
-
-➡️ Step 5. Replace `statemachine/account-application-workflow.asl.json` with <span class="clipBtn clipboard" data-clipboard-target="#ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantsstatemachine1firstversion__accountapplicationworkflowasljson">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 4. Replace `statemachine/account-application-workflow.asl.json` with <span class="clipBtn clipboard" data-clipboard-target="#ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantsstatemachine1firstversion__accountapplicationworkflowasljson">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
 <div id="diff-ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantsstatemachine1firstversion__accountapplicationworkflowasljson"></div> <script type="text/template" data-diff-for="diff-ida0d7df16df74104c36cb221ee8f4f61bab25ef76codevariantsstatemachine1firstversion__accountapplicationworkflowasljson">commit a0d7df16df74104c36cb221ee8f4f61bab25ef76
 Author: Gabe Hollombe <gabe@avantbard.com>
@@ -405,6 +111,171 @@ index 0000000..ebc80ed
 </textarea>
 {{< /safehtml >}}
 
+➡️ Step 5. Now, we'll update SAM's `template.yaml` file to reference our new state machine. Replace `template.yaml` with <span class="clipBtn clipboard" data-clipboard-target="#idcodevariantstemplateyml0initial__templateyamlcodevariantstemplateyml1fixingpermissions__templateyaml">this content</span> (click the gray button to copy to clipboard). 
+{{< expand "Click to view diff" >}} {{< safehtml >}}
+<div id="diff-idcodevariantstemplateyml0initial__templateyamlcodevariantstemplateyml1fixingpermissions__templateyaml"></div> <script type="text/template" data-diff-for="diff-idcodevariantstemplateyml0initial__templateyamlcodevariantstemplateyml1fixingpermissions__templateyaml">diff --git a/code/variants/template.yml/0-initial__template.yaml b/code/variants/template.yml/1-fixing-permissions__template.yaml
+index 58ea104..cfd3d70 100644
+--- a/code/variants/template.yml/0-initial__template.yaml
++++ b/code/variants/template.yml/1-fixing-permissions__template.yaml
+@@ -3,6 +3,16 @@ Transform: AWS::Serverless-2016-10-31
+ Description: Template for step-functions-workshop
+ 
+ Resources:
++  ApplicationProcessingStateMachine:
++    Type: AWS::Serverless::StateMachine
++    Properties:
++      DefinitionUri: statemachine/account-application-workflow.asl.json
++      DefinitionSubstitutions:
++        DataCheckingFunctionArn: !GetAtt DataCheckingFunction.Arn
++      Policies:
++        - LambdaInvokePolicy:
++            FunctionName: !Ref DataCheckingFunction
++
+   ApproveApplicationFunction:
+     Type: AWS::Serverless::Function
+     Properties:
+</script>
+{{< /safehtml >}} {{< /expand >}}
+{{< safehtml >}}
+<textarea id="idcodevariantstemplateyml0initial__templateyamlcodevariantstemplateyml1fixingpermissions__templateyaml" style="position: relative; left: -1000px; width: 1px; height: 1px;">AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Template for step-functions-workshop
+
+Resources:
+  ApplicationProcessingStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      DefinitionUri: statemachine/account-application-workflow.asl.json
+      DefinitionSubstitutions:
+        DataCheckingFunctionArn: !GetAtt DataCheckingFunction.Arn
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref DataCheckingFunction
+
+  ApproveApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-ApproveApplication
+      CodeUri: functions/account-applications/
+      Handler: approve.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApplicationsTable
+
+  DataCheckingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-DataChecking
+      CodeUri: functions/data-checking/
+      Handler: data-checking.handler
+      Runtime: nodejs12.x
+
+  FindApplicationsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-FindApplications
+      CodeUri: functions/account-applications/
+      Handler: find.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApplicationsTable
+
+  FlagApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-FlagApplication
+      CodeUri: functions/account-applications/
+      Handler: flag.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApplicationsTable
+
+  RejectApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-RejectApplication
+      CodeUri: functions/account-applications/
+      Handler: reject.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApplicationsTable
+
+  SubmitApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sfn-workshop-SubmitApplication
+      CodeUri: functions/account-applications/
+      Handler: submit.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApplicationsTable
+
+  ApplicationsTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: !Sub StepFunctionWorkshop-AccountApplications-${AWS::StackName}
+      AttributeDefinitions:
+        -
+          AttributeName: id
+          AttributeType: S
+        -
+          AttributeName: state
+          AttributeType: S
+      KeySchema:
+        -
+          AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+          -
+              IndexName: state
+              KeySchema:
+                  -
+                      AttributeName: state
+                      KeyType: HASH
+              Projection:
+                  ProjectionType: ALL
+Outputs:
+  SubmitApplicationFunctionArn:
+    Description: "Submit Application Function ARN"
+    Value: !GetAtt SubmitApplicationFunction.Arn
+  FlagApplicationFunctionArn:
+    Description: "Flag Application Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  FindApplicationsFunctionArn:
+    Description: "Find Applications Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  ApproveApplicationFunctionArn:
+    Description: "Approve Application Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  RejectApplicationFunctionArn:
+    Description: "Reject Application Function ARN"
+    Value: !GetAtt FlagApplicationFunction.Arn
+  DataCheckingFunctionArn:
+    Description: "Data Checking Function ARN"
+    Value: !GetAtt DataCheckingFunction.Arn
+</textarea>
+{{< /safehtml >}}
 
 ➡️ Step 6. Redeploy our application:
 

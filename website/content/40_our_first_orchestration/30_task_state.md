@@ -60,7 +60,7 @@ STACK_NAME=$(grep stack_name samconfig.toml | awk -F\= '{gsub(/"/, "", $2); gsub
 aws cloudformation describe-stacks --region $REGION --stack-name $STACK_NAME --query 'Stacks[0].Outputs[?OutputKey==`DataCheckingFunctionArn`].OutputValue' --output text                
 ```
 
-This command pulls values out of the `samconfig.toml` file (which remembers things like the region and stack name we're using SAM to deploy to) and shows the ARN of the Data Checking Lambda we deployed.
+This complicated looking set of commands is here to just make your life easier by automatically pulling configuration values out of the `samconfig.toml` file (which remembers things like the region and stack name we're using SAM to deploy to), then uses those config values to AWS CLI cloudformation command to show the ARN of the Data Checking Lambda we deployed.
    
 ➡️ Step 4. Copy the ARN to your clipboard.
 

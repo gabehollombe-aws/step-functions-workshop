@@ -41,7 +41,7 @@ The developer guide identifies the [types of transient Lambda service errors](ht
 ➡️ Step 2. Run:
 
 ```bash
-sam build && sam deploy
+sam deploy
 ```
 
 
@@ -70,16 +70,14 @@ To show this in action, we’ll leverage some test code in our Data Checking Lam
 ➡️ Step 2. Run:
 
 ```bash
-sam build && sam deploy
+sam deploy
 ```
 
 ### Try it out
 
 Let’s test out our new error handling capabilities:
 
-➡️ Step 1. Try submitting a new application that contains our simulated unprocessable data for the applicant’s name field. 
-
-Run:
+➡️ Step 1. Try submitting a new application that contains our simulated unprocessable data for the applicant’s name field. Run:
 
 ```bash
 aws lambda invoke --function-name sfn-workshop-SubmitApplication --payload '{ "name": "UNPROCESSABLE_DATA", "address": "123 Street" }' /dev/stdout 

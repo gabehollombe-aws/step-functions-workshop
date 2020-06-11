@@ -276,7 +276,7 @@ index e62d97a..7b5df59 100644
 ➡️ Step 2. Run:
 
 ```bash
-sam build && sam deploy
+sam deploy
 ```
 
 
@@ -536,16 +536,14 @@ index 7b5df59..56acf06 100644
 ➡️ Step 2. Run:
 
 ```bash
-sam build && sam deploy
+sam deploy
 ```
 
 ### Try it out
 
 Let’s test out our new error handling capabilities:
 
-➡️ Step 1. Try submitting a new application that contains our simulated unprocessable data for the applicant’s name field. 
-
-Run:
+➡️ Step 1. Try submitting a new application that contains our simulated unprocessable data for the applicant’s name field. Run:
 
 ```bash
 aws lambda invoke --function-name sfn-workshop-SubmitApplication --payload '{ "name": "UNPROCESSABLE_DATA", "address": "123 Street" }' /dev/stdout 

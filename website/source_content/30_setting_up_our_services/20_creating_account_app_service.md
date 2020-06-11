@@ -9,20 +9,22 @@ To start, we’ll create several functions that, when taken collectively, could 
 
 ### In this step, we will:
 
-- Install the AWS SAM CLI, initialize a new project, and install a few dependencies from NPM
+- Install the AWS SAM CLI
 
-- Download a first version of our Account Applications service written in the AWS SAM framework (instead of creating a lot of initial files by hand), comprised of several AWS Lambda functions and an Amazon Dynamo DB table to store system state. We'll use Node.js as the language for all of the Lambda functions in this workshop. If you're not comfortable with Node.JS or JavaScript, don't worry; the code is really simple and you should be able to follow along without any issues.
-
-- Download a simple Data Checking service which we can use as part of our orchestration to simulate checking account application information for things like valid names and addresses.
+- Download a starting point containing first-versions of our Account Applications and Data Checking services. These services are implemented as a collection of Node.js Lambda functions and one DynamoDB table, and all these resources are managed by the AWS SAM framework. If you're not comfortable with Node.JS or JavaScript, don't worry; the code is really simple and you should be able to follow along without any issues.
 
 
 ### Make these changes
 
-➡️ Step 1. In your Cloud9 workspace's terminal command line, run these commands to handle all of the housekeeping of getting our first version of the Account Applications service deployed:
+➡️ Step 1. In your Cloud9 workspace's terminal command line, run this command to install Homebrew, a package manager that we'll use to install the AWS SAM CLI. Note: you'll need to press enter when prompted to continue the install.
 
 ```bash
 # Install Homebrew
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+```
+
+➡️ Step 2. Now, run these commands to install the SAM CLI and all of the housekeeping of getting the first versions of our services deployed:
+```
 # Then get brew into our $PATH
 test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
 test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
@@ -33,9 +35,9 @@ echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
 brew tap aws/tap
 brew install aws-sam-cli
 
-# Bootstrap our initial services into ./workshop-dir/functions/
+# Bootstrap our initial services into ./workshop-dir
 git clone https://github.com/gabehollombe-aws/step-functions-workshop.git          
-sam init --location step-functions-workshop/sam_template -o workshop-dir
+cp -R step-functions-workshop/sam_template/ workshop-dir
 
 # Change to our new directory
 cd workshop-dir
@@ -46,18 +48,20 @@ cd workshop-dir
 From the terminal, run:
 
 ```bash
-sam package && sam deploy
+sam build
 ```
 
 ➡️ Step 3. Use the SAM CLI to deploy our Lambda functions and DynamoDB table
 
 From the terminal, run the following command and respond to the interactive prompts in a similar fashion. Then wait a few minutes for the deploy to finish.
 
-```bash
+```
+# Run our first deploy in guided mode. Answer the interactive questions the same way that the comments show below:
 sam deploy --guided
 
+# Please respond to the interactive questions like this:
 # Stack Name [sam-app]: step-functions-workshop
-# AWS Region [us-east-1]: us-east-1
+# AWS Region [us-east-1]: ENTER_THE_SAME_REGION_AS_WHERE_YOUR_CLOUD9_INSTANCE_IS_RUNNING_FROM
 # Confirm changes before deploy [y/N]: N
 # Allow SAM CLI IAM role creation [Y/n]: Y
 # Save arguments to samconfig.toml [Y/n]: Y

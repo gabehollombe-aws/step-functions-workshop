@@ -32,21 +32,21 @@ To start out, let’s just try to model the steps involved to check a name, chec
 
 ```
 {
-"StartAt": "Check Name",
-"States": {
-    "Check Name": {
-    "Type": "Pass",
-    "Next": "Check Address"
-    },
-    "Check Address": {
-    "Type": "Pass",
-    "Next": "Approve Application"
-    },
-    "Approve Application": {
-    "Type": "Pass",
-    "End": true
+    "StartAt": "Check Name",
+    "States": {
+        "Check Name": {
+            "Type": "Pass",
+            "Next": "Check Address"
+        },
+        "Check Address": {
+            "Type": "Pass",
+            "Next": "Approve Application"
+        },
+        "Approve Application": {
+            "Type": "Pass",
+            "End": true
+        }
     }
-}
 }
 ```
 

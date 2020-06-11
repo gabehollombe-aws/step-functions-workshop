@@ -8,7 +8,9 @@ Rather than continue to work in the web console and make these fixes by hand, we
 
 ### In this step, we will
 
-* Define our new AWS Step Functions state machine inside `template.yaml`
+* Define our new AWS Step Functions state machine inside a new file located at `statemachine/account-application-workflow.asl.json`
+
+* Update our SAM template file `template.yaml` to include a resource to deploy our new state machine
 
 * Add a new IAM role for our state machine to assume when it executes. The role grants permission for the state machine to invoke our Data Checking Lambda function.
 
@@ -20,17 +22,15 @@ Before we migrate our step function definition over to our `template.yaml` file,
 
 ➡️ Step 2. Select the state machne that we manually defined earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
-➡️ Step 3. Now, let’s re-define our state machine inside our `template.yaml` file. Replace `template.yaml` with ___CLIPBOARD_BUTTON a0d7df16df74104c36cb221ee8f4f61bab25ef76:code/variants/template.yml/1-fixing-permissions__template.yaml|
-
-➡️ Step 4. From inside `workshop-dir` run:
+➡️ Step 3. Now, we'll need to create a new file to hold our state machine definition in our filesystem. From inside `workshop-dir` run:
 ```bash
 mkdir -p statemachine && pushd statemachine && touch account-application-workflow.asl.json && popd
 ```
+This will create a blank `statemachine/account-application-workflow.asl.json` inside `workshop-dir`.
 
-This will create a `statemachine/account-application-workflow.asl.json` inside `workshop-dir`.
+➡️ Step 4. Replace `statemachine/account-application-workflow.asl.json` with ___CLIPBOARD_BUTTON a0d7df16df74104c36cb221ee8f4f61bab25ef76:code/variants/statemachine/1-first-version__account-application-workflow.asl.json|
 
-➡️ Step 5. Replace `statemachine/account-application-workflow.asl.json` with ___CLIPBOARD_BUTTON a0d7df16df74104c36cb221ee8f4f61bab25ef76:code/variants/statemachine/1-first-version__account-application-workflow.asl.json|
-
+➡️ Step 5. Now, we'll update SAM's `template.yaml` file to reference our new state machine. Replace `template.yaml` with ___CLIPBOARD_BUTTON code/variants/template.yml/0-initial__template.yaml&code/variants/template.yml/1-fixing-permissions__template.yaml|
 
 ➡️ Step 6. Redeploy our application:
 

@@ -14,19 +14,19 @@ So, to fix our current issue, we need to add a `ResultPath` statement, instructi
 
 ### In this step, we will
 
-* Add `ResultPath` properties to our Check Name and Check Address states inside our state machine defined in `state-machine/account-application-workflow.asl`
+* Add `ResultPath` properties to our Check Name and Check Address states inside our state machine defined in `state-machine/account-application-workflow.asl.json`
 
 ### Make these changes
 
 Below is a new version of our serverless.yml file that contains updated Check Name and Check Address states, using the ResultPath property to merge their outputs into helpfully-named keys that we can be used later on.
 
 
-➡️ Step 1. Replace `state-machine/account-application-workflow.asl` with ___CLIPBOARD_BUTTON code/variants/statemachine/1-first-version__account-application-workflow.asl.json&code/variants/statemachine/2-data-checking-result-paths__account-application-workflow.asl.json|
+➡️ Step 1. Replace `state-machine/account-application-workflow.asl.json` with ___CLIPBOARD_BUTTON code/variants/statemachine/1-first-version__account-application-workflow.asl.json&code/variants/statemachine/2-data-checking-result-paths__account-application-workflow.asl.json|
 
 ➡️ Step 2. Run:
 
 ```bash
-sam build && sam deploy
+sam deploy
 ```
 
 ### Try it out

@@ -118,7 +118,7 @@ index b0f66af..ab6c4e4 100644
 ➡️ Step 2. Run:
 
 ```bash
-sam build && sam deploy
+sam deploy
 ```
 
 We just added two new states to our workflow: ‘Review Required?’ and Pending Review.  The ‘Review Required?’ state examines its input (which is the output from the Check Address state) and runs through a series of checks. You can see that there’s an array of two choice rules in the state’s definition, each of which specifies what state name to go to next if its rule matches successfully. There is also a default state name specified to transition to in the event of no rule matches.  

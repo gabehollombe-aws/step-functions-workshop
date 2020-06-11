@@ -1,53 +1,53 @@
-    {
-        "StartAt": "Check Name",
-        "States": {
-            "Check Name": {
-                "Type": "Task",
-                "Parameters": {
-                    "command": "CHECK_NAME",
-                    "data": {
-                        "name.$": "$.application.name"
-                    }
+{
+    "StartAt": "Check Name",
+    "States": {
+        "Check Name": {
+            "Type": "Task",
+            "Parameters": {
+                "command": "CHECK_NAME",
+                "data": {
+                    "name.$": "$.application.name"
+                }
+            },
+            "Resource": "${DataCheckingFunctionArn}",
+            "ResultPath": "$.checks.name",
+            "Next": "Check Address"
+        },
+        "Check Address": {
+            "Type": "Task",
+            "Parameters": {
+                "command": "CHECK_ADDRESS",
+                "data": {
+                    "address.$": "$.application.address"
+                }
+            },
+            "Resource": "${DataCheckingFunctionArn}",
+            "ResultPath": "$.checks.address",
+            "Next": "Review Required?"
+        },
+        "Review Required?": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.checks.name.flagged",
+                    "BooleanEquals": true,
+                    "Next": "Pending Review"
                 },
-                "Resource": "${DataCheckingFunctionArn}",
-                "ResultPath": "$.checks.name",
-                "Next": "Check Address"
-            },
-            "Check Address": {
-                "Type": "Task",
-                "Parameters": {
-                    "command": "CHECK_ADDRESS",
-                    "data": {
-                        "address.$": "$.application.address"
-                    }
-                },
-                "Resource": "${DataCheckingFunctionArn}",
-                "ResultPath": "$.checks.address",
-                "Next": "Review Required?"
-            },
-            "Review Required?": {
-                "Type": "Choice",
-                "Choices": [
-                    {
-                        "Variable": "$.checks.name.flagged",
-                        "BooleanEquals": true,
-                        "Next": "Pending Review"
-                    },
-                    {
-                        "Variable": "$.checks.address.flagged",
-                        "BooleanEquals": true,
-                        "Next": "Pending Review"
-                    }
-                ],
-                "Default": "Approve Application"
-            },
-            "Pending Review": {
-                "Type": "Pass",
-                "End": true
-            },
-            "Approve Application": {
-                "Type": "Pass",
-                "End": true
-            }
+                {
+                    "Variable": "$.checks.address.flagged",
+                    "BooleanEquals": true,
+                    "Next": "Pending Review"
+                }
+            ],
+            "Default": "Approve Application"
+        },
+        "Pending Review": {
+            "Type": "Pass",
+            "End": true
+        },
+        "Approve Application": {
+            "Type": "Pass",
+            "End": true
         }
     }
+}
