@@ -24,11 +24,9 @@ To start out, let’s just try to model the steps involved to check a name, chec
 
 ➡️ Step 2. If the left sidebar is collapsed, expand it
 
-➡️ Step 3. Make sure you’re in the State machines section and click the ‘Create state machine’  button on the right
+➡️ Step 3. Make sure you’re in the State machines section and click the ‘Create state machine’  button on the right.
 
-➡️ Step 4. In the Name field, enter ‘Process_New_Account_Applications’
-
-➡️ Step 5. In the ‘State machine definition’ section, replace the example state machine definition with the following JSON instead:
+➡️ Step 4. Scroll down to the 'Definition' section and replace the example state machine definition with the following JSON instead:
 
 ```
 {
@@ -50,13 +48,15 @@ To start out, let’s just try to model the steps involved to check a name, chec
 }
 ```
 
-➡️ Step 6. Click the refresh icon and you should see a diagram matching the one above. This is really helpful for making sure we’re connecting our states together in the right way.
+➡️ Step 5. Click the refresh icon and you should see a diagram matching the one above. This is really helpful for making sure we’re connecting our states together in the right way.
 
-➡️ Step 7. Click ‘Next’ to continue
+➡️ Step 6. Click ‘Next’ to continue
 
-➡️ Step 8. We need to specify an IAM role for the Step Function to assume when it executes. For now we can just start with the default role. Select ‘Create an IAM role for me’ and enter a name for the role like ‘Process_New_Account_Applications_Role’
+➡️ Step 7. In the Name section, enter ‘Process_New_Account_Applications’
 
-➡️ Step 9. Click ‘Create state machine’
+➡️ Step 8. In the Permissions section, we need to specify an IAM role for the Step Function to assume when it executes. For now we can just start with the default role. Ensure the ‘Create new role’ option is selected.
+
+➡️ Step 9. Leave the rest of the defaults as they are, scroll down, and click on Click ‘Create state machine’.
 
 
 {{% notice info %}}

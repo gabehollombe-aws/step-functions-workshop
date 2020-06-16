@@ -118,51 +118,13 @@ module.exports.handler = async(event) => {
 ➡️ Step 2. Replace `template.yaml` with <span class="clipBtn clipboard" data-clipboard-target="#idcodevariantstemplateyml1fixingpermissions__templateyamlcodevariantstemplateyml2submitexecutesstepfunction__templateyaml">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
 <div id="diff-idcodevariantstemplateyml1fixingpermissions__templateyamlcodevariantstemplateyml2submitexecutesstepfunction__templateyaml"></div> <script type="text/template" data-diff-for="diff-idcodevariantstemplateyml1fixingpermissions__templateyamlcodevariantstemplateyml2submitexecutesstepfunction__templateyaml">diff --git a/code/variants/template.yml/1-fixing-permissions__template.yaml b/code/variants/template.yml/2-submit-executes-step-function__template.yaml
-index cfd3d70..b9cbc1d 100644
+index 81aed51..b9cbc1d 100644
 --- a/code/variants/template.yml/1-fixing-permissions__template.yaml
 +++ b/code/variants/template.yml/2-submit-executes-step-function__template.yaml
-@@ -22,7 +22,7 @@ Resources:
-       Runtime: nodejs12.x
+@@ -87,9 +87,12 @@ Resources:
        Environment:
          Variables:
--          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
-       Policies:
-         - DynamoDBCrudPolicy:
-             TableName: !Ref ApplicationsTable
-@@ -44,7 +44,7 @@ Resources:
-       Runtime: nodejs12.x
-       Environment:
-         Variables:
--          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
-       Policies:
-         - DynamoDBCrudPolicy:
-             TableName: !Ref ApplicationsTable
-@@ -58,7 +58,7 @@ Resources:
-       Runtime: nodejs12.x
-       Environment:
-         Variables:
--          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
-       Policies:
-         - DynamoDBCrudPolicy:
-             TableName: !Ref ApplicationsTable
-@@ -72,7 +72,7 @@ Resources:
-       Runtime: nodejs12.x
-       Environment:
-         Variables:
--          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
-       Policies:
-         - DynamoDBCrudPolicy:
-             TableName: !Ref ApplicationsTable
-@@ -86,10 +86,13 @@ Resources:
-       Runtime: nodejs12.x
-       Environment:
-         Variables:
--          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
+           APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
 +          APPLICATION_PROCESSING_STEP_FUNCTION_ARN: !Ref ApplicationProcessingStateMachine
        Policies:
          - DynamoDBCrudPolicy:
