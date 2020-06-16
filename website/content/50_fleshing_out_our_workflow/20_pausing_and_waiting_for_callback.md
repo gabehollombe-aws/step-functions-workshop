@@ -247,7 +247,7 @@ module.exports.handler = async(event) => {
 ➡️ Step 4. Replace `template.yaml` with <span class="clipBtn clipboard" data-clipboard-target="#idcodevariantstemplateyml2submitexecutesstepfunction__templateyamlcodevariantstemplateyml3addreviewapplication__templateyaml">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
 <div id="diff-idcodevariantstemplateyml2submitexecutesstepfunction__templateyamlcodevariantstemplateyml3addreviewapplication__templateyaml"></div> <script type="text/template" data-diff-for="diff-idcodevariantstemplateyml2submitexecutesstepfunction__templateyamlcodevariantstemplateyml3addreviewapplication__templateyaml">diff --git a/code/variants/template.yml/2-submit-executes-step-function__template.yaml b/code/variants/template.yml/3-add-review-application__template.yaml
-index b3d19ae..497d8c4 100644
+index b3d19ae..272c2b5 100644
 --- a/code/variants/template.yml/2-submit-executes-step-function__template.yaml
 +++ b/code/variants/template.yml/3-add-review-application__template.yaml
 @@ -9,9 +9,12 @@ Resources:
@@ -263,10 +263,43 @@ index b3d19ae..497d8c4 100644
  
    ApproveApplicationFunction:
      Type: AWS::Serverless::Function
-@@ -77,6 +80,27 @@ Resources:
+@@ -22,7 +25,7 @@ Resources:
+       Runtime: nodejs12.x
+       Environment:
+         Variables:
+-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
++          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
+       Policies:
          - DynamoDBCrudPolicy:
              TableName: !Ref ApplicationsTable
- 
+@@ -44,7 +47,7 @@ Resources:
+       Runtime: nodejs12.x
+       Environment:
+         Variables:
+-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
++          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
+       Policies:
+         - DynamoDBCrudPolicy:
+             TableName: !Ref ApplicationsTable
+@@ -58,7 +61,7 @@ Resources:
+       Runtime: nodejs12.x
+       Environment:
+         Variables:
+-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
++          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
+       Policies:
+         - DynamoDBCrudPolicy:
+             TableName: !Ref ApplicationsTable
+@@ -72,10 +75,31 @@ Resources:
+       Runtime: nodejs12.x
+       Environment:
+         Variables:
+-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
++          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
++      Policies:
++        - DynamoDBCrudPolicy:
++            TableName: !Ref ApplicationsTable
++
 +  ReviewApplicationFunction:
 +    Type: AWS::Serverless::Function
 +    Properties:
@@ -276,10 +309,10 @@ index b3d19ae..497d8c4 100644
 +      Runtime: nodejs12.x
 +      Environment:
 +        Variables:
-+          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
-+      Policies:
-+        - DynamoDBCrudPolicy:
-+            TableName: !Ref ApplicationsTable
++          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
+       Policies:
+         - DynamoDBCrudPolicy:
+             TableName: !Ref ApplicationsTable
 +        - Statement:
 +          - Sid: AllowCallbacksToStateMachinePolicy
 +            Effect: "Allow"
@@ -287,10 +320,18 @@ index b3d19ae..497d8c4 100644
 +              - "states:SendTaskSuccess"
 +              - "states:SendTaskFailure"
 +            Resource: !Ref ApplicationProcessingStateMachine
-+
+ 
    SubmitApplicationFunction:
      Type: AWS::Serverless::Function
-     Properties:
+@@ -86,7 +110,7 @@ Resources:
+       Runtime: nodejs12.x
+       Environment:
+         Variables:
+-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
++          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
+           APPLICATION_PROCESSING_STEP_FUNCTION_ARN: !Ref ApplicationProcessingStateMachine
+       Policies:
+         - DynamoDBCrudPolicy:
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
@@ -321,7 +362,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
@@ -343,7 +384,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
@@ -357,7 +398,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
@@ -371,7 +412,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
@@ -385,7 +426,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
@@ -406,7 +447,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
           APPLICATION_PROCESSING_STEP_FUNCTION_ARN: !Ref ApplicationProcessingStateMachine
       Policies:
         - DynamoDBCrudPolicy:

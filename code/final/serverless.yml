@@ -18,7 +18,7 @@ functions:
     handler: account-applications/submit.handler
     environment:
       REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+      APPLICATIONS_TABLE_NAME: ${self:custom.applicationsTable}
       APPLICATION_PROCESSING_STEP_FUNCTION_ARN: { Ref: "ProcessApplicationsStateMachine" }
     role: SubmitRole
 
@@ -27,7 +27,7 @@ functions:
     handler: account-applications/flag.handler
     environment:
       REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+      APPLICATIONS_TABLE_NAME: ${self:custom.applicationsTable}
     role: FlagRole
 
   ReviewApplication:
@@ -35,7 +35,7 @@ functions:
     handler: account-applications/review.handler
     environment:
       REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+      APPLICATIONS_TABLE_NAME: ${self:custom.applicationsTable}
     role: ReviewRole
 
   FindApplications:
@@ -43,7 +43,7 @@ functions:
     handler: account-applications/find.handler
     environment:
       REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+      APPLICATIONS_TABLE_NAME: ${self:custom.applicationsTable}
     role: FindRole
 
   RejectApplication:
@@ -51,7 +51,7 @@ functions:
     handler: account-applications/reject.handler
     environment:
       REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+      APPLICATIONS_TABLE_NAME: ${self:custom.applicationsTable}
     role: RejectRole
 
   ApproveApplication:
@@ -59,7 +59,7 @@ functions:
     handler: account-applications/approve.handler
     environment:
       REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+      APPLICATIONS_TABLE_NAME: ${self:custom.applicationsTable}
     role: ApproveRole
 
   DataChecking:

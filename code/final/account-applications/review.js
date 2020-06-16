@@ -1,6 +1,6 @@
 'use strict';
 const REGION = process.env.REGION
-const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
+const APPLICATIONS_TABLE_NAME = process.env.APPLICATIONS_TABLE_NAME
 
 const AWS = require('aws-sdk')
 AWS.config.update({region: REGION});
@@ -8,7 +8,7 @@ AWS.config.update({region: REGION});
 const dynamo = new AWS.DynamoDB.DocumentClient();
 const stepfunctions = new AWS.StepFunctions();
 
-const AccountApplications = require('./AccountApplications')(ACCOUNTS_TABLE_NAME, dynamo)
+const AccountApplications = require('./AccountApplications')(APPLICATIONS_TABLE_NAME, dynamo)
 
 const updateApplicationWithDecision = (id, decision) => {
     if (decision !== 'APPROVE' && decision !== 'REJECT') {

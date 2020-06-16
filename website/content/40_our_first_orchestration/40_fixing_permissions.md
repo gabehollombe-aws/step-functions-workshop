@@ -114,7 +114,7 @@ index 0000000..ebc80ed
 ➡️ Step 5. Now, we'll update SAM's `template.yaml` file to reference our new state machine. Replace `template.yaml` with <span class="clipBtn clipboard" data-clipboard-target="#idcodevariantstemplateyml0initial__templateyamlcodevariantstemplateyml1fixingpermissions__templateyaml">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
 <div id="diff-idcodevariantstemplateyml0initial__templateyamlcodevariantstemplateyml1fixingpermissions__templateyaml"></div> <script type="text/template" data-diff-for="diff-idcodevariantstemplateyml0initial__templateyamlcodevariantstemplateyml1fixingpermissions__templateyaml">diff --git a/code/variants/template.yml/0-initial__template.yaml b/code/variants/template.yml/1-fixing-permissions__template.yaml
-index 58ea104..cfd3d70 100644
+index 58ea104..81aed51 100644
 --- a/code/variants/template.yml/0-initial__template.yaml
 +++ b/code/variants/template.yml/1-fixing-permissions__template.yaml
 @@ -3,6 +3,16 @@ Transform: AWS::Serverless-2016-10-31
@@ -134,6 +134,51 @@ index 58ea104..cfd3d70 100644
    ApproveApplicationFunction:
      Type: AWS::Serverless::Function
      Properties:
+@@ -12,7 +22,7 @@ Resources:
+       Runtime: nodejs12.x
+       Environment:
+         Variables:
+-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
++          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
+       Policies:
+         - DynamoDBCrudPolicy:
+             TableName: !Ref ApplicationsTable
+@@ -34,7 +44,7 @@ Resources:
+       Runtime: nodejs12.x
+       Environment:
+         Variables:
+-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
++          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
+       Policies:
+         - DynamoDBCrudPolicy:
+             TableName: !Ref ApplicationsTable
+@@ -48,7 +58,7 @@ Resources:
+       Runtime: nodejs12.x
+       Environment:
+         Variables:
+-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
++          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
+       Policies:
+         - DynamoDBCrudPolicy:
+             TableName: !Ref ApplicationsTable
+@@ -62,7 +72,7 @@ Resources:
+       Runtime: nodejs12.x
+       Environment:
+         Variables:
+-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
++          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
+       Policies:
+         - DynamoDBCrudPolicy:
+             TableName: !Ref ApplicationsTable
+@@ -76,7 +86,7 @@ Resources:
+       Runtime: nodejs12.x
+       Environment:
+         Variables:
+-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
++          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
+       Policies:
+         - DynamoDBCrudPolicy:
+             TableName: !Ref ApplicationsTable
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
@@ -161,7 +206,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
@@ -183,7 +228,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
@@ -197,7 +242,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
@@ -211,7 +256,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
@@ -225,7 +270,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable

@@ -12,7 +12,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
@@ -34,7 +34,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
@@ -48,7 +48,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
@@ -62,7 +62,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable
@@ -76,7 +76,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ACCOUNTS_TABLE_NAME: !Ref ApplicationsTable
+          APPLICATIONS_TABLE_NAME: !Ref ApplicationsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ApplicationsTable

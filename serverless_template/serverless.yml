@@ -18,7 +18,7 @@ functions:
     handler: account-applications/submit.handler
     environment:
       REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+      APPLICATIONS_TABLE_NAME: ${self:custom.applicationsTable}
     role: SubmitRole
 
   FlagApplication:
@@ -26,7 +26,7 @@ functions:
     handler: account-applications/flag.handler
     environment:
       REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+      APPLICATIONS_TABLE_NAME: ${self:custom.applicationsTable}
     role: FlagRole
 
   FindApplications:
@@ -34,7 +34,7 @@ functions:
     handler: account-applications/find.handler
     environment:
       REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+      APPLICATIONS_TABLE_NAME: ${self:custom.applicationsTable}
     role: FindRole
 
   RejectApplication:
@@ -42,7 +42,7 @@ functions:
     handler: account-applications/reject.handler
     environment:
       REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+      APPLICATIONS_TABLE_NAME: ${self:custom.applicationsTable}
     role: RejectRole
 
   ApproveApplication:
@@ -50,7 +50,7 @@ functions:
     handler: account-applications/approve.handler
     environment:
       REGION: ${self:provider.region}
-      ACCOUNTS_TABLE_NAME: ${self:custom.applicationsTable}
+      APPLICATIONS_TABLE_NAME: ${self:custom.applicationsTable}
     role: ApproveRole
 
 resources:

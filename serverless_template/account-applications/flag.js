@@ -1,13 +1,13 @@
 'use strict';
 const REGION = process.env.REGION
-const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
+const APPLICATIONS_TABLE_NAME = process.env.APPLICATIONS_TABLE_NAME
 
 const AWS = require('aws-sdk')
 AWS.config.update({region: REGION});
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
-const AccountApplications = require('./AccountApplications')(ACCOUNTS_TABLE_NAME, dynamo)
+const AccountApplications = require('./AccountApplications')(APPLICATIONS_TABLE_NAME, dynamo)
 
 const flagForReview = async (data) => {
     const { id, flagType } = data
