@@ -18,7 +18,7 @@ To do this, we will integrate our Account Applications service with our applicat
 
 ### Make these changes
 
-➡️ Step 1. Replace `functions/account-applications/submit.js` with ___CLIPBOARD_BUTTON 509c5f4da832d190d3285f30d91fd29c3253b6fb:code/account-applications/submit.js|
+➡️ Step 1. Replace `functions/account-applications/submit.js` with ___CLIPBOARD_BUTTON sam_template/functions/account-applications/submit.js&code/final/account-applications/submit.js|
 
 ➡️ Step 2. Replace `template.yaml` with ___CLIPBOARD_BUTTON code/variants/template.yml/1-fixing-permissions__template.yaml&code/variants/template.yml/2-submit-executes-step-function__template.yaml|
 

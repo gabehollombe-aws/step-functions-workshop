@@ -39,20 +39,14 @@ We’ll need to make a few updates to our workflow in order for this to work.
 
 ### Make these changes
 
-➡️ Step 1. Replace `functions/account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsflagjs">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `functions/account-applications/flag.js` with <span class="clipBtn clipboard" data-clipboard-target="#idsam_templatefunctionsaccountapplicationsflagjscodefinalaccountapplicationsflagjs">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsflagjs"></div> <script type="text/template" data-diff-for="diff-id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsflagjs">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
-Author: Gabe Hollombe <gabe@avantbard.com>
-Date:   Wed Oct 16 10:58:50 2019 +0800
-
-    Call out to Lambda from Pending Review state, add Review Approved? choice state that transitions to Approve or Reject pass states. Create a review lambda that calls back to Step Functions with review decision in SendTaskSuccess
-
-diff --git a/account-applications/flag.js b/account-applications/flag.js
-index 3e700d5..8bbdcb1 100644
---- a/account-applications/flag.js
-+++ b/account-applications/flag.js
+<div id="diff-idsam_templatefunctionsaccountapplicationsflagjscodefinalaccountapplicationsflagjs"></div> <script type="text/template" data-diff-for="diff-idsam_templatefunctionsaccountapplicationsflagjscodefinalaccountapplicationsflagjs">diff --git a/sam_template/functions/account-applications/flag.js b/code/final/account-applications/flag.js
+index 391c468..9096632 100644
+--- a/sam_template/functions/account-applications/flag.js
++++ b/code/final/account-applications/flag.js
 @@ -10,7 +10,7 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
- const AccountApplications = require('./AccountApplications')(ACCOUNTS_TABLE_NAME, dynamo)
+ const AccountApplications = require('./AccountApplications')(APPLICATIONS_TABLE_NAME, dynamo)
  
  const flagForReview = async (data) => {
 -    const { id, flagType } = data
@@ -71,16 +65,16 @@ index 3e700d5..8bbdcb1 100644
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsflagjs" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="idsam_templatefunctionsaccountapplicationsflagjscodefinalaccountapplicationsflagjs" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
-const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
+const APPLICATIONS_TABLE_NAME = process.env.APPLICATIONS_TABLE_NAME
 
 const AWS = require('aws-sdk')
 AWS.config.update({region: REGION});
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
-const AccountApplications = require('./AccountApplications')(ACCOUNTS_TABLE_NAME, dynamo)
+const AccountApplications = require('./AccountApplications')(APPLICATIONS_TABLE_NAME, dynamo)
 
 const flagForReview = async (data) => {
     const { id, flagType, taskToken } = data
@@ -129,23 +123,17 @@ module.exports.handler = async(event) => {
 touch functions/account-applications/review.js
 ```
 
-➡️ Step 3. Replace `functions/account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsreviewjs">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 3. Replace `functions/account-applications/review.js` with <span class="clipBtn clipboard" data-clipboard-target="#idsam_templatefunctionsaccountapplicationscodefinalaccountapplicationsreviewjs">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsreviewjs"></div> <script type="text/template" data-diff-for="diff-id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsreviewjs">commit 278b0babefb143aafbbf1bb5c773a62fcd3f374f
-Author: Gabe Hollombe <gabe@avantbard.com>
-Date:   Wed Oct 16 10:58:50 2019 +0800
-
-    Call out to Lambda from Pending Review state, add Review Approved? choice state that transitions to Approve or Reject pass states. Create a review lambda that calls back to Step Functions with review decision in SendTaskSuccess
-
-diff --git a/account-applications/review.js b/account-applications/review.js
+<div id="diff-idsam_templatefunctionsaccountapplicationscodefinalaccountapplicationsreviewjs"></div> <script type="text/template" data-diff-for="diff-idsam_templatefunctionsaccountapplicationscodefinalaccountapplicationsreviewjs">diff --git a/code/final/account-applications/review.js b/code/final/account-applications/review.js
 new file mode 100644
-index 0000000..74b3186
+index 0000000..1923429
 --- /dev/null
-+++ b/account-applications/review.js
++++ b/code/final/account-applications/review.js
 @@ -0,0 +1,47 @@
 +'use strict';
 +const REGION = process.env.REGION
-+const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
++const APPLICATIONS_TABLE_NAME = process.env.APPLICATIONS_TABLE_NAME
 +
 +const AWS = require('aws-sdk')
 +AWS.config.update({region: REGION});
@@ -153,7 +141,7 @@ index 0000000..74b3186
 +const dynamo = new AWS.DynamoDB.DocumentClient();
 +const stepfunctions = new AWS.StepFunctions();
 +
-+const AccountApplications = require('./AccountApplications')(ACCOUNTS_TABLE_NAME, dynamo)
++const AccountApplications = require('./AccountApplications')(APPLICATIONS_TABLE_NAME, dynamo)
 +
 +const updateApplicationWithDecision = (id, decision) => {
 +    if (decision !== 'APPROVE' && decision !== 'REJECT') {
@@ -194,9 +182,9 @@ index 0000000..74b3186
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id278b0babefb143aafbbf1bb5c773a62fcd3f374faccountapplicationsreviewjs" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="idsam_templatefunctionsaccountapplicationscodefinalaccountapplicationsreviewjs" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
-const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
+const APPLICATIONS_TABLE_NAME = process.env.APPLICATIONS_TABLE_NAME
 
 const AWS = require('aws-sdk')
 AWS.config.update({region: REGION});
@@ -204,7 +192,7 @@ AWS.config.update({region: REGION});
 const dynamo = new AWS.DynamoDB.DocumentClient();
 const stepfunctions = new AWS.StepFunctions();
 
-const AccountApplications = require('./AccountApplications')(ACCOUNTS_TABLE_NAME, dynamo)
+const AccountApplications = require('./AccountApplications')(APPLICATIONS_TABLE_NAME, dynamo)
 
 const updateApplicationWithDecision = (id, decision) => {
     if (decision !== 'APPROVE' && decision !== 'REJECT') {

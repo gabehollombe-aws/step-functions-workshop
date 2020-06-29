@@ -18,22 +18,16 @@ To do this, we will integrate our Account Applications service with our applicat
 
 ### Make these changes
 
-➡️ Step 1. Replace `functions/account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#id509c5f4da832d190d3285f30d91fd29c3253b6fbcodeaccountapplicationssubmitjs">this content</span> (click the gray button to copy to clipboard). 
+➡️ Step 1. Replace `functions/account-applications/submit.js` with <span class="clipBtn clipboard" data-clipboard-target="#idsam_templatefunctionsaccountapplicationssubmitjscodefinalaccountapplicationssubmitjs">this content</span> (click the gray button to copy to clipboard). 
 {{< expand "Click to view diff" >}} {{< safehtml >}}
-<div id="diff-id509c5f4da832d190d3285f30d91fd29c3253b6fbcodeaccountapplicationssubmitjs"></div> <script type="text/template" data-diff-for="diff-id509c5f4da832d190d3285f30d91fd29c3253b6fbcodeaccountapplicationssubmitjs">commit 509c5f4da832d190d3285f30d91fd29c3253b6fb
-Author: Gabe Hollombe <gabe@avantbard.com>
-Date:   Thu Oct 31 14:41:42 2019 +0800
-
-    new account-applications/submit.js v2
-
-diff --git a/code/account-applications/submit.js b/code/account-applications/submit.js
-index ce94300..1f80e87 100644
---- a/code/account-applications/submit.js
-+++ b/code/account-applications/submit.js
+<div id="diff-idsam_templatefunctionsaccountapplicationssubmitjscodefinalaccountapplicationssubmitjs"></div> <script type="text/template" data-diff-for="diff-idsam_templatefunctionsaccountapplicationssubmitjscodefinalaccountapplicationssubmitjs">diff --git a/sam_template/functions/account-applications/submit.js b/code/final/account-applications/submit.js
+index 4dc058e..e7ce237 100644
+--- a/sam_template/functions/account-applications/submit.js
++++ b/code/final/account-applications/submit.js
 @@ -1,11 +1,13 @@
  'use strict';
  const REGION = process.env.REGION
- const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
+ const APPLICATIONS_TABLE_NAME = process.env.APPLICATIONS_TABLE_NAME
 +const APPLICATION_PROCESSING_STEP_FUNCTION_ARN = process.env.APPLICATION_PROCESSING_STEP_FUNCTION_ARN
  
  const AWS = require('aws-sdk')
@@ -42,7 +36,7 @@ index ce94300..1f80e87 100644
  const dynamo = new AWS.DynamoDB.DocumentClient();
 +const stepfunctions = new AWS.StepFunctions();
  
- const AccountApplications = require('./AccountApplications')(ACCOUNTS_TABLE_NAME, dynamo)
+ const AccountApplications = require('./AccountApplications')(APPLICATIONS_TABLE_NAME, dynamo)
  
 @@ -15,10 +17,20 @@ const submitNewAccountApplication = async (data) => {
      return application
@@ -68,9 +62,9 @@ index ce94300..1f80e87 100644
 </script>
 {{< /safehtml >}} {{< /expand >}}
 {{< safehtml >}}
-<textarea id="id509c5f4da832d190d3285f30d91fd29c3253b6fbcodeaccountapplicationssubmitjs" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
+<textarea id="idsam_templatefunctionsaccountapplicationssubmitjscodefinalaccountapplicationssubmitjs" style="position: relative; left: -1000px; width: 1px; height: 1px;">'use strict';
 const REGION = process.env.REGION
-const ACCOUNTS_TABLE_NAME = process.env.ACCOUNTS_TABLE_NAME
+const APPLICATIONS_TABLE_NAME = process.env.APPLICATIONS_TABLE_NAME
 const APPLICATION_PROCESSING_STEP_FUNCTION_ARN = process.env.APPLICATION_PROCESSING_STEP_FUNCTION_ARN
 
 const AWS = require('aws-sdk')
@@ -79,7 +73,7 @@ AWS.config.update({region: REGION});
 const dynamo = new AWS.DynamoDB.DocumentClient();
 const stepfunctions = new AWS.StepFunctions();
 
-const AccountApplications = require('./AccountApplications')(ACCOUNTS_TABLE_NAME, dynamo)
+const AccountApplications = require('./AccountApplications')(APPLICATIONS_TABLE_NAME, dynamo)
 
 const submitNewAccountApplication = async (data) => {
     const { name, address } = data

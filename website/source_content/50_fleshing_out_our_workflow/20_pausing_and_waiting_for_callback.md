@@ -39,14 +39,14 @@ We’ll need to make a few updates to our workflow in order for this to work.
 
 ### Make these changes
 
-➡️ Step 1. Replace `functions/account-applications/flag.js` with ___CLIPBOARD_BUTTON 278b0babefb143aafbbf1bb5c773a62fcd3f374f:account-applications/flag.js|
+➡️ Step 1. Replace `functions/account-applications/flag.js` with ___CLIPBOARD_BUTTON sam_template/functions/account-applications/flag.js&code/final/account-applications/flag.js|
 
 ➡️ Step 2. Run:
 ```bash
 touch functions/account-applications/review.js
 ```
 
-➡️ Step 3. Replace `functions/account-applications/review.js` with ___CLIPBOARD_BUTTON 278b0babefb143aafbbf1bb5c773a62fcd3f374f:account-applications/review.js|
+➡️ Step 3. Replace `functions/account-applications/review.js` with ___CLIPBOARD_BUTTON sam_template/functions/account-applications/&code/final/account-applications/review.js|
 
 ➡️ Step 4. Replace `template.yaml` with ___CLIPBOARD_BUTTON code/variants/template.yml/2-submit-executes-step-function__template.yaml&code/variants/template.yml/3-add-review-application__template.yaml|
 
