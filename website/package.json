@@ -14,7 +14,8 @@
 	"scripts": {
 		"test": "hugo server -w -v -DF --disableFastRender --bind=0.0.0.0",
 		"server": "hugo server -w -v --bind=0.0.0.0",
-		"build": "hugo -v"
+		"build": "pushd scripts && npm run buildAndRefresh && popd",
+		"buildHugo": "hugo -v"
 	},
 	"dependencies": {
 		"discharge": "^0.7.1",
