@@ -34,3 +34,6 @@ weight = 1
 [outputs]
 home = [ "HTML", "AMP", "RSS", "JSON"]
 page = [ "HTML", "AMP"]
+
+[markup.goldmark.renderer]
+unsafe= true
