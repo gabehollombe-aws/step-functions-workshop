@@ -158,13 +158,13 @@ Outputs:
     Value: !GetAtt FlagApplicationFunction.Arn
   FindApplicationsFunctionArn:
     Description: "Find Applications Function ARN"
-    Value: !GetAtt FlagApplicationFunction.Arn
+    Value: !GetAtt FindApplicationsFunction.Arn
   ApproveApplicationFunctionArn:
     Description: "Approve Application Function ARN"
-    Value: !GetAtt FlagApplicationFunction.Arn
+    Value: !GetAtt ApproveApplicationFunction.Arn
   RejectApplicationFunctionArn:
     Description: "Reject Application Function ARN"
-    Value: !GetAtt FlagApplicationFunction.Arn
+    Value: !GetAtt RejectApplicationFunction.Arn
   DataCheckingFunctionArn:
     Description: "Data Checking Function ARN"
     Value: !GetAtt DataCheckingFunction.Arn
