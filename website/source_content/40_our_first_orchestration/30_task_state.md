@@ -52,23 +52,18 @@ The state machine description we use below assumes that the state machine will r
 }
 ```
 
-➡️ Step 3. Back on your terminal, run:
+➡️ Step 3. In the state machine definition, delete Resource property value between the quotes and type
+```arn:aws:lambda```
+You should see a list of lambda arns.
+![Data Checking Arn](/images/data-checking-arn.png)
 
-```
-REGION=$(grep region samconfig.toml | awk -F\= '{gsub(/"/, "", $2); gsub(/ /, "", $2); print $2}')
-STACK_NAME=$(grep stack_name samconfig.toml | awk -F\= '{gsub(/"/, "", $2); gsub(/ /, "", $2); print $2}')
-aws cloudformation describe-stacks --region $REGION --stack-name $STACK_NAME --query 'Stacks[0].Outputs[?OutputKey==`DataCheckingFunctionArn`].OutputValue' --output text                
-```
-
-This complicated looking set of commands is here to just make your life easier by automatically pulling configuration values out of the `samconfig.toml` file (which remembers things like the region and stack name we're using SAM to deploy to), then uses those config values to AWS CLI cloudformation command to show the ARN of the Data Checking Lambda we deployed.
+Pick data checking arn from the list and hit enter.
    
-➡️ Step 4. Copy the ARN to your clipboard.
+➡️ Step 4. Repeat for the other REPLACE_WITH_DATA_CHECKING_LAMBDA_ARN Resource value.
 
-➡️ Step 5. In the state machine definition you pasted in step 3, go back and find the two occurrences of REPLACE_WITH_DATA_CHECKING_LAMBDA_ARN and replace them with the ARN you just copied.
+➡️ Step 5. Click ‘Save’
 
-➡️ Step 6. Click ‘Save’
-
-➡️ Step 7. Notice how we receive a warning that our IAM role may need to change in order to allow our updated state machine to execute. This is a helpful reminder. In fact, we *have* changed our state machine in way that will require permissions changes. Now, we require the ability to invoke our Data Checking Lambda function in order to execute this state machine. We’ll address this next. Click ‘Save anyway’ to continue.
+➡️ Step 6. Notice how we receive a warning that our IAM role may need to change in order to allow our updated state machine to execute. This is a helpful reminder. In fact, we *have* changed our state machine in way that will require permissions changes. Now, we require the ability to invoke our Data Checking Lambda function in order to execute this state machine. We’ll address this next. Click ‘Save anyway’ to continue.
 
 ### Try it out
 
