@@ -20,7 +20,7 @@ Before we migrate our step function definition over to our `template.yaml` file,
 
 ➡️ Step 1. In the left sidebar of the Step Functions web console, click ‘State machines’
 
-➡️ Step 2. Select the state machne that we manually defined earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
+➡️ Step 2. Select the state machine that we manually defined earlier, click ‘Delete’, and click ‘Delete state machine’ to confirm the deletion.
 
 ➡️ Step 3. Now, we'll need to create a new file to hold our state machine definition in our filesystem. From inside `workshop-dir` run:
 ```bash
