@@ -35,6 +35,7 @@ export class SfWorkshopStack extends cdk.Stack {
           ],
           resources: [
             applicationsDynamoTable.tableArn,
+            `${applicationsDynamoTable.tableArn}/index/*`,
           ],
         })
       ]
