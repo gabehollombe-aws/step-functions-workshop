@@ -183,15 +183,14 @@ export class SfWorkshopStack extends cdk.Stack {
       integrationPattern: sfn.IntegrationPattern.WAIT_FOR_TASK_TOKEN,
     }).next(isReviewApproved);
 
-    const reviewRequired = new sfn.Choice(this, "Review Required");
-    reviewRequired.when(sfn.Condition.booleanEquals("$.checks[0].Payload.flagged", true), pendingReview);
-    reviewRequired.when(sfn.Condition.booleanEquals("$.checks[1].Payload.flagged", true), pendingReview);
-    reviewRequired.otherwise(approveApplication);
+    const reviewRequired = new sfn.Choice(this, "Review Required")
+      .when(sfn.Condition.booleanEquals("$.checks[0].Payload.flagged", true), pendingReview)
+      .when(sfn.Condition.booleanEquals("$.checks[1].Payload.flagged", true), pendingReview)
+      .otherwise(approveApplication);
 
     const processApplicationsStateMachine = new sfn.StateMachine(this, "ProcessApplicationsStateMachine", {
       definition: checkApplicantData
-        .next(reviewRequired)
-      ,
+        .next(reviewRequired),
       role: stateMachineRole,
       timeout: cdk.Duration.minutes(5),
     });
@@ -212,7 +211,7 @@ export class SfWorkshopStack extends cdk.Stack {
       ],
     });
 
-    const submitLambdaRole = new iam.Role(this, "SubmitLambdaRole", {
+    const sfnExecLambdaRole = new iam.Role(this, "SubmitLambdaRole", {
       assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
       managedPolicies: [
         dynamoPolicy,
@@ -228,7 +227,7 @@ export class SfWorkshopStack extends cdk.Stack {
         ...dynamoEnvVars,
         APPLICATION_PROCESSING_STEP_FUNCTION_ARN: processApplicationsStateMachine.stateMachineArn,
       },
-      role: submitLambdaRole,
+      role: sfnExecLambdaRole,
     });
 
     const submitApplicationFn = new NodejsFunction(this, "SubmitApplicationFunction", {
@@ -237,7 +236,7 @@ export class SfWorkshopStack extends cdk.Stack {
         ...dynamoEnvVars,
         APPLICATION_PROCESSING_STEP_FUNCTION_ARN: processApplicationsStateMachine.stateMachineArn,
       },
-      role: submitLambdaRole,
+      role: sfnExecLambdaRole,
     });
   }
 
