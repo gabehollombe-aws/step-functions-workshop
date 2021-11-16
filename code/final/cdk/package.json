@@ -28,8 +28,6 @@
     "@aws-cdk/aws-stepfunctions": "^1.132.0",
     "@aws-cdk/aws-stepfunctions-tasks": "^1.132.0",
     "@aws-cdk/core": "1.132.0",
-    "lodash": "^4.17.21",
-    "source-map-support": "^0.5.16",
-    "uuid": "^8.3.2"
+    "source-map-support": "^0.5.16"
   }
 }
