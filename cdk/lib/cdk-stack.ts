@@ -5,8 +5,14 @@ import * as sfn from "@aws-cdk/aws-stepfunctions";
 import * as sfnTasks from "@aws-cdk/aws-stepfunctions-tasks";
 import { NodejsFunction } from "@aws-cdk/aws-lambda-nodejs";
 
+interface SfnWorkshopStackProps {
+  env: Required<cdk.Environment>;
+}
+
 export class SfWorkshopStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  #lambdaRole: iam.Role;
+
+  constructor(scope: cdk.Construct, id: string, props: SfnWorkshopStackProps) {
     super(scope, id, props);
 
     const applicationsDynamoTable = new dynamo.Table(this, "ApplicationsDynamoDbTable", {
@@ -34,8 +40,7 @@ export class SfWorkshopStack extends cdk.Stack {
       ]
     });
 
-    const awsRegion = props!.env!.region!;
-    const awsAccountId = props!.env!.account!;
+    const { region, account } = props.env;
     const lambdaLoggingPolicy = new iam.ManagedPolicy(this, "LambdaLoggingPolicy", {
       statements: [
         new iam.PolicyStatement({
@@ -46,13 +51,13 @@ export class SfWorkshopStack extends cdk.Stack {
             "logs:PutLogEvents",
           ],
           resources: [
-            `arn:aws:logs:${awsRegion}:${awsAccountId}:log-group:/aws/lambda/*:*:*`,
+            `arn:aws:logs:${region}:${account}:log-group:/aws/lambda/*:*:*`,
           ],
         })
       ]
     });
 
-    const lambdaRole = new iam.Role(this, "LambdaRole", {
+    this.#lambdaRole = new iam.Role(this, "LambdaRole", {
       assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
       managedPolicies: [
         dynamoPolicy,
@@ -61,28 +66,38 @@ export class SfWorkshopStack extends cdk.Stack {
       ]
     });
 
-    const dataCheckingFn = new NodejsFunction(this, "DataCheckingFunction", {
-      entry: `${__dirname}/../../code/final/data-checking.js`,
-      role: lambdaRole,
-    })
+    const dynamoEnvVars = {
+      REGION: region,
+      APPLICATIONS_TABLE_NAME: applicationsDynamoTable.tableName,
+    };
+    const dataCheckingFn = this.createLambda(
+      "DataCheckingFunction",
+      `${__dirname}/../../code/final/data-checking.js`
+    );
 
-    const checkApplicantData = new sfn.Parallel(this, "CheckApplicantDataState", {
-      resultPath: "$.checks",
-    }).branch(
-      new sfnTasks.LambdaInvoke(this, "CheckName", {
-        lambdaFunction: dataCheckingFn,
-        payload: sfn.TaskInput.fromObject({
-          command: "CHECK_NAME",
-          data: { "name.$": "$.application.name" },
-        }),
-      }),
-      new sfnTasks.LambdaInvoke(this, "CheckAddress", {
-        lambdaFunction: dataCheckingFn,
-        payload: sfn.TaskInput.fromObject({
-          command: "CHECK_ADDRESS",
-          data: { "address.$": "$.application.address" },
-        }),
-      }),
+    const lambdaSrcBaseDir = `${__dirname}/../../code/final/account-applications`;
+    const flagApplicationFn = this.createLambda(
+      "FlagApplicationFunction",
+      `${lambdaSrcBaseDir}/flag.js`,
+      dynamoEnvVars
+    );
+
+    const approveApplicationFn = this.createLambda(
+      "ApproveApplicationFunction",
+      `${lambdaSrcBaseDir}/approve.js`,
+      dynamoEnvVars
+    );
+
+    const rejectApplicationFn = this.createLambda(
+      "RejectApplicationFunction",
+      `${lambdaSrcBaseDir}/reject.js`,
+      dynamoEnvVars
+    );
+
+    const findApplicationFn = this.createLambda(
+      "FindApplicationFunction",
+      `${lambdaSrcBaseDir}/find.js`,
+      dynamoEnvVars
     );
 
     const stateMachineRole = new iam.Role(this, "StateMachineRole", {
@@ -104,9 +119,77 @@ export class SfWorkshopStack extends cdk.Stack {
       ]
     });
 
-    const definition = checkApplicantData;
+    const flagApplicationAsUnprocessable = new sfnTasks.LambdaInvoke(this, "Flag Application As Unprocessable", {
+      lambdaFunction: flagApplicationFn,
+      payload: sfn.TaskInput.fromObject({
+        "id.$": "$.application.id",
+        "flagType": "UNPROCESSABLE_DATA",
+        "errorInfo.$": "$.error-info",
+      }),
+      resultPath: "$.review"
+    });
+
+    const checkApplicantData = new sfn.Parallel(this, "Check Applicant Data", {
+      resultPath: "$.checks",
+    }).branch(
+      new sfnTasks.LambdaInvoke(this, "Check Name", {
+        lambdaFunction: dataCheckingFn,
+        payload: sfn.TaskInput.fromObject({
+          command: "CHECK_NAME",
+          data: { "name.$": "$.application.name" },
+        }),
+      }),
+      new sfnTasks.LambdaInvoke(this, "Check Address", {
+        lambdaFunction: dataCheckingFn,
+        payload: sfn.TaskInput.fromObject({
+          command: "CHECK_ADDRESS",
+          data: { "address.$": "$.application.address" },
+        }),
+      }),
+    );
+    checkApplicantData.addCatch(flagApplicationAsUnprocessable, {
+      errors: ["UnprocessableDataException"],
+      resultPath: "$.error-info",
+    });
+
+    const approveApplication = new sfnTasks.LambdaInvoke(this, "Approve Application", {
+      lambdaFunction: approveApplicationFn,
+      payload: sfn.TaskInput.fromObject({
+        "id.$": "$.application.id",
+      }),
+    });
+
+    const rejectApplication = new sfnTasks.LambdaInvoke(this, "Reject Application", {
+      lambdaFunction: rejectApplicationFn,
+      payload: sfn.TaskInput.fromObject({
+        "id.$": "$.application.id",
+      }),
+    });
+
+    const isReviewApproved = new sfn.Choice(this, "Is Review Approved?")
+      .when(sfn.Condition.stringEquals("$.review.decision", "APPROVE"), approveApplication)
+      .when(sfn.Condition.stringEquals("$.review.decision", "REJECT"), rejectApplication);
+
+    const pendingReview = new sfnTasks.LambdaInvoke(this, "Pending Review", {
+      lambdaFunction: flagApplicationFn,
+      payload: sfn.TaskInput.fromObject({
+        "id.$": "$.application.id",
+        "flagType": "REVIEW",
+        "taskToken": sfn.JsonPath.taskToken,
+      }),
+      resultPath: "$.review",
+      integrationPattern: sfn.IntegrationPattern.WAIT_FOR_TASK_TOKEN,
+    }).next(isReviewApproved);
+
+    const reviewRequired = new sfn.Choice(this, "Review Required");
+    reviewRequired.when(sfn.Condition.booleanEquals("$.checks[0].Payload.flagged", true), pendingReview);
+    reviewRequired.when(sfn.Condition.booleanEquals("$.checks[1].Payload.flagged", true), pendingReview);
+    reviewRequired.otherwise(approveApplication);
+
     const processApplicationsStateMachine = new sfn.StateMachine(this, "ProcessApplicationsStateMachine", {
-      definition,
+      definition: checkApplicantData
+        .next(reviewRequired)
+      ,
       role: stateMachineRole,
       timeout: cdk.Duration.minutes(5),
     });
@@ -137,14 +220,35 @@ export class SfWorkshopStack extends cdk.Stack {
       ]
     });
 
-    const submitApplicationFn = new NodejsFunction(this, "SubmitApplicationFunction", {
-      entry: `${__dirname}/../../code/final/account-applications/submit.js`,
+    const reviewApplicationFn = new NodejsFunction(this, "ReviewApplicationFunction", {
+      entry: `${lambdaSrcBaseDir}/review.js`,
       environment: {
-        REGION: awsRegion,
-        APPLICATIONS_TABLE_NAME: applicationsDynamoTable.tableName,
+        ...dynamoEnvVars,
         APPLICATION_PROCESSING_STEP_FUNCTION_ARN: processApplicationsStateMachine.stateMachineArn,
       },
       role: submitLambdaRole,
+    });
+
+    const submitApplicationFn = new NodejsFunction(this, "SubmitApplicationFunction", {
+      entry: `${lambdaSrcBaseDir}/submit.js`,
+      environment: {
+        ...dynamoEnvVars,
+        APPLICATION_PROCESSING_STEP_FUNCTION_ARN: processApplicationsStateMachine.stateMachineArn,
+      },
+      role: submitLambdaRole,
+    });
+  }
+
+  createLambda(id: string, entry: string, environment?: { [key: string]: string }): NodejsFunction;
+  createLambda(id: string, entry: string, environment: { [key: string]: string }): NodejsFunction {
+    return new NodejsFunction(this, id, {
+      entry,
+      environment,
+      bundling: {
+        sourceMap: true,
+        minify: false,
+      },
+      role: this.#lambdaRole,
     });
   }
 }
