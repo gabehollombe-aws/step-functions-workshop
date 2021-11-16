@@ -70,12 +70,13 @@ export class SfWorkshopStack extends cdk.Stack {
       REGION: region,
       APPLICATIONS_TABLE_NAME: applicationsDynamoTable.tableName,
     };
+
     const dataCheckingFn = this.createLambda(
       "DataCheckingFunction",
-      `${__dirname}/../../code/final/data-checking.js`
+      `${__dirname}/../../data-checking.js`
     );
 
-    const lambdaSrcBaseDir = `${__dirname}/../../code/final/account-applications`;
+    const lambdaSrcBaseDir = `${__dirname}/../../account-applications`;
     const flagApplicationFn = this.createLambda(
       "FlagApplicationFunction",
       `${lambdaSrcBaseDir}/flag.js`,
